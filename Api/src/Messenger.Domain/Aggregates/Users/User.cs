@@ -1,15 +1,18 @@
-﻿using Messenger.Domain.Aggregates.User.ValueObjects;
+﻿using Messenger.Domain.Aggregates.Chats;
+using Messenger.Domain.Aggregates.User.Errors;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
-namespace Messenger.Domain.Aggregates.User
+namespace Messenger.Domain.Aggregates.Users
 {
     public sealed class User : AggregateRoot<UserId>
     {
+        private readonly HashSet<Chat> _chats = [];
         private Username _username;
         private Email _email;
 
-        private User() 
+        private User()
             : base(new(Guid.NewGuid())) { }
 
         private User(
@@ -41,6 +44,20 @@ namespace Messenger.Domain.Aggregates.User
 
                 _email = value;
             }
+        }
+
+        public IReadOnlyCollection<Chat> Chats => _chats;
+
+        public Result AddChat(Chat chat)
+        {
+            if (_chats.Contains(chat))
+            {
+                return Result.Failure(UserErrors.UserAlreadyHasChat);
+            }
+
+            _chats.Add(chat);
+
+            return Result.Success();
         }
 
         public static Result<User> Create(

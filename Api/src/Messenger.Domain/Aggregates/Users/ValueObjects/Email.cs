@@ -1,8 +1,8 @@
-﻿using Messenger.Domain.Aggregates.User.Errors;
+﻿using Messenger.Domain.Aggregates.Users.Errors;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
-namespace Messenger.Domain.Aggregates.User.ValueObjects
+namespace Messenger.Domain.Aggregates.Users.ValueObjects
 {
     public sealed class Email : ValueObject
     {

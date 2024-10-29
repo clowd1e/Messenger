@@ -1,8 +1,8 @@
-﻿using Messenger.Domain.Aggregates.Message.Errors;
+﻿using Messenger.Domain.Aggregates.Messages.Errors;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
-namespace Messenger.Domain.Aggregates.Message.ValueObjects
+namespace Messenger.Domain.Aggregates.Messages.ValueObjects
 {
     public sealed class MessageTimestamp : ValueObject
     {

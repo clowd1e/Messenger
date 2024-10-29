@@ -1,6 +1,6 @@
 ﻿using Messenger.Domain.Shared;
 
-namespace Messenger.Domain.Aggregates.Message.Errors
+namespace Messenger.Domain.Aggregates.Messages.Errors
 {
     public static class MessageTimestampErrors
     {

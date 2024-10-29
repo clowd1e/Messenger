@@ -1,6 +1,6 @@
 ﻿using Messenger.Domain.Shared;
 
-namespace Messenger.Domain.Aggregates.User.Errors
+namespace Messenger.Domain.Aggregates.Users.Errors
 {
     public static class EmailErrors
     {

@@ -1,11 +1,12 @@
-﻿using Messenger.Domain.Aggregates.Message.ValueObjects;
+﻿using Messenger.Domain.Aggregates.Messages.ValueObjects;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
-namespace Messenger.Domain.Aggregates.Message
+namespace Messenger.Domain.Aggregates.Messages
 {
     public sealed class Message : AggregateRoot<MessageId>
     {
+        private readonly Users.User _user;
         private MessageTimestamp _timestamp;
         private MessageContent _content;
 
@@ -15,10 +16,12 @@ namespace Messenger.Domain.Aggregates.Message
         private Message(
             MessageId messageId,
             MessageTimestamp timestamp,
-            MessageContent content) : base(messageId)
+            MessageContent content,
+            Users.User user) : base(messageId)
         {
             Timestamp = timestamp;
             Content = content;
+            User = user;
         }
 
         public MessageTimestamp Timestamp
@@ -43,15 +46,23 @@ namespace Messenger.Domain.Aggregates.Message
             }
         }
 
+        public Users.User User
+        {
+            get => _user;
+            init => _user = value;
+        }
+
         public static Result<Message> Create(
             MessageId messageId,
             MessageTimestamp timestamp,
-            MessageContent content)
+            MessageContent content,
+            Users.User user)
         {
             return new Message(
                 messageId,
                 timestamp,
-                content);
+                content,
+                user);
         }
     }
 }
