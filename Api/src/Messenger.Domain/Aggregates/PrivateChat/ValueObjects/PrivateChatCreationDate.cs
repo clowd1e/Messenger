@@ -4,36 +4,38 @@ using Messenger.Domain.Shared;
 
 namespace Messenger.Domain.Aggregates.PrivateChat.ValueObjects
 {
-    public sealed class CreationDate : ValueObject
+    public sealed class PrivateChatCreationDate : ValueObject
     {
         public const DateTimeKind Kind = DateTimeKind.Utc;
 
-        private CreationDate(DateTime value)
+        private PrivateChatCreationDate(DateTime value)
         {
             Value = value;
         }
 
         public DateTime Value { get; }
 
-        public static Result<CreationDate> Create(DateTime creationDate)
+        public static Result<PrivateChatCreationDate> Create(DateTime creationDate)
         {
             if (creationDate == default)
             {
-                return Result.Failure<CreationDate>(CreationDateErrors.Empty);
+                return Result.Failure<PrivateChatCreationDate>(
+                    PrivateChatCreationDateErrors.Empty);
             }
 
             if (creationDate.Kind != Kind)
             {
-                return Result.Failure<CreationDate>(
-                    CreationDateErrors.InvalidKind(Kind));
+                return Result.Failure<PrivateChatCreationDate>(
+                    PrivateChatCreationDateErrors.InvalidKind(Kind));
             }
 
             if (creationDate > DateTime.UtcNow)
             {
-                return Result.Failure<CreationDate>(CreationDateErrors.FutureDate);
+                return Result.Failure<PrivateChatCreationDate>(
+                    PrivateChatCreationDateErrors.FutureDate);
             }
 
-            return new CreationDate(creationDate);
+            return new PrivateChatCreationDate(creationDate);
         }
 
         protected override IEnumerable<object> GetAtomicValues()

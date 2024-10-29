@@ -6,19 +6,19 @@ namespace Messenger.Domain.Aggregates.PrivateChat
 {
     public sealed class PrivateChat : AggregateRoot<PrivateChatId>
     {
-        private CreationDate _creationDate;
+        private PrivateChatCreationDate _creationDate;
 
         private PrivateChat()
             : base(new(Guid.NewGuid())) { }
 
         private PrivateChat(
             PrivateChatId privateChatId,
-            CreationDate creationDate) : base(privateChatId)
+            PrivateChatCreationDate creationDate) : base(privateChatId)
         {
             CreationDate = creationDate;
         }
 
-        public CreationDate CreationDate
+        public PrivateChatCreationDate CreationDate
         {
             get => _creationDate;
             private set
@@ -31,7 +31,7 @@ namespace Messenger.Domain.Aggregates.PrivateChat
 
         public static Result<PrivateChat> Create(
             PrivateChatId privateChatId,
-            CreationDate creationDate)
+            PrivateChatCreationDate creationDate)
         {
             return new PrivateChat(
                 privateChatId,
