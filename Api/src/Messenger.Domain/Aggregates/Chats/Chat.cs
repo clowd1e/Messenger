@@ -1,6 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
-using Messenger.Domain.Aggregates.Messages;
+using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
@@ -37,6 +37,7 @@ namespace Messenger.Domain.Aggregates.Chats
             }
         }
 
+        public IReadOnlyCollection<Message> Messages => _messages;
         public IReadOnlyCollection<Users.User> Users => _users;
 
         public Result AddMessage(Message message)
@@ -44,7 +45,7 @@ namespace Messenger.Domain.Aggregates.Chats
             _messages.Add(message);
 
             return Result.Success();
-        } 
+        }
 
         public static Result<Chat> Create(
             ChatId chatId,
@@ -63,7 +64,7 @@ namespace Messenger.Domain.Aggregates.Chats
                 users);
 
             users.ForEach(u => u.AddChat(chat));
-            
+
             return chat;
         }
     }

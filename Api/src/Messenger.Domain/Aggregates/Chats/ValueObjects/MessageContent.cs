@@ -2,7 +2,7 @@
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
-namespace Messenger.Domain.Aggregates.Messages.ValueObjects
+namespace Messenger.Domain.Aggregates.Chats.Messages.ValueObjects
 {
     public sealed class MessageContent : ValueObject
     {
