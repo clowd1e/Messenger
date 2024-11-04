@@ -1,27 +1,24 @@
-﻿using Messenger.Domain.Aggregates.Messages.ValueObjects;
+﻿using Messenger.Domain.Aggregates.Chats.Messages.ValueObjects;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
-namespace Messenger.Domain.Aggregates.Messages
+namespace Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects
 {
-    public sealed class Message : AggregateRoot<MessageId>
+    public sealed class Message : ValueObject
     {
-        private readonly Users.User _user;
+        private UserId _userId;
         private MessageTimestamp _timestamp;
         private MessageContent _content;
 
-        private Message()
-            : base(new(Guid.NewGuid())) { }
-
         private Message(
-            MessageId messageId,
             MessageTimestamp timestamp,
             MessageContent content,
-            Users.User user) : base(messageId)
+            UserId userId)
         {
             Timestamp = timestamp;
             Content = content;
-            User = user;
+            UserId = userId;
         }
 
         public MessageTimestamp Timestamp
@@ -46,23 +43,28 @@ namespace Messenger.Domain.Aggregates.Messages
             }
         }
 
-        public Users.User User
+        public UserId UserId
         {
-            get => _user;
-            init => _user = value;
+            get => _userId;
+            init => _userId = value;
         }
 
         public static Result<Message> Create(
-            MessageId messageId,
             MessageTimestamp timestamp,
             MessageContent content,
-            Users.User user)
+            UserId userId)
         {
             return new Message(
-                messageId,
                 timestamp,
                 content,
-                user);
+                userId);
+        }
+
+        protected override IEnumerable<object> GetAtomicValues()
+        {
+            yield return UserId;
+            yield return _timestamp;
+            yield return _content;
         }
     }
 }
