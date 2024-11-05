@@ -1,0 +1,31 @@
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 5px 5px 5px 30px;
+    margin: 10px 0;
+    background-color: transparent;
+    border-width: 0 0 1px 0;
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.input-wrapper input:focus {
+    border-color: #FFA07A;
+}
+
+.input-wrapper input::placeholder {
+    color: #8B8B8B;
+}
+
+.input-wrapper img {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+}
