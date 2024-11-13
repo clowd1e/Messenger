@@ -38,4 +38,3 @@
             GetAtomicValues().SequenceEqual(valueObject.GetAtomicValues());
     }
 }
-}
