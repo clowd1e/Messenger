@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  messenger.webapi:
+    image: ${DOCKER_REGISTRY-}messengerwebapi
+    container_name: messenger.webapi
+    build:
+      context: .
+      dockerfile: Messenger.WebAPI/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - messenger.database
+
+  messenger.database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: messenger.database
+    environment:
+    - ACCEPT_EULA=Y
+    - SA_PASSWORD=S0m3P@ssw0rd
+    ports:
+    - "1433:1433"
+    volumes:
+    - messenger_db_data:/var/opt/mssql
+
+volumes:
+  messenger_db_data:  
