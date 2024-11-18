@@ -1,0 +1,50 @@
+.chat-item-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    gap: 10px;
+    padding: 10px 15px;
+    cursor: pointer;
+
+    > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    > div.user-box {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+.chat-item-container.checked {
+    background-color: #F0F0F0;
+}
+
+.chat-item-container:hover {
+    background-color: #F7F7F7;
+}
+
+.user-box {
+    h3 {
+        font-size: 16px;
+    }
+
+    p {
+        font-size: 12px;
+        color: #A8A8A8;
+    }
+}
+
+.image-box {
+    img {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.time-box {
+    p {
+        font-size: 12px;
+    }
+}
