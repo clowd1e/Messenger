@@ -21,7 +21,8 @@ namespace Messenger.Application.Features.Users.Queries.GetById
         }
 
         public async Task<Result<UserResponse>> Handle(
-            GetUserByIdQuery request, CancellationToken cancellationToken)
+            GetUserByIdQuery request,
+            CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(
                 userId: new(request.UserId.Value), cancellationToken);
