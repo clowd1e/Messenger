@@ -1,6 +1,9 @@
 ﻿using Messenger.Application.Abstractions.Data;
+using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.Mappers;
 using Messenger.Application.Features.Users.DTO;
 using Messenger.Application.Features.Users.Mappers;
+using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Users;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,8 +16,14 @@ namespace Messenger.Application.Extensions.DI
             #region Users
             services.AddMapper<User, UserResponse, UserToUserResponseMapper>();
             #endregion
+
+            #region Chats
+            services.AddMapper<Chat, ChatResponse, ChatToChatResponseMapper>();
+            #endregion
+
             return services;
         }
+
         private static IServiceCollection AddMapper<TSource, TDestination, TMapper>(
             this IServiceCollection services)
             where TSource : class

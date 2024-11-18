@@ -4,7 +4,7 @@ using Messenger.Domain.Aggregates.Users;
 
 namespace Messenger.Application.Features.Users.Mappers
 {
-    public sealed class UserToUserResponseMapper
+    internal sealed class UserToUserResponseMapper
         : Mapper<User, UserResponse>
     {
         public override UserResponse Map(User source)
