@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.ConfigureSwaggerGen();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
@@ -15,6 +15,8 @@ builder.Services.AddInfrastructure();
 builder.Services.ConfigureAuthentication();
 
 var app = builder.Build();
+
+app.AddMiddleware();
 
 app.ApplyMigration();
 app.UseSwagger();

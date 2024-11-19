@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Messenger.Application.Extensions.Validation;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 
 namespace Messenger.Application.Features.Auth.Commands.Register
 {
@@ -14,7 +15,7 @@ namespace Messenger.Application.Features.Auth.Commands.Register
 
             RuleFor(x => x.Email)
                 .NotEmpty()
-                .MaximumLength(50)
+                .MaximumLength(Email.MaxLength)
                 .EmailAddress();
 
             RuleFor(x => x.Password)
