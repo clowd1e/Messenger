@@ -34,5 +34,10 @@ namespace Messenger.Domain.Aggregates.Users
         Task<bool> ExistsAsync(
             Email email,
             CancellationToken cancellationToken = default);
+
+        Task<bool> ExistsAsync(
+            Username username,
+            Email email,
+            CancellationToken cancellationToken = default);
     }
 }

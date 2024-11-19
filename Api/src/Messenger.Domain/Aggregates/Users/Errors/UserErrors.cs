@@ -9,6 +9,11 @@ namespace Messenger.Domain.Aggregates.User.Errors
                 code: "User.NotFound",
                 description: "User not found.");
 
+        public static readonly Error UserWithSameCredentialsAlreadyExists =
+            Error.Validation(
+                code: "User.UserWithSameCredentialsAlreadyExists",
+                description: "User with the same username or email already exists.");
+
         public static readonly Error UserAlreadyHasChat =
             Error.Validation(
                 code: "User.UserAlreadyHasChat",
