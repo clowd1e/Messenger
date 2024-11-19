@@ -1,6 +1,7 @@
 using Messenger.Infrastructure;
 using Messenger.Infrastructure.Extensions;
 using Messenger.Application;
+using Messenger.WebAPI.Extensions.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
+
+builder.Services.ConfigureAuthentication();
 
 var app = builder.Build();
 
@@ -24,6 +27,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
