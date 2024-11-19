@@ -8,11 +8,11 @@ namespace Messenger.Domain.Aggregates.Users
             UserId userId,
             CancellationToken cancellationToken = default);
 
-        Task<User?> GetByUsername(
+        Task<User?> GetByUsernameAsync(
             Username username,
             CancellationToken cancellationToken = default);
 
-        Task<User?> GetByEmail(
+        Task<User?> GetByEmailAsync(
             Email email,
             CancellationToken cancellationToken = default);
 

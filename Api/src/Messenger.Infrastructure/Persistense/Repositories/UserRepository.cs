@@ -54,7 +54,7 @@ namespace Messenger.Infrastructure.Persistense.Repositories
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User?> GetByEmail(
+        public async Task<User?> GetByEmailAsync(
             Email email,
             CancellationToken cancellationToken = default)
         {
@@ -70,7 +70,7 @@ namespace Messenger.Infrastructure.Persistense.Repositories
             return await _context.Users.FindAsync(userId, cancellationToken);
         }
 
-        public async Task<User?> GetByUsername(
+        public async Task<User?> GetByUsernameAsync(
             Username username,
             CancellationToken cancellationToken = default)
         {
