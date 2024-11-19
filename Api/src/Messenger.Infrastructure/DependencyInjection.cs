@@ -9,6 +9,8 @@ namespace Messenger.Infrastructure
         {
             services.AddAppOptions();
 
+            services.AddInfrastructureServices();
+
             services.AddPersistense();
 
             services.AddRepositories();

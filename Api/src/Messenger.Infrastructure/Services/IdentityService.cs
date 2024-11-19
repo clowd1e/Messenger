@@ -1,8 +1,6 @@
-﻿using BCrypt.Net;
-using Messenger.Application.Abstractions.Identity;
+﻿using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.User.Errors;
-using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Shared;
 using Messenger.Infrastructure.Authentication.Options;

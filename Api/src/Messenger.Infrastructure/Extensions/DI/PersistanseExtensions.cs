@@ -1,7 +1,9 @@
 ﻿using Messenger.Application.Abstractions.Data;
+using Messenger.Application.Identity;
 using Messenger.Infrastructure.Extensions.DI.Shared;
 using Messenger.Infrastructure.Persistense;
 using Messenger.Infrastructure.Persistense.Options;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +16,8 @@ namespace Messenger.Infrastructure.Extensions.DI
             services.AddMessengerDbContext();
 
             services.AddUnitOfWork();
+
+            services.AddAppIdentity();
 
             return services;
         }
@@ -41,6 +45,20 @@ namespace Messenger.Infrastructure.Extensions.DI
             this IServiceCollection services)
         {
             return services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+
+        private static IServiceCollection AddAppIdentity(
+            this IServiceCollection services)
+        {
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Tokens.AuthenticatorTokenProvider = "Default";
+            })
+            .AddRoleManager<RoleManager<IdentityRole>>()
+            .AddEntityFrameworkStores<MessengerDbContext>()
+            .AddDefaultTokenProviders();
+
+            return services;
         }
     }
 }

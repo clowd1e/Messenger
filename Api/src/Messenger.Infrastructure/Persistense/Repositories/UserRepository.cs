@@ -38,6 +38,16 @@ namespace Messenger.Infrastructure.Persistense.Repositories
                 cancellationToken);
         }
 
+        public Task<bool> ExistsAsync(
+            Username username,
+            Email email,
+            CancellationToken cancellationToken = default)
+        {
+            return _context.Users.AnyAsync(
+                x => x.Username == username || x.Email == email,
+                cancellationToken);
+        }
+
         public async Task<IEnumerable<User>> GetAllAsync(
             CancellationToken cancellationToken = default)
         {
