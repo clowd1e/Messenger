@@ -61,7 +61,7 @@ namespace Messenger.Application.Features.Auth.Commands.Login
                 throw new DataInconsistencyException();
             }
 
-            var refreshToken = _tokenService.GenerateAccessToken(user);
+            var refreshToken = _tokenService.GenerateRefreshToken();
 
             await _identityService.PopulateRefreshTokenAsync(identityUser, refreshToken);
 
