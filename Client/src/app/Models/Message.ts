@@ -1,5 +1,5 @@
 export type Message = {
-    useId: string;
-    messageTimeStamp: Date;
+    senderId: string;
+    messageTimestamp: Date;
     messageContent: string;
 }
