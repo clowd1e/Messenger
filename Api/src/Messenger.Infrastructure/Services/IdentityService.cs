@@ -66,8 +66,10 @@ namespace Messenger.Infrastructure.Services
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(refreshToken);
 
-            var identityUser = await _userManager.Users
-                .FirstOrDefaultAsync(u => _tokenHashService.Verify(refreshToken, u.RefreshTokenHash));
+            var users = await _userManager.Users.ToListAsync();
+
+            var identityUser = users.FirstOrDefault(
+                u => _tokenHashService.Verify(refreshToken, u.RefreshTokenHash));
 
             if (identityUser is null)
             {
