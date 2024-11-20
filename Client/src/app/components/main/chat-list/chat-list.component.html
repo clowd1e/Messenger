@@ -1,0 +1,5 @@
+<div>
+    @for (chatItem of chatList; track chatItem.chatId) {
+        <app-chat-item [chatItem]="chatItem"></app-chat-item>
+    }
+</div>

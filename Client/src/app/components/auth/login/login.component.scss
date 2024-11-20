@@ -1,19 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
 
-.container {
+@mixin flex-center {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.container {
+    @include flex-center;
     height: 100%;
     background-color: #EBEBEB;
-    font-family: 'Karla', sans-serif;
 }
 
 .login-form {
-    display: flex;
+    @include flex-center;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     width: 80vw;
     height: 80vh;
     background-color: #F7F7F7;
