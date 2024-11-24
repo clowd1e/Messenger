@@ -5,7 +5,7 @@ namespace Messenger.Domain.Aggregates.User.Errors
     public static class UserErrors
     {
         public static readonly Error NotFound =
-            Error.Validation(
+            Error.NotFound(
                 code: "User.NotFound",
                 description: "User not found.");
 
