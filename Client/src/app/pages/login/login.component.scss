@@ -29,12 +29,26 @@
     font-size: 50px;
 }
 
-.login-form form {
+.login-form div {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 20px 0;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    white-space: pre;
+}
+
+.login-form div p.error-message {
+    align-self: start;
+}
+
+.login-form > p {
+    margin: -10px 0 10px;
 }
 
 @media (max-width: 768px) {

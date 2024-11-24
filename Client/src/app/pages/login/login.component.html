@@ -1,0 +1,27 @@
+<div class="container">
+    <form class="login-form">
+        <h2>Messenger</h2>
+        
+        <div>
+            <app-input
+                [inputType]="'email'" 
+                [imageSource]="'/images/envelope.svg'" 
+                [inputPlaceholder]="'Type your email'"
+                [(ngModel)]="loginRequest.email"
+                [name]="'email'"></app-input>
+            <p class="error-message" *ngIf="emailErrorMessage">{{ emailErrorMessage }}</p>
+            <app-input
+                [inputType]="'password'"
+                [imageSource]="'/images/password.svg'"
+                [inputPlaceholder]="'Type your password'"
+                [(ngModel)]="loginRequest.password"
+                [name]="'password'"></app-input>
+            <p class="error-message" *ngIf="passwordErrorMessage">{{ passwordErrorMessage }}</p>
+        </div>
+        <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+        <app-button 
+            [buttonText]="'Sign in'"
+            (click)="onSubmit()"></app-button>
+    </form>
+</div>
