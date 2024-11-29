@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.Infrastructure.Persistense.Repositories
@@ -24,7 +25,7 @@ namespace Messenger.Infrastructure.Persistense.Repositories
         public async Task<IEnumerable<Chat>> GetAllAsync(
             CancellationToken cancellationToken = default)
         {
-            return await _context.Chats.ToListAsync();
+            return await _context.Chats.ToListAsync(cancellationToken);
         }
 
         public async Task<Chat?> GetByIdAsync(
@@ -32,6 +33,16 @@ namespace Messenger.Infrastructure.Persistense.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _context.Chats.FindAsync(chatId, cancellationToken);
+        }
+
+        public async Task<IEnumerable<Chat>> GetUserChats(
+            UserId userId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Chats
+                .Where(chat => chat.Users.Any(user => user.Id == userId))
+                .Include(chat => chat.Users)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task InsertAsync(

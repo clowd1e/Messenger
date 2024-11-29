@@ -1,6 +1,8 @@
 ﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Users.DTO;
 using Messenger.Domain.Aggregates.Chats;
+using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
 
 namespace Messenger.Application.Features.Chats.Mappers
@@ -12,10 +14,13 @@ namespace Messenger.Application.Features.Chats.Mappers
         {
             var messages = MapMessages(source.Messages);
 
+            var users = MapUsers(source.Users);
+
             return new(
                 Id: source.Id.Value,
                 CreationDate: source.CreationDate.Value,
-                Messages: messages);
+                Messages: messages,
+                Users: users);
         }
 
         private List<MessageResponse> MapMessages(
@@ -31,6 +36,24 @@ namespace Messenger.Application.Features.Chats.Mappers
                     Content: message.Content.Value);
 
                 result.Add(messageResponse);
+            }
+
+            return result;
+        }
+
+        private List<UserResponse> MapUsers(
+            IReadOnlyCollection<User> users)
+        {
+            List<UserResponse> result = new();
+
+            foreach (var user in users)
+            {
+                var userResponse = new UserResponse(
+                    Id: user.Id.Value,
+                    Username: user.Username.Value,
+                    Email: user.Email.Value);
+
+                result.Add(userResponse);
             }
 
             return result;
