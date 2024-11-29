@@ -6,8 +6,6 @@ namespace Messenger.Domain.Aggregates.Chats.Messages.ValueObjects
 {
     public sealed class MessageTimestamp : ValueObject
     {
-        public const DateTimeKind Kind = DateTimeKind.Utc;
-
         private MessageTimestamp(DateTime value)
         {
             Value = value;
@@ -21,12 +19,6 @@ namespace Messenger.Domain.Aggregates.Chats.Messages.ValueObjects
             {
                 return Result.Failure<MessageTimestamp>(
                     MessageTimestampErrors.Empty);
-            }
-
-            if (timestamp.Kind != Kind)
-            {
-                return Result.Failure<MessageTimestamp>(
-                    MessageTimestampErrors.InvalidKind(Kind));
             }
 
             if (timestamp > DateTime.UtcNow)
