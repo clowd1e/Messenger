@@ -43,6 +43,8 @@ export class LoginComponent {
       error: (httpError: HttpErrorResponse) => {
         this.resetErrorMessage();
 
+        console.log(httpError);
+
         if (this.isHttpValidationError(httpError.error)) {
           let error: HttpValidationError = httpError.error;
           
