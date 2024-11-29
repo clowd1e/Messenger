@@ -17,6 +17,8 @@ builder.Services.AddInfrastructure();
 
 builder.Services.ConfigureAuthentication();
 
+builder.Services.ConfigureSignalR();
+
 var app = builder.Build();
 
 app.AddMiddleware();
@@ -36,6 +38,8 @@ app.UseAppCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapSignalRHubs();
 
 app.MapControllers();
 

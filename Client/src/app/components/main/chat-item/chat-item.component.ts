@@ -11,19 +11,28 @@ import { ChatItem } from '../../../Models/ChatItem';
 export class ChatItemComponent {
   chatItem = input.required<ChatItem>();
 
-  chatName = () => this.chatItem().users.map(user => user.userName).join(', ');
+  currentUserId = input.required<string>();
+
+  chatName = () => this.chatItem().users.find(user => user.id !== this.currentUserId())?.username || 'Unknown';
   
-  chatLastMessageContent = () => this.truncateMessageContent(this.chatLastMessage().messageContent);
+  chatLastMessageContent = () => this.truncateMessageContent(this.chatLastMessage().content);
 
   chatLastMessageTimeFormated() {
-    let messageTime : Date = this.chatLastMessage().messageTimestamp;
-    let result: string = `${messageTime.getHours()}:${messageTime.getMinutes()}`;
+    let messageTime: Date = new Date(this.chatLastMessage().timestamp);
+    let result: string = this.messageTimeToString(messageTime);
     return result;
   }
 
   private chatLastMessage = () => this.chatItem().messages[this.chatItem().messages.length - 1];
 
-  private truncateMessageContent(message: string) { 
+  private messageTimeToString(messageTime: Date) {
+    let hours = messageTime.getHours().toString().length == 1 ? `0${messageTime.getHours()}` : messageTime.getHours();
+    let minutes = messageTime.getMinutes().toString().length == 1 ? `0${messageTime.getMinutes()}` : messageTime.getMinutes();
+
+    return `${hours}:${minutes}`;
+  }
+
+  private truncateMessageContent(message: string) {
     const maxLength = 30;
     return message.length > maxLength ? message.substring(0, maxLength - 3) + '...' : message;
   }

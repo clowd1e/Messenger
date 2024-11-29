@@ -1,4 +1,5 @@
 ﻿using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 
 namespace Messenger.Domain.Aggregates.Chats
 {
@@ -9,6 +10,10 @@ namespace Messenger.Domain.Aggregates.Chats
             CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Chat>> GetAllAsync(
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Chat>> GetUserChats(
+            UserId userId,
             CancellationToken cancellationToken = default);
 
         Task<bool> ExistsAsync(

@@ -6,8 +6,6 @@ namespace Messenger.Domain.Aggregates.Chats.ValueObjects
 {
     public sealed class ChatCreationDate : ValueObject
     {
-        public const DateTimeKind Kind = DateTimeKind.Utc;
-
         private ChatCreationDate(DateTime value)
         {
             Value = value;
@@ -21,12 +19,6 @@ namespace Messenger.Domain.Aggregates.Chats.ValueObjects
             {
                 return Result.Failure<ChatCreationDate>(
                     ChatCreationDateErrors.Empty);
-            }
-
-            if (creationDate.Kind != Kind)
-            {
-                return Result.Failure<ChatCreationDate>(
-                    ChatCreationDateErrors.InvalidKind(Kind));
             }
 
             if (creationDate > DateTime.UtcNow)
