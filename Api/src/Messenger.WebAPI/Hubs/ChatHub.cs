@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Users.Queries.GetCurrentUserChats;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace Messenger.WebAPI.Hubs
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public sealed class ChatHub : Hub
+    public sealed class ChatHub : Hub<IChatHub>
     {
         private readonly ISender _sender;
 
@@ -22,13 +23,28 @@ namespace Messenger.WebAPI.Hubs
 
             if (queryResult.IsFailure)
             {
-                await Clients.Caller.SendAsync("ReceiveError", queryResult.Error);
+                await Clients.Caller.ReceiveError(queryResult.Error);
                 return;
             }
 
             var chats = queryResult.Value;
 
-            await Clients.Caller.SendAsync("ReceiveUserChats", chats);
+            await Clients.Caller.ReceiveUserChats(chats);
+        }
+
+        public async Task SendUserMessage(SendMessageCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            if (commandResult.IsFailure)
+            {
+                await Clients.Caller.ReceiveError(commandResult.Error);
+                return;
+            }
+
+            var response = commandResult.Value;
+
+            await Clients.Group(command.ChatId.ToString()).ReceiveUserMessage(response);
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
