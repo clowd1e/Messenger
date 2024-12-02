@@ -42,6 +42,11 @@ namespace Messenger.Domain.Aggregates.Chats
 
         public Result AddMessage(Message message)
         {
+            if (!Users.Select(u => u.Id).Contains(message.UserId))
+            {
+                return ChatErrors.UserNotInChat;
+            }
+
             _messages.Add(message);
 
             return Result.Success();

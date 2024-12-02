@@ -30,6 +30,11 @@ namespace Messenger.Domain.Aggregates.Chats.Messages.ValueObjects
             return new MessageTimestamp(timestamp);
         }
 
+        public static Result<MessageTimestamp> UtcNow()
+        {
+            return new MessageTimestamp(DateTime.UtcNow);
+        }
+
         protected override IEnumerable<object> GetAtomicValues()
         {
             yield return Value;

@@ -5,6 +5,7 @@ using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Application.Abstractions.Data;
 using Messenger.Domain.Aggregates.Users;
+using Messenger.Application.Exceptions;
 
 namespace Messenger.Application.Features.Users.Queries.GetCurrentUserChats
 {
@@ -38,7 +39,7 @@ namespace Messenger.Application.Features.Users.Queries.GetCurrentUserChats
 
             if (!userExists)
             {
-                throw new InvalidOperationException("Authenticated user is not found.");
+                throw new AuthenticatedUserNotFoundException();
             }
 
             var chats = await _chatRepository.GetUserChats(userId, cancellationToken);
