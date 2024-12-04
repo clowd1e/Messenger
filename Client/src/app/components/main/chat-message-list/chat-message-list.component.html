@@ -1,0 +1,5 @@
+<div class="message-list-container" #messageListContainer>
+    @for (messageDto of messageDtos(); track messageDto.uniqueId) {
+        <app-chat-message [messageDto]="messageDto" [currentUserId]="currentUserId"></app-chat-message>
+    }
+</div>
