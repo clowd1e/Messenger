@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.WebAPI.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,15 @@ namespace Messenger.WebAPI.Controllers
             var queryResult = await _sender.Send(new GetChatByIdQuery(chatId));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpPost("send-message")]
+        public async Task<IActionResult> SendMessage(
+            [FromBody] SendMessageCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            return commandResult.IsSuccess ? Ok() : commandResult.ToProblemDetails();
         }
     }
 }

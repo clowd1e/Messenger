@@ -1,4 +1,4 @@
-<div class="chat-item-container">
+<a class="chat-item-container" [routerLink]="['/chats/', chatItem().id]">
     <div class="image-box">
         <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="UserImage">
     </div>
@@ -9,4 +9,4 @@
     <div class="time-box">
         <p>{{ chatLastMessageTimeFormated() }}</p>
     </div>
-</div>
+</a>

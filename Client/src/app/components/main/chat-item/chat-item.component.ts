@@ -1,10 +1,11 @@
 import { Component, input } from '@angular/core';
 import { ChatItem } from '../../../Models/ChatItem';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-chat-item',
   standalone: true,
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './chat-item.component.html',
   styleUrl: './chat-item.component.scss'
 })

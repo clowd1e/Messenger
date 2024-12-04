@@ -1,0 +1,9 @@
+<div class="message-container" [class.current-user-reverse]="isCurrentUser()">
+    <div class="image-box">
+        <img [class.none]="!userIconVisible()" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="UserImage" />
+    </div>
+    <div class="message-box">
+        <p>{{ messageContent() }}</p>
+        <p class="timestamp">{{ messageTime() }}</p>
+    </div>
+</div>

@@ -3,7 +3,7 @@ import { User } from "./User";
 
 export type ChatItem = {
     id: string;
-    creationDate: Date;
+    creationDate: string;
     users: Array<User>;
     messages: Array<Message>;
 }

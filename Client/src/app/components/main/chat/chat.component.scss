@@ -1,0 +1,21 @@
+.chat-container {
+    display: flex;
+    position: relative;
+    height: 100%;
+    min-width: 700px;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    .chat-message-list {
+        position: inherit;
+        height: 500px;
+    }
+
+    .chat-input {
+        position: fixed;
+        width: inherit;
+        max-width: inherit;
+        min-width: inherit;
+        bottom: 10%;
+    }
+}

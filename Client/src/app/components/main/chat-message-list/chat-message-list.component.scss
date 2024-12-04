@@ -1,0 +1,14 @@
+.message-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5px;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    height: inherit;
+    padding: 0px 80px 50px 0px;
+}
+
+.message-list-container::-webkit-scrollbar {
+    display: none;
+}

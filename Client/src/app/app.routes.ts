@@ -20,6 +20,10 @@ export const routes: Routes = [
         children: [
             {
                 path: 'chats',
+                redirectTo: 'chats/#'
+            },
+            {
+                path: 'chats/:chatId',
                 component: ChatsPageComponent
             }
         ]
