@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalrService {
+  private readonly hubUrl = environment.hubBaseUrl;
   private readonly hubConnection: HubConnection;
 
   constructor() {
     const accessToken = localStorage.getItem('accessToken') || '';
 
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl('http://localhost:5000/hubs/chat', {
+      .withUrl(`${this.hubUrl}/chat`, {
         skipNegotiation: true,
         transport: HttpTransportType.WebSockets,
         accessTokenFactory: () => `${accessToken}` })
