@@ -2,5 +2,7 @@
     <div class="chat-list-box">
         <app-chat-list [chatList]="userChats"></app-chat-list>
     </div>
-    <app-chat></app-chat>
+    <div class="chat-box">
+        <app-chat [chat]="selectedChat"></app-chat>
+    </div>
 </div>

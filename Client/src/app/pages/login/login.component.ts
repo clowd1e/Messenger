@@ -20,8 +20,8 @@ import { HttpValidationError } from '../../Models/error/HttpValidationError';
 })
 export class LoginComponent {
   loginRequest: LoginRequest = {
-    email: '',
-    password: ''
+    email: 'Abanent@gmail.com',
+    password: 'Abanent123!.'
   };
 
   errorMessage: string = '';
@@ -38,7 +38,7 @@ export class LoginComponent {
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
         
-        this.router.navigateByUrl('chats');
+        this.router.navigateByUrl('chats/#');
       },
       error: (httpError: HttpErrorResponse) => {
         this.resetErrorMessage();
