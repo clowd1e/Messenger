@@ -32,7 +32,9 @@ namespace Messenger.Infrastructure.Persistense.Repositories
             ChatId chatId,
             CancellationToken cancellationToken = default)
         {
-            return await _context.Chats.FindAsync(chatId, cancellationToken);
+            return await _context.Chats
+                .Include(chat => chat.Users)
+                .FirstOrDefaultAsync(chat => chat.Id == chatId, cancellationToken);
         }
 
         public async Task<IEnumerable<Chat>> GetUserChats(
