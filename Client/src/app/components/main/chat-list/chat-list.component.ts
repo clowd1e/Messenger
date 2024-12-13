@@ -11,9 +11,6 @@ import { UserContextService } from '../../../services/auth/user-context.service'
   styleUrl: './chat-list.component.scss'
 })
 export class ChatListComponent {
-  userContextService = inject(UserContextService);
-
-  currentUserId = this.userContextService.getCurrentUserId();
-
+  currentUserId = input.required<string>();
   chatList = input<ChatItem[]>();
 }

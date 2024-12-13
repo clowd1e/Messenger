@@ -1,5 +1,5 @@
 <div>
     @for (chatItem of chatList(); track chatItem.id) {
-        <app-chat-item [chatItem]="chatItem" [currentUserId]="currentUserId"></app-chat-item>
+        <app-chat-item [chatItem]="chatItem" [currentUserId]="currentUserId()"></app-chat-item>
     }
 </div>

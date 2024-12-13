@@ -32,7 +32,7 @@ namespace Messenger.WebAPI.Hubs
             await Clients.Caller.ReceiveUserChats(chats);
         }
 
-        public async Task SendUserMessage(SendMessageCommand command)
+        public async Task SendMessage(SendMessageCommand command)
         {
             var commandResult = await _sender.Send(command);
 
@@ -45,6 +45,11 @@ namespace Messenger.WebAPI.Hubs
             var response = commandResult.Value;
 
             await Clients.Group(command.ChatId.ToString()).ReceiveUserMessage(response);
+        }
+
+        public async Task JoinChat(Guid chatId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, chatId.ToString());
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
