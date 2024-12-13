@@ -1,6 +1,10 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
+import { SendMessageCommand } from '../../Models/DTO/SendMessageCommand';
+import { MessageResponse } from '../../Models/DTO/MessageResponse';
+import { Error } from '../../Models/error/Error';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +13,10 @@ export class SignalrService {
   private readonly hubUrl = environment.hubBaseUrl;
   private readonly hubConnection: HubConnection;
 
+  storageService = inject(StorageService);
+
   constructor() {
-    const accessToken = localStorage.getItem('accessToken') || '';
+    const accessToken = this.storageService.getAccessTokenFromSessionStorage();
 
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(`${this.hubUrl}/chat`, {
@@ -32,5 +38,25 @@ export class SignalrService {
     } catch (err) {
       console.error('Error while establishing connection.', err);
     }
+  }
+
+  async sendMessage(command: SendMessageCommand): Promise<void> {
+    return this.hubConnection.invoke('SendMessage', command)
+      .then(() => console.log('Message sent successfully'))
+      .catch(err => console.error('Error sending message:', err));
+  }
+
+  async joinChat(chatId: string): Promise<void> {
+    return this.hubConnection.invoke('JoinChat', chatId)
+      .then(() => console.log('Joined chat successfully'))
+      .catch(err => console.error('Error joining chat:', err));
+  }
+  
+  listenForMessages(onMessageReceived: (message: MessageResponse) => void): void {
+    this.hubConnection.on('ReceiveUserMessage', onMessageReceived);
+  }
+  
+  listenForErrors(onErrorReceived: (error: Error) => void): void {
+    this.hubConnection.on('ReceiveError', onErrorReceived);
   }
 }

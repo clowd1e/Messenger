@@ -1,4 +1,4 @@
 <div class="chat-container" *ngIf="getMessages().length > 0">
     <app-chat-message-list class="chat-message-list" [messages]="getMessages()"></app-chat-message-list>
-    <app-chat-input class="chat-input"></app-chat-input>
+    <app-chat-input (messageSubmitted)="onMessageSubmit($event)" class="chat-input"></app-chat-input>
 </div>

@@ -1,8 +1,8 @@
 <div class="container">
     <div class="chat-list-box">
-        <app-chat-list [chatList]="userChats"></app-chat-list>
+        <app-chat-list [currentUserId]="currentUserId" [chatList]="userChats"></app-chat-list>
     </div>
     <div class="chat-box">
-        <app-chat [chat]="selectedChat"></app-chat>
+        <app-chat (messageSubmitted)="sendMessageToChat($event)" [chat]="selectedChat()"></app-chat>
     </div>
 </div>

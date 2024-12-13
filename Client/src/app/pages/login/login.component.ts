@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../services/api/api.service';
 import { HttpError } from '../../Models/error/HttpError';
 import { HttpValidationError } from '../../Models/error/HttpValidationError';
+import { StorageService } from '../../services/storage/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -30,13 +31,14 @@ export class LoginComponent {
 
   httpClient = inject(HttpClient);
   apiService = inject(ApiService);
+  storageService = inject(StorageService);
   router = inject(Router);
 
   onSubmit() {
     this.apiService.login(this.loginRequest).subscribe({
       next: (response: LoginResponse) => {
-        localStorage.setItem('accessToken', response.accessToken);
-        localStorage.setItem('refreshToken', response.refreshToken);
+        this.storageService.setAccessTokenToSessionStorage(response.accessToken);
+        this.storageService.setRefreshTokenToLocalStorage(response.refreshToken);
         
         this.router.navigateByUrl('chats/#');
       },

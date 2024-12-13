@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, input, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, inject, Input, input, OnChanges, Renderer2, ViewChild } from '@angular/core';
 import { Message } from '../../../Models/Message';
 import { ChatMessageComponent } from "../chat-message/chat-message.component";
 import { UserContextService } from '../../../services/auth/user-context.service';
@@ -23,35 +23,21 @@ export class ChatMessageListComponent implements AfterViewInit {
   currentUserId = this.userContextService.getCurrentUserId();
 
   messageDtos(): MessageDto[] {
-    if (this.messages() === undefined || this.messages() === null) {
-      return [];
-    }
-
-    let messageDtos: MessageDto[] = [];
-
-    for (let i = 0; i < this.messages()!.length; i++) {
-      let userIconVisible: boolean = false;
-      let message = this.messages()![i];
-
-      if (i != this.messages()!.length - 1) {
-        userIconVisible = !(message.userId == this.messages()![i + 1].userId);
-      } else {
-        userIconVisible = true;
-      }
-
-      let messageDto: MessageDto = {
-        message: message,
-        userIconVisible: userIconVisible,
-        uniqueId: i
-      };
-
-      messageDtos.push(messageDto);
-    }
-
-    return messageDtos;
+    const msgs = this.messages();
+    if (!msgs) return [];
+    
+    return msgs.map((message, i) => ({
+      message,
+      userIconVisible: i === msgs.length - 1 || msgs[i + 1]?.userId !== message.userId,
+      uniqueId: i,
+    }));
   }
 
   ngAfterViewInit() {
+    effect(() => {
+      console.log(this.messages())
+    })
+
     this.scrollToBottom();
   }
 
