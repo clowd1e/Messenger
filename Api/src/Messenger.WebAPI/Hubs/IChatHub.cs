@@ -10,5 +10,7 @@ namespace Messenger.WebAPI.Hubs
         Task ReceiveUserChats(IEnumerable<ChatResponse> chats);
 
         Task ReceiveUserMessage(MessageResponse message);
+
+        Task ReceiveChat(ChatResponse chat);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Messenger.Application.Features.Chats.Commands.Create;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.WebAPI.Extensions;
@@ -33,6 +34,23 @@ namespace Messenger.WebAPI.Controllers
             var commandResult = await _sender.Send(command);
 
             return commandResult.IsSuccess ? Ok() : commandResult.ToProblemDetails();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateChat(
+            [FromBody] CreateChatCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            if (commandResult.IsSuccess)
+            {
+                return CreatedAtAction(
+                    actionName: nameof(GetChatById),
+                    routeValues: new { chatId = commandResult.Value },
+                    value: commandResult.Value);
+            }
+
+            return commandResult.ToProblemDetails();
         }
     }
 }
