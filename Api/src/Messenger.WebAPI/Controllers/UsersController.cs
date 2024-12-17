@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Messenger.Application.Features.Users.Queries.GetAll;
 using Messenger.Application.Features.Users.Queries.GetById;
 using Messenger.WebAPI.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,14 @@ namespace Messenger.WebAPI.Controllers
             [FromRoute] Guid userId)
         {
             var queryResult = await _sender.Send(new GetUserByIdQuery(userId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var queryResult = await _sender.Send(new GetAllUsersQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
