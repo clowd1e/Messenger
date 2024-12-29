@@ -7,7 +7,11 @@ export const httpAccessTokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   const accessToken = storageService.getAccessTokenFromSessionStorage();
   if (accessToken) {
-    req.headers.set('Authorization', `Bearer ${accessToken}`);
+    req = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
   }
 
   return next(req);

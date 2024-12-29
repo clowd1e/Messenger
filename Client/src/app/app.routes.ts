@@ -25,6 +25,14 @@ export const routes: Routes = [
             {
                 path: 'chats/:chatId',
                 component: ChatsPageComponent
+            },
+            {
+                path: 'chats/add',
+                component: ChatsPageComponent
+            },
+            {
+                path: 'chats/add/:userId',
+                component: ChatsPageComponent
             }
         ]
     }

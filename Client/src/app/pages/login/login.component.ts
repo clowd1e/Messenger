@@ -2,14 +2,14 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from "../../components/auth/input/input.component";
 import { ButtonComponent } from "../../components/auth/button/button.component";
-import { LoginRequest } from '../../Models/auth/LoginRequest';
+import { LoginRequest } from '../../models/auth/LoginRequest';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { LoginResponse } from '../../Models/auth/LoginResponse';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { LoginResponse } from '../../models/auth/LoginResponse';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api/api.service';
-import { HttpError } from '../../Models/error/HttpError';
-import { HttpValidationError } from '../../Models/error/HttpValidationError';
+import { HttpError } from '../../models/error/HttpError';
+import { HttpValidationError } from '../../models/error/HttpValidationError';
 import { StorageService } from '../../services/storage/storage.service';
 
 @Component({

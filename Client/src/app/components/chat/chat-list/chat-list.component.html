@@ -1,0 +1,11 @@
+@if (chatListLoading()) {
+    <p class="chats-loading">Loading...</p>
+} @else {
+    <div>
+        @for (chatItem of chatList(); track chatItem.id) {
+            <app-chat-item [chatItem]="chatItem" [currentUserId]="currentUserId()"></app-chat-item>
+        } @empty {
+            <p class="chats-not-found">No chats found</p>
+        }
+    </div>
+}

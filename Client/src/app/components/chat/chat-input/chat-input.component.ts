@@ -1,10 +1,11 @@
-import { Component, EventEmitter, model, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DefaultInputComponent } from "../../inputs/default-input/default-input.component";
 
 @Component({
   selector: 'app-chat-input',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, DefaultInputComponent],
   templateUrl: './chat-input.component.html',
   styleUrl: './chat-input.component.scss'
 })

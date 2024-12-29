@@ -1,6 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Message } from '../../../Models/Message';
-import { MessageDto } from '../../../Models/DTO/MessageDto';
+import { MessageDto } from '../../../models/DTO/MessageDto';
 
 @Component({
   selector: 'app-chat-message',
