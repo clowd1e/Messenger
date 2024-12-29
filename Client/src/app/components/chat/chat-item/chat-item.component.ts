@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { ChatItem } from '../../../Models/ChatItem';
+import { ChatItem } from '../../../models/ChatItem';
 import { RouterModule } from '@angular/router';
 
 @Component({

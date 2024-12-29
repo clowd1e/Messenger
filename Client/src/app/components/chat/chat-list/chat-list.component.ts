@@ -1,7 +1,6 @@
 import { Component, inject, input } from '@angular/core';
 import { ChatItemComponent } from "../chat-item/chat-item.component";
-import { ChatItem } from '../../../Models/ChatItem';
-import { UserContextService } from '../../../services/auth/user-context.service';
+import { ChatItem } from '../../../models/ChatItem';
 
 @Component({
   selector: 'app-chat-list',
@@ -13,4 +12,5 @@ import { UserContextService } from '../../../services/auth/user-context.service'
 export class ChatListComponent {
   currentUserId = input.required<string>();
   chatList = input<ChatItem[]>();
+  chatListLoading = input<boolean>();
 }

@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
-import { SendMessageCommand } from '../../Models/DTO/SendMessageCommand';
-import { MessageResponse } from '../../Models/DTO/MessageResponse';
-import { Error } from '../../Models/error/Error';
+import { SendMessageCommand } from '../../models/DTO/SendMessageCommand';
+import { MessageResponse } from '../../models/DTO/MessageResponse';
+import { Error } from '../../models/error/Error';
 import { StorageService } from '../storage/storage.service';
 
 @Injectable({

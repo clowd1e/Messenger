@@ -5,18 +5,8 @@
     justify-content: space-between;
     gap: 30px;
 
-    input {
-        width: 89%;
-        outline: none;
-        border: none;
-        border: 0.5px solid #000000;
-        border-radius: 20px;
-        padding: 15px 10px 15px 18px;
-        font-size: 16px;
-    }
-
-    input::placeholder {
-        color: $default-message-input-placeholder-color;
+    app-default-input {
+        width: 90%;
     }
 
     button {

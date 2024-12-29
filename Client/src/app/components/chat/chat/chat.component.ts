@@ -2,7 +2,7 @@ import { Component, computed, EventEmitter, input, Output } from '@angular/core'
 import { ChatInputComponent } from "../chat-input/chat-input.component";
 import { ChatMessageListComponent } from "../chat-message-list/chat-message-list.component";
 import { CommonModule } from '@angular/common';
-import { ChatItem } from '../../../Models/ChatItem';
+import { ChatItem } from '../../../models/ChatItem';
 
 @Component({
   selector: 'app-chat',
