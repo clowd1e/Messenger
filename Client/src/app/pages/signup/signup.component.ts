@@ -1,57 +1,60 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { InputComponent } from "../../components/auth/input/input.component";
+import { RegisterRequest } from '../../models/auth/RegisterRequest';
 import { ButtonComponent } from "../../components/auth/button/button.component";
-import { LoginRequest } from '../../models/auth/LoginRequest';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { LoginResponse } from '../../models/auth/LoginResponse';
-import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api/api.service';
-import { HttpError } from '../../models/error/HttpError';
+import { Router } from '@angular/router';
 import { HttpValidationError } from '../../models/error/HttpValidationError';
-import { StorageService } from '../../services/storage/storage.service';
+import { HttpError } from '../../models/error/HttpError';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-signup',
   standalone: true,
-  imports: [InputComponent, RouterLink, ButtonComponent, FormsModule, CommonModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  imports: [InputComponent, ButtonComponent, FormsModule, CommonModule],
+  templateUrl: './signup.component.html',
+  styleUrl: './signup.component.scss'
 })
-export class LoginComponent {
-  loginRequest: LoginRequest = {
-    email: 'Abanent@gmail.com',
-    password: 'Abanent123!.'
+export class SignupComponent {
+  signupRequest: RegisterRequest = {
+    username: '',
+    email: '',
+    password: '',
   };
+  repeatPassword: string = '';
 
   errorMessage: string = '';
+  usernameErrorMessage: string = '';
   emailErrorMessage: string = '';
   passwordErrorMessage: string = '';
+  repeatPasswordErrorMessage: string = '';
 
-  httpClient = inject(HttpClient);
-  apiService = inject(ApiService);
-  storageService = inject(StorageService);
   router = inject(Router);
+  apiService = inject(ApiService);
 
   onSubmit() {
-    this.apiService.login(this.loginRequest).subscribe({
-      next: (response: LoginResponse) => {
-        this.storageService.setAccessTokenToSessionStorage(response.accessToken);
-        this.storageService.setRefreshTokenToLocalStorage(response.refreshToken);
-        
-        this.router.navigateByUrl('chats/#');
+    this.resetErrorMessages();
+    
+    if (this.repeatPassword !== this.signupRequest.password) {
+      this.repeatPasswordErrorMessage = 'Passwords do not match';
+      return;
+    }
+
+    this.apiService.register(this.signupRequest).subscribe({
+      next: () => {
+        this.router.navigateByUrl('login');
       },
       error: (httpError: HttpErrorResponse) => {
-        this.resetErrorMessages();
-
-        console.log(httpError);
-
         if (this.isHttpValidationError(httpError.error)) {
           let error: HttpValidationError = httpError.error;
           
           error.errors.forEach(error => {
             switch (error.code.toLowerCase()) {
+              case 'username':
+                this.usernameErrorMessage = 'Invalid username';
+                break;
               case 'email':
                 this.emailErrorMessage = 'Invalid email';
                 break;
@@ -79,7 +82,9 @@ export class LoginComponent {
 
   private resetErrorMessages() {
     this.errorMessage = '';
+    this.usernameErrorMessage = '';
     this.emailErrorMessage = '';
     this.passwordErrorMessage = '';
+    this.repeatPasswordErrorMessage = '';
   }
 }
