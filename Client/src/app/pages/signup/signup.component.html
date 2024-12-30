@@ -1,31 +1,43 @@
 <div class="container">
     <div class="form-background">
-        <form class="login-form">
+        <form class="signup-form">
             <h2>Messenger</h2>
             
             <div>
                 <app-input
+                    [inputType]="'text'" 
+                    [imageSource]="'/images/user.svg'" 
+                    [inputPlaceholder]="'Type your username'"
+                    [(ngModel)]="signupRequest.username"
+                    [name]="'username'"></app-input>
+                <p class="error-message" *ngIf="usernameErrorMessage">{{ usernameErrorMessage }}</p>
+                <app-input
                     [inputType]="'email'" 
                     [imageSource]="'/images/envelope.svg'" 
                     [inputPlaceholder]="'Type your email'"
-                    [(ngModel)]="loginRequest.email"
+                    [(ngModel)]="signupRequest.email"
                     [name]="'email'"></app-input>
                 <p class="error-message" *ngIf="emailErrorMessage">{{ emailErrorMessage }}</p>
                 <app-input
                     [inputType]="'password'"
                     [imageSource]="'/images/password.svg'"
                     [inputPlaceholder]="'Type your password'"
-                    [(ngModel)]="loginRequest.password"
+                    [(ngModel)]="signupRequest.password"
                     [name]="'password'"></app-input>
                 <p class="error-message" *ngIf="passwordErrorMessage">{{ passwordErrorMessage }}</p>
+                <app-input
+                    [inputType]="'password'"
+                    [imageSource]="'/images/password.svg'"
+                    [inputPlaceholder]="'Repeat your password'"
+                    [(ngModel)]="repeatPassword"
+                    [name]="'repeatPassword'"></app-input>
+                <p class="error-message" *ngIf="repeatPasswordErrorMessage">{{ repeatPasswordErrorMessage }}</p>
             </div>
             <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
 
             <app-button 
-                [buttonText]="'Sign in'"
+                [buttonText]="'Sign up'"
                 (click)="onSubmit()"></app-button>
-
-            <p class="signup-message">Don't have an account? <a [routerLink]="['/signup']">Sign up</a></p>
         </form>
     </div>
 </div>
