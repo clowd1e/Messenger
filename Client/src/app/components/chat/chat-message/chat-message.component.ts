@@ -24,6 +24,10 @@ export class ChatMessageComponent {
     return this.messageDto().message.content;
   }
 
+  userIcon() {
+    return this.messageDto().iconUri;
+  }
+
   messageTime() {
     let messageTime: Date = new Date(this.messageDto().message.timestamp);
     let result: string = this.messageTimeToString(messageTime);
