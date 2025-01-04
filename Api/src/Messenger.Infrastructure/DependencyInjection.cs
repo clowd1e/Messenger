@@ -11,6 +11,8 @@ namespace Messenger.Infrastructure
 
             services.AddInfrastructureServices();
 
+            services.AddExternalServices();
+
             services.AddPersistense();
 
             services.AddRepositories();
