@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Messenger.Application.Features.Users.Commands.RemoveIcon;
+using Messenger.Application.Features.Users.Commands.SetIcon;
 using Messenger.Application.Features.Users.Queries.GetAll;
 using Messenger.Application.Features.Users.Queries.GetById;
 using Messenger.WebAPI.Extensions;
@@ -32,6 +34,23 @@ namespace Messenger.WebAPI.Controllers
             var queryResult = await _sender.Send(new GetAllUsersQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpPut("set-icon")]
+        public async Task<IActionResult> SetUserIcon(
+            [FromForm] SetUserIconCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        [HttpPut("remove-icon")]
+        public async Task<IActionResult> RemoveUserIcon()
+        {
+            var commandResult = await _sender.Send(new RemoveUserIconCommand());
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
     }
 }
