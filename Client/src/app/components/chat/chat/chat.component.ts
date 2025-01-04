@@ -20,6 +20,10 @@ export class ChatComponent {
     this.messageSubmitted.emit(message);
   }
 
+  getUsers() {
+    return this.chat()?.users || [];
+  }
+
   getMessages() {
     return this.chat()?.messages || [];
   }

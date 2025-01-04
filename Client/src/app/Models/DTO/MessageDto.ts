@@ -4,4 +4,5 @@ export type MessageDto = {
     message: Message;
     userIconVisible: boolean;
     uniqueId: number;
+    iconUri: string;
 };

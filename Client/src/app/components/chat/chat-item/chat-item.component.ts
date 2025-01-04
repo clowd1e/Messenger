@@ -24,6 +24,8 @@ export class ChatItemComponent {
     return result;
   }
 
+  chatIcon = () => this.chatItem().users.find(user => user.id !== this.currentUserId())?.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
   private chatLastMessage = () => this.chatItem().messages[this.chatItem().messages.length - 1];
 
   private messageTimeToString(messageTime: Date) {

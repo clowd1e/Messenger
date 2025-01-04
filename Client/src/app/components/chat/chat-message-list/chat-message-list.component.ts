@@ -3,6 +3,7 @@ import { Message } from '../../../models/Message';
 import { ChatMessageComponent } from "../chat-message/chat-message.component";
 import { UserContextService } from '../../../services/auth/user-context.service';
 import { MessageDto } from '../../../models/DTO/MessageDto';
+import { User } from '../../../models/User';
 
 @Component({
   selector: 'app-chat-message-list',
@@ -16,6 +17,8 @@ export class ChatMessageListComponent implements AfterViewInit {
   private messageList? : ElementRef;
 
   messages = input<Message[]>();
+
+  users = input.required<User[]>();
   
   userContextService = inject(UserContextService);
   renderer = inject(Renderer2);
@@ -30,6 +33,7 @@ export class ChatMessageListComponent implements AfterViewInit {
       message,
       userIconVisible: i === msgs.length - 1 || msgs[i + 1]?.userId !== message.userId,
       uniqueId: i,
+      iconUri: this.users().find(user => user.id === message.userId)?.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
     }));
   }
 
