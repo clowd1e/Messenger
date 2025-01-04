@@ -7,6 +7,8 @@ namespace Messenger.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            services.AddApplicationServices();
+
             services.AddMappers();
 
             services.AddMediatR();

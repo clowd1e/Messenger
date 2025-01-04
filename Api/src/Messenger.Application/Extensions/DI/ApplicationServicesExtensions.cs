@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Messenger.Application.Abstractions.Storage;
+using Messenger.Application.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Messenger.Application.Extensions.DI
 {
@@ -7,6 +9,8 @@ namespace Messenger.Application.Extensions.DI
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
+
+            services.AddScoped<IImageService, ImageService>();
 
             return services;
         }
