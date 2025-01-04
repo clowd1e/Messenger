@@ -12,7 +12,8 @@ namespace Messenger.Application.Features.Users.Mappers
             return new(
                 Id: source.Id.Value,
                 Username: source.Username.Value,
-                Email: source.Email.Value);
+                Email: source.Email.Value,
+                IconUri: source.IconUri?.Value);
         }
     }
 }

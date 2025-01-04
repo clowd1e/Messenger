@@ -38,5 +38,15 @@ namespace Messenger.Domain.Aggregates.User.Errors
             Error.Validation(
                 code: "User.InvalidCredentials",
                 description: "The provided credentials are invalid.");
+
+        public static readonly Error InvalidIconDimensions =
+            Error.Validation(
+                code: "User.InvalidIconDimensions",
+                description: "The icon dimensions are invalid.");
+
+        public static readonly Error IconNotSet =
+            Error.Validation(
+                code: "User.IconNotSet",
+                description: "User's icon is not set.");
     }
 }

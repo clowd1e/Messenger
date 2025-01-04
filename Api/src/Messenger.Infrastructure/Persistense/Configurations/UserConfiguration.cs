@@ -1,4 +1,5 @@
-﻿using Messenger.Domain.Aggregates.Users;
+﻿using Messenger.Domain.Aggregates.Common.ImageUri;
+using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Infrastructure.Persistense.Configurations.Common;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,12 @@ namespace Messenger.Infrastructure.Persistense.Configurations
 
             builder.HasIndex(user => user.Email)
                 .IsUnique();
+
+            builder.Property(user => user.IconUri)
+                .HasMaxLength(ImageUri.MaxLength)
+                .HasConversion(
+                    iconUri => iconUri.Value,
+                    value => ImageUri.Create(value).Value);
 
             builder
                 .HasMany(user => user.Chats)

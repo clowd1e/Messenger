@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  messenger.webapi:
+  messenger-webapi:
     image: ${DOCKER_REGISTRY-}messengerwebapi
     container_name: messenger.webapi
     build:
@@ -10,18 +10,29 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - messenger.database
+      - messenger-database
 
-  messenger.database:
+  messenger-database:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: messenger.database
     environment:
-    - ACCEPT_EULA=Y
-    - SA_PASSWORD=S0m3P@ssw0rd
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=S0m3P@ssw0rd
     ports:
-    - "1433:1433"
+      - "1433:1433"
     volumes:
-    - messenger_db_data:/var/opt/mssql
+      - messenger_db_data:/var/opt/mssql
+
+  messenger-blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: messenger.blob-storage
+    ports:
+      - "10000:10000"
+    command: "azurite-blob --blobHost 0.0.0.0 -l /data"
+    volumes:
+      - messenger_blob_storage_data:/data
+
 
 volumes:
-  messenger_db_data:  
+  messenger_db_data: 
+  messenger_blob_storage_data:

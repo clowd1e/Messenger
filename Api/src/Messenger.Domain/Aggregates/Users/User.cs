@@ -1,4 +1,5 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
+using Messenger.Domain.Aggregates.Common.ImageUri;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Primitives;
@@ -18,10 +19,12 @@ namespace Messenger.Domain.Aggregates.Users
         private User(
             UserId userId,
             Username username,
-            Email email) : base(userId)
+            Email email,
+            ImageUri? iconUri) : base(userId)
         {
             Username = username;
             Email = email;
+            IconUri = iconUri;
         }
 
         public Username Username
@@ -46,6 +49,8 @@ namespace Messenger.Domain.Aggregates.Users
             }
         }
 
+        public ImageUri? IconUri { get; private set; }
+
         public IReadOnlyCollection<Chat> Chats => _chats;
 
         public Result AddChat(Chat chat)
@@ -60,15 +65,27 @@ namespace Messenger.Domain.Aggregates.Users
             return Result.Success();
         }
 
+        public void SetIconUri(ImageUri? iconUri)
+        {
+            IconUri = iconUri;
+        }
+
+        public void RemoveIconUri()
+        {
+            IconUri = null;
+        }
+
         public static Result<User> Create(
             UserId userId,
             Username username,
-            Email email)
+            Email email,
+            ImageUri? iconUri)
         {
             return new User(
                 userId,
                 username,
-                email);
+                email,
+                iconUri);
         }
     }
 }

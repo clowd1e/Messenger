@@ -18,6 +18,7 @@ namespace Messenger.WebAPI.Extensions
             {
                 Type = GetType(error.ErrorType),
                 Title = GetTitle(error.ErrorType),
+                Detail = error.Description,
                 Status = GetStatusCode(error.ErrorType)
             };
 

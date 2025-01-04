@@ -33,7 +33,8 @@ namespace Messenger.Application.Features.Auth.Mappers
             return User.Create(
                 userId: userId,
                 username: username,
-                email: email);
+                email: email,
+                iconUri: null);
         }
     }
 }

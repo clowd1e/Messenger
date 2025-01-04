@@ -3,5 +3,6 @@
     public sealed record UserResponse(
         Guid Id,
         string Username,
-        string Email);
+        string Email,
+        string? IconUri);
 }

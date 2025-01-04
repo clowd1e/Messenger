@@ -51,7 +51,8 @@ namespace Messenger.Application.Features.Chats.Mappers
                 var userResponse = new UserResponse(
                     Id: user.Id.Value,
                     Username: user.Username.Value,
-                    Email: user.Email.Value);
+                    Email: user.Email.Value,
+                    IconUri: user.IconUri?.Value);
 
                 result.Add(userResponse);
             }
