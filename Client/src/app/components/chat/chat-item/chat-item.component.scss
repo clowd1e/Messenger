@@ -1,3 +1,5 @@
+@import "../../../../assets/styles/colors";
+
 .chat-item-container {
     display: grid;
     border: 0;
@@ -20,8 +22,16 @@
     }
 }
 
+.chat-item-container.selected {
+    background-color: $selected-chat-background-color;
+}
+
+.chat-item-container.selected:hover {
+    background-color: $selected-chat-background-color;
+}
+
 .chat-item-container:hover {
-    background-color: #F7F7F7;
+    background-color: $chat-hover-background-color;
 }
 
 .user-box {
