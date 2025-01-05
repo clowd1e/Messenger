@@ -12,6 +12,8 @@ import { RouterModule } from '@angular/router';
 export class ChatItemComponent {
   chatItem = input.required<ChatItem>();
 
+  selected = input<boolean>(false);
+
   currentUserId = input.required<string>();
 
   chatName = () => this.chatItem().users.find(user => user.id !== this.currentUserId())?.username || 'Unknown';

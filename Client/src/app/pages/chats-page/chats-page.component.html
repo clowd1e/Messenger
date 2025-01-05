@@ -8,7 +8,11 @@
             [fontSize]="16"
             [borderRadius]="12"
             (click)="navigateToAddChat()"></app-default-button>
-        <app-chat-list [chatListLoading]="userChatsLoading" [currentUserId]="currentUserId" [chatList]="userChats"></app-chat-list>
+        <app-chat-list 
+            [chatListLoading]="userChatsLoading"
+            [currentUserId]="currentUserId"
+            [chatList]="userChats"
+            [selectedChatId]="selectedChat()?.id"></app-chat-list>
     </div>
     <div class="chat-box">
         <app-chat (messageSubmitted)="sendMessageToChat($event)" [chat]="selectedChat()"></app-chat>

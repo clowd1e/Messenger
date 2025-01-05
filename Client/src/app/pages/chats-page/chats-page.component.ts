@@ -15,6 +15,7 @@ import { AddChatComponent } from "../../components/chat/add-chat/add-chat.compon
 import { TimeInterval } from 'rxjs/internal/operators/timeInterval';
 import { ApiService } from '../../services/api/api.service';
 import { CreateChatCommand } from '../../models/chat/CreateChatCommand';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-chats-page',
@@ -44,7 +45,7 @@ export class ChatsPageComponent {
   ngOnInit() {
     this.connectSignalR();
 
-    this.route.url.subscribe(urlSegments => {
+    this.route.url.pipe(map(urlSegments => urlSegments)).subscribe(urlSegments => {
       const isAddRoute = urlSegments.some(segment => segment.path === 'add');
       if (isAddRoute) {
         this.handleAddRoute();
@@ -115,34 +116,33 @@ export class ChatsPageComponent {
       return;
     }
 
-    this.route.url.subscribe(urlSegments => {
-      const isAddRoute = urlSegments.some(segment => segment.path === 'add');
-      const userId = this.route.snapshot.paramMap.get('userId');
-      if (isAddRoute && userId) {
-        let command: CreateChatCommand = {
-          inviteeId: userId
-        }
+    const isAddRoute = this.route.snapshot.url.some(segment => segment.path === 'add');
+    const userId = this.route.snapshot.paramMap.get('userId');
 
-        this.apiService.createChat(command).subscribe({
-          next: (chatId: string) => {
-            this.apiService.getChatById(chatId).subscribe({
-              next: (chat: ChatItem) => {
-                this.selectedChat = signal(chat);
-
-                this.sendMessage(message);
-    
-                this.router.navigateByUrl(`/chats/${chat.id}`);
-              }
-            });
-          },
-          error: (httpError: any) => {
-            console.log(httpError);
-          }
-        });
-      } else {
-        this.sendMessage(message);
+    if (isAddRoute && userId) {
+      let command: CreateChatCommand = {
+        inviteeId: userId
       }
-    });
+
+      this.apiService.createChat(command).subscribe({
+        next: (chatId: string) => {
+          this.apiService.getChatById(chatId).subscribe({
+            next: (chat: ChatItem) => {
+              this.selectedChat = signal(chat);
+
+              this.sendMessage(message);
+  
+              this.router.navigateByUrl(`/chats/${chat.id}`);
+            }
+          });
+        },
+        error: (httpError: any) => {
+          console.log(httpError);
+        }
+      });
+    } else {
+      this.sendMessage(message);
+    }
   }
 
   private sendMessage(message: string) {

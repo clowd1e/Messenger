@@ -3,7 +3,16 @@
 } @else {
     <div>
         @for (chatItem of chatList(); track chatItem.id) {
-            <app-chat-item [chatItem]="chatItem" [currentUserId]="currentUserId()"></app-chat-item>
+            @if (chatItem.id === selectedChatId()) {
+                <app-chat-item 
+                    [chatItem]="chatItem" 
+                    [currentUserId]="currentUserId()" 
+                    [selected]="true"></app-chat-item>
+            } @else {
+                <app-chat-item 
+                    [chatItem]="chatItem" 
+                    [currentUserId]="currentUserId()"></app-chat-item>
+            }
         } @empty {
             <p class="chats-not-found">No chats found</p>
         }

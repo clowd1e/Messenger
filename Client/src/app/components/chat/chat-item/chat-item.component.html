@@ -1,4 +1,6 @@
-<a class="chat-item-container" [routerLink]="['/chats/', chatItem().id]">
+<a class="chat-item-container" 
+    [class.selected]="selected()" 
+    [routerLink]="['/chats/', chatItem().id]">
     <div class="image-box">
         <img [src]="chatIcon()" alt="UserImage">
     </div>

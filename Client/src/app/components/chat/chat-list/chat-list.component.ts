@@ -13,4 +13,5 @@ export class ChatListComponent {
   currentUserId = input.required<string>();
   chatList = input<ChatItem[]>();
   chatListLoading = input<boolean>();
+  selectedChatId = input<string>();
 }
