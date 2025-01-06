@@ -16,6 +16,7 @@ import { TimeInterval } from 'rxjs/internal/operators/timeInterval';
 import { ApiService } from '../../services/api/api.service';
 import { CreateChatCommand } from '../../models/chat/CreateChatCommand';
 import { map } from 'rxjs';
+import { UuidHelperService } from '../../services/uuid-helper/uuid-helper.service';
 
 @Component({
   selector: 'app-chats-page',
@@ -39,6 +40,7 @@ export class ChatsPageComponent {
   route = inject(ActivatedRoute);
   router = inject(Router);
   userContextService = inject(UserContextService);
+  uuidHelper = inject(UuidHelperService);
 
   currentUserId = this.userContextService.getCurrentUserId();
 
@@ -60,7 +62,7 @@ export class ChatsPageComponent {
 
   private handleChatRoute() {
     this.addChatVisible.set(false);
-    const chatId = this.route.snapshot.paramMap.get('chatId');
+    const chatId = this.uuidHelper.toUuid(this.route.snapshot.paramMap.get('chatId'));
     if (chatId) {
       this.signalrService.joinChat(chatId);
       this.selectedChat.set(this.userChats.find(chat => chat.id === chatId));
@@ -70,7 +72,7 @@ export class ChatsPageComponent {
   }
 
   private handleAddRoute() {
-    const userId = this.route.snapshot.paramMap.get('userId');
+    const userId = this.uuidHelper.toUuid(this.route.snapshot.paramMap.get('userId'));
     if (userId) {
       let chatItem: ChatItem = {
         id: '',
@@ -117,7 +119,7 @@ export class ChatsPageComponent {
     }
 
     const isAddRoute = this.route.snapshot.url.some(segment => segment.path === 'add');
-    const userId = this.route.snapshot.paramMap.get('userId');
+    const userId = this.uuidHelper.toUuid(this.route.snapshot.paramMap.get('userId'));
 
     if (isAddRoute && userId) {
       let command: CreateChatCommand = {
