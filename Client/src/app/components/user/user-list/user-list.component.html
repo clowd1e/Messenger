@@ -1,5 +1,5 @@
 <div>
-    @for (userItem of userList(); track userItem.id) {
+    @for (userItem of mappedUserList(); track userItem.id) {
         <app-user-item [userItem]="userItem"></app-user-item>
     }
 </div>

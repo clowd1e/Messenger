@@ -2,7 +2,7 @@
     <p class="chats-loading">Loading...</p>
 } @else {
     <div>
-        @for (chatItem of chatList(); track chatItem.id) {
+        @for (chatItem of mappedChatList(); track chatItem.id) {
             @if (chatItem.id === selectedChatId()) {
                 <app-chat-item 
                     [chatItem]="chatItem" 

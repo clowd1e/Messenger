@@ -1,6 +1,7 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { UserItemComponent } from "../user-item/user-item.component";
 import { UserItem } from '../../../models/UserItem';
+import { UuidHelperService } from '../../../services/uuid-helper/uuid-helper.service';
 
 @Component({
   selector: 'app-user-list',
@@ -11,4 +12,14 @@ import { UserItem } from '../../../models/UserItem';
 })
 export class UserListComponent {
   userList = input<UserItem[]>();
+
+  uuidHelper = inject(UuidHelperService);
+
+  mappedUserList = () => this.userList()?.map(userItem => {
+    return {
+      id: this.uuidHelper.toShortUuid(userItem.id),
+      username: userItem.username,
+      iconUri: userItem.iconUri,
+    }
+  })
 }
