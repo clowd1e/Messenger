@@ -1,4 +1,5 @@
 @import '../../../assets/styles/mixins';
+@import '../../../assets/styles/devices-size';
 
 .container {
     @include flex-center;
@@ -48,13 +49,22 @@
         > p.error-message {
             margin: -10px 0 10px;
         }
+
+        .signup-button {
+            width: 120px;
+            height: 40px;
+            font-size: 14px;
+        }
     }
 }
 
-@media (max-width: 768px) {
-    .signup-form {
-        h2 {
-            font-size: 30px;
+@media (max-width: $mobileL-width) {
+    .container {
+        .form-background {
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+            box-shadow: none;
         }
     }
 }

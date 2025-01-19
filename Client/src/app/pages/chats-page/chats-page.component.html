@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="chat-list-box">
+    <div class="chat-list-box" [ngClass]="selectedChat() ? 'chat-selected' : 'chat-not-selected'">
         <app-default-button 
             class="add-chat-button"
             [text]="'Add new chat'"
@@ -8,13 +8,14 @@
             [fontSize]="16"
             [borderRadius]="12"
             (click)="navigateToAddChat()"></app-default-button>
-        <app-chat-list 
+        <app-chat-list
+            class="chat-list"
             [chatListLoading]="userChatsLoading"
             [currentUserId]="currentUserId"
             [chatList]="userChats"
             [selectedChatId]="selectedChat()?.id"></app-chat-list>
     </div>
-    <div class="chat-box">
+    <div class="chat-box" [ngClass]="selectedChat() ? 'chat-selected' : 'chat-not-selected'">
         <app-chat (messageSubmitted)="sendMessageToChat($event)" [chat]="selectedChat()"></app-chat>
     </div>
 </div>

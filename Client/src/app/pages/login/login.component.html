@@ -22,6 +22,7 @@
             <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
 
             <app-button 
+                class="login-button"
                 [buttonText]="'Sign in'"
                 (click)="onSubmit()"></app-button>
 

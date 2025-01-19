@@ -36,6 +36,7 @@
             <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
 
             <app-button 
+                class="signup-button"
                 [buttonText]="'Sign up'"
                 (click)="onSubmit()"></app-button>
         </form>

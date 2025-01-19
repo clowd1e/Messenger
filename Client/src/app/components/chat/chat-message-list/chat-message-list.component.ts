@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, effect, ElementRef, inject, Input, input, OnChanges, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, OnChanges, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { Message } from '../../../models/Message';
 import { ChatMessageComponent } from "../chat-message/chat-message.component";
 import { UserContextService } from '../../../services/auth/user-context.service';
@@ -12,7 +12,7 @@ import { User } from '../../../models/User';
   templateUrl: './chat-message-list.component.html',
   styleUrl: './chat-message-list.component.scss'
 })
-export class ChatMessageListComponent implements AfterViewInit {
+export class ChatMessageListComponent implements AfterViewInit, OnChanges {
   @ViewChild('messageListContainer', {static: false}) 
   private messageList? : ElementRef;
 
@@ -38,11 +38,14 @@ export class ChatMessageListComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    effect(() => {
-      console.log(this.messages())
-    })
-
     this.scrollToBottom();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // if (changes['messages']) {
+    //   console.log("messages changed");
+    //   this.scrollToBottom();
+    // }
   }
 
   private scrollToBottom(): void {
@@ -50,6 +53,15 @@ export class ChatMessageListComponent implements AfterViewInit {
       return;
     }
 
-    this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight;
+    const scrollContainer = this.messageList.nativeElement;
+
+    this.renderer.setStyle(scrollContainer, 'opacity', '0');
+
+    setTimeout(() => {
+
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
+
+      this.renderer.setStyle(scrollContainer, 'opacity', '100');
+    }, 0);
   }
 }
