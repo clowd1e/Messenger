@@ -1,6 +1,6 @@
 <div class="chat-container">
     @if (chat() === undefined) {
-        <p class="chat-not-selected">Select a chat to start messaging</p>
+        <p class="chat-not-selected">Select chat to start messaging</p>
     } @else {
         <app-chat-message-list class="chat-message-list" [users]="getUsers()" [messages]="getMessages()"></app-chat-message-list>
         <app-chat-input (messageSubmitted)="onMessageSubmit($event)" class="chat-input"></app-chat-input>

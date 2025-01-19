@@ -1,9 +1,29 @@
 @import "../../../../assets/styles/colors";
+@import "../../../../assets/styles/devices-size";
 
 .message-container {
     display: flex;
     align-items: flex-end;
     gap: 15px;
+
+    .image-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 25px;
+    
+        img {
+            width: inherit;
+            height: inherit;
+            border-radius: inherit;
+        }
+    
+        img.none {
+            display: none;
+        }
+    }
 
     .message-box {
         position: relative;
@@ -29,23 +49,76 @@
     .message-box {
         background-color: $default-user-message-box-background-color;
     }
-} 
+}
 
-.image-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    border-radius: 25px;
-
-    img {
-        width: inherit;
-        height: inherit;
-        border-radius: inherit;
+@media (min-width: $tablet-width) and (max-width: $laptop-width) {
+    .message-container {
+        .message-box {
+            max-width: 300px;
+        }
     }
+}
 
-    img.none {
-        display: none;
+@media (max-width: $tablet-width) {
+    .message-container {
+        .message-box {
+            max-width: 200px;
+        }
+    }
+}
+
+@media (min-width: $mobileM-width) and (max-width: $mobileL-width) {
+    .message-container {
+        gap: 10px;
+
+        .image-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+        }
+
+        .message-box {
+            padding: 12px 33px 12px 8px;
+            border-radius: 15px;
+
+            p {
+                font-size: 0.8em;
+            }
+
+            p.timestamp {
+                font-size: 9px;
+            }
+        }
+    }
+}
+
+@media (max-width: $mobileM-width) {
+    .message-container {
+        gap: 10px;
+
+        .image-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 17.5px;
+        }
+
+        .message-box {
+            padding: 11px 32px 11px 7px;
+            border-radius: 14px;
+
+            p {
+                font-size: 0.7em;
+            }
+
+            p.timestamp {
+                font-size: 7px;
+            }
+        }
     }
 }

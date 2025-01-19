@@ -14,10 +14,15 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 50%;
-    height: 50%;
+    height: 70%;
     border-radius: 10px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     padding: 20px;
+
+    .user-list {
+        display: flex;
+        height: 90%;
+    }
 }
 
 // .add-chat-background {

@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ChatListComponent } from "../../components/chat/chat-list/chat-list.component";
 import { ChatComponent } from "../../components/chat/chat/chat.component";
 import { SignalrService } from '../../services/signalr/signalr.service';
@@ -9,10 +9,8 @@ import { MessageResponse } from '../../models/DTO/MessageResponse';
 import { UserContextService } from '../../services/auth/user-context.service';
 import { DefaultButtonComponent } from "../../components/buttons/default-button/default-button.component";
 import { Error } from '../../models/error/Error';
-import { UserListComponent } from "../../components/user/user-list/user-list.component";
 import { CommonModule } from '@angular/common';
 import { AddChatComponent } from "../../components/chat/add-chat/add-chat.component";
-import { TimeInterval } from 'rxjs/internal/operators/timeInterval';
 import { ApiService } from '../../services/api/api.service';
 import { CreateChatCommand } from '../../models/chat/CreateChatCommand';
 import { map } from 'rxjs';
@@ -162,8 +160,8 @@ export class ChatsPageComponent {
   private handleMessageReceived(message: MessageResponse): void {
     console.log('New message received:', message);
 
-    if (this.selectedChat) {
-      this.selectedChat()?.messages.push(message);
+    if (this.selectedChat()) {
+      this.selectedChat()!.messages = [...this.selectedChat()!.messages, message];
     }
   }
 
