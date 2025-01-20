@@ -10,7 +10,7 @@ import { StorageService } from '../storage/storage.service';
   providedIn: 'root'
 })
 export class SignalrService {
-  private readonly hubUrl = environment.hubBaseUrl;
+  private readonly hubUrl = environment.HUB_BASE_URL;
   private readonly hubConnection: HubConnection;
 
   storageService = inject(StorageService);
