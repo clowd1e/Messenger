@@ -1,0 +1,9 @@
+services:
+  messenger-client:
+    image: ${DOCKER_REGISTRY-}messengerclient
+    container_name: messenger.client
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"

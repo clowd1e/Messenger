@@ -9,7 +9,7 @@ import { RegisterRequest } from '../../models/auth/RegisterRequest';
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly apiUrl = environment.apiBaseUrl;
+  private readonly apiUrl = environment.API_BASE_URL;
 
   httpClient = inject(HttpClient);
 
