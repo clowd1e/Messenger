@@ -99,12 +99,11 @@ export class ChatsPageComponent {
         (chats: Array<ChatItem>) => {
           this.userChats = chats;
           this.userChatsLoading = false;
-          console.log(chats);
       });
 
       this.signalrService.getHubConnection().on('ReceiveError',
         (error: Error) => {
-          console.log(error);
+
         }
       )
     })
@@ -112,7 +111,6 @@ export class ChatsPageComponent {
 
   sendMessageToChat(message: string) {
     if (!this.selectedChat) {
-      console.error('No chat selected');
       return;
     }
 
@@ -137,7 +135,7 @@ export class ChatsPageComponent {
           });
         },
         error: (httpError: any) => {
-          console.log(httpError);
+
         }
       });
     } else {
@@ -152,21 +150,17 @@ export class ChatsPageComponent {
     };
 
     this.signalrService
-      .sendMessage(command)
-      .then(() => console.log('Message sent'))
-      .catch(err => console.error('Error sending message:', err));
+      .sendMessage(command);
   }
 
   private handleMessageReceived(message: MessageResponse): void {
-    console.log('New message received:', message);
-
     if (this.selectedChat()) {
       this.selectedChat()!.messages = [...this.selectedChat()!.messages, message];
     }
   }
 
   private handleErrorReceived(error: Error): void {
-    console.error('Error received from SignalR:', error);
+    
   }
 
 }
