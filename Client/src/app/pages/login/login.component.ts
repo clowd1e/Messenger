@@ -21,8 +21,8 @@ import { StorageService } from '../../services/storage/storage.service';
 })
 export class LoginComponent {
   loginRequest: LoginRequest = {
-    email: 'Abanent@gmail.com',
-    password: 'Abanent123!.'
+    email: '',
+    password: ''
   };
 
   errorMessage: string = '';
@@ -44,8 +44,6 @@ export class LoginComponent {
       },
       error: (httpError: HttpErrorResponse) => {
         this.resetErrorMessages();
-
-        console.log(httpError);
 
         if (this.isHttpValidationError(httpError.error)) {
           let error: HttpValidationError = httpError.error;
