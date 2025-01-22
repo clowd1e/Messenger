@@ -1,0 +1,23 @@
+@import "../../../../../../assets/styles/colors";
+
+.chat-input-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+
+    app-input {
+        width: 90%;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        border: none;
+        border-radius: 25px;
+        background-color: $default-message-input-button-color;
+        cursor: pointer;
+    }
+}

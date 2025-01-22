@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
-import { ChatsPageComponent } from './pages/chats-page/chats-page.component';
-import { LayoutComponent } from './pages/layout/layout.component';
-import { SignupComponent } from './pages/signup/signup.component';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { LayoutComponent } from './features/layout/layout.component';
+import { SignupComponent } from './features/signup/signup.component';
+import { LoginComponent } from './features/login/login.component';
+import { NotFoundComponent } from './features/not-found/not-found.component';
+import { ChatsPageComponent } from './features/chats-page/chats-page.component';
 
 export const routes: Routes = [
     {

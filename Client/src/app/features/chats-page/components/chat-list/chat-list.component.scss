@@ -1,0 +1,7 @@
+@import '../../../../../assets/styles/colors';
+
+.chats-loading, .chats-not-found {
+    font-size: 24px;
+    text-align: center;
+    color: $default-loading-color;
+}
