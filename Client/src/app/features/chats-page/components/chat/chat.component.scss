@@ -1,0 +1,49 @@
+@import '../../../../../assets/styles/colors';
+@import '../../../../../assets/styles/devices-size';
+
+.chat-container {
+    display: flex;
+    position: relative;
+    height: 100vh;
+    min-width: 700px;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+
+    .chat-message-list {
+        position: inherit;
+        height: 500px;
+    }
+
+    .chat-input {
+        width: inherit;
+        width: 100%;
+        bottom: 10%;
+    }
+
+    .chat-not-selected {
+        font-size: 36px;
+        color: $default-loading-color;
+    }
+}
+
+@media (min-width: $tablet-width) and (max-width: $laptop-width) {
+    .chat-container {
+        min-width: 500px;
+    }
+}
+
+@media (max-width: $tablet-width) {
+    .chat-container {
+        justify-content: flex-end;
+        padding: 20px;
+        min-width: auto;
+        width: 100vw;
+
+        .chat-message-list {
+            height: 100%;
+            padding: 45px 0px 0px 0px;
+        }
+    }
+    
+}

@@ -1,0 +1,9 @@
+<div class="chat-input-container">
+    <app-input 
+        (keyup.enter)="onSubmit()"
+        [(inputValue)]="message" 
+        [placeholder]="'Type your message...'"></app-input>
+    <button (click)="onSubmit()">
+        <img src="/images/send.svg" alt="Send" />
+    </button>
+</div>
