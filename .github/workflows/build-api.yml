@@ -1,0 +1,39 @@
+name: Build Web API project
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore ./Api/src/Messenger.sln
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4.2.0
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+            ${{ runner.os }}-nuget-
+      
+    - name: Build
+      run: dotnet build ./Api/src/Messenger.sln --configuration Release --no-restore
+      
+    - name: Publish
+      run: dotnet publish ./Api/src/Messenger.sln --congifuration Release --no-build
