@@ -36,4 +36,4 @@ jobs:
       run: dotnet build ./Api/src/Messenger.sln --configuration Release --no-restore
       
     - name: Publish
-      run: dotnet publish ./Api/src/Messenger.sln --congifuration Release --no-build
+      run: dotnet publish ./Api/src/Messenger.sln --configuration Release --no-build
