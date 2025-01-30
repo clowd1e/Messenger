@@ -5,15 +5,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "Api/**"
-      - ".github/workflows/api/**"
   pull_request_target:
     branches:
       - main
-    paths:
-      - "Api/**"
-      - ".github/workflows/api/**"
 
 jobs:
   build:
