@@ -7,7 +7,6 @@ using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Microsoft.AspNetCore.Http;
 using SixLabors.ImageSharp;
-using System.Drawing;
 
 namespace Messenger.Application.Features.Users.Commands.SetIcon
 {
