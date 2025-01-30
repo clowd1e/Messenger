@@ -8,7 +8,7 @@ on:
     paths:
       - "Api/**"
       - ".github/workflows/api/**"
-  pull_request:
+  pull_request_target:
     branches:
       - main
     paths:
