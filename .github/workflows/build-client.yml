@@ -8,7 +8,7 @@ on:
     paths:
       - "Client/**"
       - ".github/workflows/client/**"
-  pull_request_taget:
+  pull_request_target:
     branches:
       - main
     paths:
