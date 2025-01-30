@@ -1,13 +1,1 @@
-{
-  "routes": [
-    {
-      "route": "/login",
-      "methods": [
-        "get"
-      ],
-      "rewrite": "/login",
-      "redirect": "/login",
-      "statusCode": 200
-    }
-  ]
-}
+{}
