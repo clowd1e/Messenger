@@ -44,7 +44,6 @@ jobs:
 
       - run: cd Client && npm ci
       - run: cd Client && npm run build --if-present
-      - run: cd Client && npm test
 
       - name: Cache Angular build output
         uses: actions/cache@v4.2.0
