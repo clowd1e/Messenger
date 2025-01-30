@@ -7,13 +7,13 @@ on:
       - main
     paths:
       - "Api/**"
-      - ".github/workflows/**"
+      - ".github/workflows/api/**"
   pull_request:
     branches:
       - main
     paths:
       - "Api/**"
-      - ".github/workflows/**"
+      - ".github/workflows/api/**"
 
 jobs:
   build:

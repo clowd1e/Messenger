@@ -26,7 +26,7 @@ import { AddChatComponent } from './components/add-chat/add-chat.component';
 export class ChatsPageComponent {
   addChatVisible = signal(false);
 
-  userChats: Array<ChatItem> = [];
+  userChats: ChatItem[] = [];
 
   userChatsLoading: boolean = false;
 
