@@ -12,7 +12,7 @@ env:
   NODE_VERSION: "20.x"
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +27,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
+          cd Client
           npm install
           npm run build --if-present
           npm run test --if-present

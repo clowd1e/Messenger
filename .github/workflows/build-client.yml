@@ -7,13 +7,13 @@ on:
       - main
     paths:
       - "Client/**"
-      - ".github/workflows/client/**"
+      - ".github/workflows/**-client.yml"
   pull_request_target:
     branches:
       - main
     paths:
       - "Client/**"
-      - ".github/workflows/client/**"
+      - ".github/workflows/**-client.yml"
 
 jobs:
   build:
