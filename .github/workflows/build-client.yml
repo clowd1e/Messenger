@@ -21,13 +21,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
+          cache-dependency-path: Client/package-lock.json
           node-version: ${{ matrix.node-version }}
           cache: "npm"
 
@@ -37,7 +38,7 @@ jobs:
           path: |
             ~/.npm
             Client/node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('Client/package-lock.json') }} # Cache key based on package-lock.json
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('Client/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-
 
