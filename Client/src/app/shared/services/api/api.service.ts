@@ -4,6 +4,10 @@ import { environment } from '../../../../environments/environment';
 import { LoginRequest } from '../../../features/login/models/LoginRequest';
 import { RegisterRequest } from '../../../features/signup/models/RegisterRequest';
 import { CreateChatCommand } from '../../../features/chats-page/models/CreateChatCommand';
+import { Observable } from 'rxjs';
+import { LoginResponse } from '../../../features/login/models/LoginResponse';
+import { UserItem } from '../../../features/chats-page/components/add-chat/models/UserItem';
+import { ChatItem } from '../../../features/chats-page/models/ChatItem';
 
 @Injectable({
   providedIn: 'root'
@@ -13,23 +17,23 @@ private readonly apiUrl = environment.API_BASE_URL;
 
   httpClient = inject(HttpClient);
 
-  login(loginRequest: LoginRequest): any {
-    return this.httpClient.post(`${this.apiUrl}/auth/login`, loginRequest);
+  login(loginRequest: LoginRequest): Observable<LoginResponse> {
+    return this.httpClient.post<LoginResponse>(`${this.apiUrl}/auth/login`, loginRequest);
   }
 
-  register(registerRequest: RegisterRequest): any {
-    return this.httpClient.post(`${this.apiUrl}/auth/register`, registerRequest);
+  register(registerRequest: RegisterRequest): Observable<void> {
+    return this.httpClient.post<void>(`${this.apiUrl}/auth/register`, registerRequest);
   }
 
-  getAllUsers(): any {
-    return this.httpClient.get(`${this.apiUrl}/users`);
+  getAllUsers(): Observable<UserItem[]> {
+    return this.httpClient.get<UserItem[]>(`${this.apiUrl}/users`);
   }
 
-  createChat(createChatCommand: CreateChatCommand): any {
-    return this.httpClient.post(`${this.apiUrl}/chats`, createChatCommand);
+  createChat(createChatCommand: CreateChatCommand): Observable<string> {
+    return this.httpClient.post<string>(`${this.apiUrl}/chats`, createChatCommand);
   }
 
-  getChatById(chatId: string): any {
-    return this.httpClient.get(`${this.apiUrl}/chats/${chatId}`);
+  getChatById(chatId: string): Observable<ChatItem> {
+    return this.httpClient.get<ChatItem>(`${this.apiUrl}/chats/${chatId}`);
   }
 }

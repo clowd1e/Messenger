@@ -118,7 +118,8 @@ export class ChatsPageComponent {
 
     if (isAddRoute && userId) {
       let command: CreateChatCommand = {
-        inviteeId: userId
+        inviteeId: userId,
+        message: message
       }
 
       this.apiService.createChat(command).subscribe({
@@ -126,9 +127,7 @@ export class ChatsPageComponent {
           this.apiService.getChatById(chatId).subscribe({
             next: (chat: ChatItem) => {
               this.selectedChat = signal(chat);
-
-              this.sendMessage(message);
-  
+              
               this.router.navigateByUrl(`/chats/${chat.id}`);
             }
           });
