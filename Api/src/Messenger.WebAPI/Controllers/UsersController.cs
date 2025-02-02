@@ -2,14 +2,17 @@
 using Messenger.Application.Features.Users.Commands.RemoveIcon;
 using Messenger.Application.Features.Users.Commands.SetIcon;
 using Messenger.Application.Features.Users.Queries.GetAll;
+using Messenger.Application.Features.Users.Queries.GetAllExceptCurrent;
 using Messenger.Application.Features.Users.Queries.GetById;
 using Messenger.WebAPI.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.WebAPI.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [Authorize]
     public sealed class UsersController : ControllerBase
     {
         private readonly ISender _sender;
@@ -32,6 +35,14 @@ namespace Messenger.WebAPI.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var queryResult = await _sender.Send(new GetAllUsersQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("except-current")]
+        public async Task<IActionResult> GetAllUsersExceptCurrent()
+        {
+            var queryResult = await _sender.Send(new GetAllUsersExceptCurrentQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
