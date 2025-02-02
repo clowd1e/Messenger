@@ -18,5 +18,15 @@ namespace Messenger.Domain.Aggregates.Chats.Errors
             Error.Validation(
                 code: "Chat.UserNotInChat",
                 description: "User is not in chat.");
+
+        public readonly static Error ChatWithSameUser =
+            Error.Validation(
+                code: "Chat.ChatWithSameUser",
+                description: "Chat cannot be created with the same user.");
+
+        public readonly static Error ChatAlreadyExists =
+            Error.Validation(
+                code: "Chat.ChatAlreadyExists",
+                description: "Chat already exists.");
     }
 }

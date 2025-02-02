@@ -8,6 +8,10 @@ namespace Messenger.Domain.Aggregates.Users
             UserId userId,
             CancellationToken cancellationToken = default);
 
+        Task<User?> GetByIdWithChatsAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default);
+
         Task<User?> GetByUsernameAsync(
             Username username,
             CancellationToken cancellationToken = default);
