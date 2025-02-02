@@ -1,6 +1,6 @@
 <a class="user-item-container" [routerLink]="['/chats/add/', userItem().id]">
     <div class="image-box">
-        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="UserImage">
+        <img [src]="userIcon()" alt="UserImage">
     </div>
     <div class="user-box">
         <h3>{{ username() }}</h3>
