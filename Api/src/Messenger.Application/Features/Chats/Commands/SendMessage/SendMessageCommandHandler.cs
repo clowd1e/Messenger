@@ -18,7 +18,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
         private readonly IChatRepository _chatRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserContextService<Guid> _userContextService;
-        private readonly Mapper<SendMessageCommandWrapper, Result<Message>> _commandMapper;
+        private readonly Mapper<SendMessageRequestModel, Result<Message>> _commandMapper;
         private readonly Mapper<Message, MessageResponse> _messageMapper;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -26,7 +26,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
             IChatRepository chatRepository,
             IUserRepository userRepository,
             IUserContextService<Guid> userContextService,
-            Mapper<SendMessageCommandWrapper, Result<Message>> commandMapper,
+            Mapper<SendMessageRequestModel, Result<Message>> commandMapper,
             Mapper<Message, MessageResponse> messageMapper,
             IUnitOfWork unitOfWork)
         {
@@ -50,7 +50,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
             }
 
             var chat = await _chatRepository.GetByIdAsync(
-                new ChatId(request.ChatId.Value), 
+                new ChatId(request.ChatId.Value),
                 cancellationToken);
 
             if (chat is null)
@@ -58,9 +58,9 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
                 return Result.Failure<MessageResponse>(ChatErrors.NotFound);
             }
 
-            var commandWrapper = new SendMessageCommandWrapper(request, userId);
+            var requestModel = new SendMessageRequestModel(request.Message, userId);
 
-            var mappingResult = _commandMapper.Map(commandWrapper);
+            var mappingResult = _commandMapper.Map(requestModel);
 
             if (mappingResult.IsFailure)
             {

@@ -67,7 +67,17 @@ namespace Messenger.Infrastructure.Persistense.Repositories
             UserId userId, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.Users.FindAsync(userId, cancellationToken);
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        }
+
+        public async Task<User?> GetByIdWithChatsAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Users
+                .Include(u => u.Chats)
+                .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         }
 
         public async Task<User?> GetByUsernameAsync(

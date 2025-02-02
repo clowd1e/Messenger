@@ -9,6 +9,9 @@ namespace Messenger.Application.Features.Chats.Commands.Create
         {
             RuleFor(x => x.InviteeId)
                 .NotEmpty();
+
+            RuleFor(x => x.Message)
+                .NotEmpty();
         }
     }
 }

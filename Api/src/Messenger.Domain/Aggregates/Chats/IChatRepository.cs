@@ -20,6 +20,11 @@ namespace Messenger.Domain.Aggregates.Chats
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
+        Task<bool> ExistsAsync(
+            UserId inviterId,
+            UserId inviteeId,
+            CancellationToken cancellationToken = default);
+
         Task InsertAsync(
             Chat chat,
             CancellationToken cancellationToken = default);

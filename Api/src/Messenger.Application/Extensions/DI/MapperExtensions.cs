@@ -28,8 +28,8 @@ namespace Messenger.Application.Extensions.DI
             #region Chats
             services.AddMapper<Chat, ChatResponse, ChatToChatResponseMapper>();
             services.AddMapper<Message, MessageResponse, MessageToMessageResponseMapper>();
-            services.AddMapper<SendMessageCommandWrapper, Result<Message>, SendMessageCommandMapper>();
-            services.AddMapper<CreateChatCommandWrapper, Result<Chat>, CreateChatCommandMapper>();
+            services.AddMapper<SendMessageRequestModel, Result<Message>, SendMessageCommandMapper>();
+            services.AddMapper<CreateChatRequestModel, Result<Chat>, CreateChatCommandMapper>();
             #endregion
 
             return services;

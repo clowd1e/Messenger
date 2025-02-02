@@ -22,6 +22,16 @@ namespace Messenger.Infrastructure.Persistense.Repositories
                 x => x.Id == chatId, cancellationToken);
         }
 
+        public async Task<bool> ExistsAsync(
+            UserId inviterId,
+            UserId inviteeId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Chats.AnyAsync(
+                c => c.Users.Any(u => u.Id == inviterId) &&
+                     c.Users.Any(u => u.Id == inviteeId), cancellationToken);
+        }
+
         public async Task<IEnumerable<Chat>> GetAllAsync(
             CancellationToken cancellationToken = default)
         {
