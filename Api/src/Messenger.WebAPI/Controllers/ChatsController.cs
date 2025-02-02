@@ -3,12 +3,14 @@ using Messenger.Application.Features.Chats.Commands.Create;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.WebAPI.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.WebAPI.Controllers
 {
     [Route("api/chats")]
     [ApiController]
+    [Authorize]
     public class ChatsController : ControllerBase
     {
         private readonly ISender _sender;
