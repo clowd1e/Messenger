@@ -1,8 +1,6 @@
 ﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Features.Auth.Commands.Register;
 using Messenger.Application.Features.Auth.Mappers;
-using Messenger.Application.Features.Chats.Commands.Create;
-using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.DTO;
 using Messenger.Application.Features.Chats.Mappers;
 using Messenger.Application.Features.Users.DTO;
@@ -21,6 +19,7 @@ namespace Messenger.Application.Extensions.DI
         {
             #region Users
             services.AddMapper<User, UserResponse, UserToUserResponseMapper>();
+            services.AddMapper<User, ShortUserResponse, UserToShortUserResponseMapper>();
             services.AddMapper<RegisterCommand, Result<User>, RegisterCommandMapper>();
             services.AddMapper<User, ApplicationUser, UserToApplicationUserMapper>();
             #endregion

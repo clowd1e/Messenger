@@ -23,6 +23,10 @@ namespace Messenger.Domain.Aggregates.Users
         Task<IEnumerable<User>> GetAllAsync(
             CancellationToken cancellationToken = default);
 
+        Task<IEnumerable<User>> GetAllExceptCurrentAsync(
+            UserId currentUserId,
+            CancellationToken cancellationToken = default);
+
         Task InsertAsync(
             User user,
             CancellationToken cancellationToken = default);

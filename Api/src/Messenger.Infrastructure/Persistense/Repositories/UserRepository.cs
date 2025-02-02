@@ -54,6 +54,16 @@ namespace Messenger.Infrastructure.Persistense.Repositories
             return await _context.Users.ToListAsync();
         }
 
+        public async Task<IEnumerable<User>> GetAllExceptCurrentAsync(
+            UserId currentUserId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .Where(u => u.Id != currentUserId)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<User?> GetByEmailAsync(
             Email email,
             CancellationToken cancellationToken = default)

@@ -3,7 +3,6 @@ using Messenger.Application.Features.Auth.Commands.Login;
 using Messenger.Application.Features.Auth.Commands.RefreshToken;
 using Messenger.Application.Features.Auth.Commands.Register;
 using Messenger.WebAPI.Extensions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.WebAPI.Controllers
