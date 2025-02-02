@@ -13,14 +13,14 @@ import { UserListComponent } from './user-list/user-list.component';
   styleUrl: './add-chat.component.scss'
 })
 export class AddChatComponent {
-  userList: Array<UserItem> = [];
+  userList: UserItem[] = [];
   
   apiService = inject(ApiService);
   router = inject(Router);
 
   ngOnInit() {
-    this.apiService.getAllUsers().subscribe({
-      next: (response: Array<UserItem>) => {
+    this.apiService.getAllUsersExceptCurrent().subscribe({
+      next: (response: UserItem[]) => {
         this.userList = response;
       }
     });

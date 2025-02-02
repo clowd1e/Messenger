@@ -25,8 +25,8 @@ private readonly apiUrl = environment.API_BASE_URL;
     return this.httpClient.post<void>(`${this.apiUrl}/auth/register`, registerRequest);
   }
 
-  getAllUsers(): Observable<UserItem[]> {
-    return this.httpClient.get<UserItem[]>(`${this.apiUrl}/users`);
+  getAllUsersExceptCurrent(): Observable<UserItem[]> {
+    return this.httpClient.get<UserItem[]>(`${this.apiUrl}/users/except-current`);
   }
 
   createChat(createChatCommand: CreateChatCommand): Observable<string> {
