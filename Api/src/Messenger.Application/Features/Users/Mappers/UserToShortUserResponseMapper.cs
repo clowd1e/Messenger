@@ -11,7 +11,7 @@ namespace Messenger.Application.Features.Users.Mappers
         {
             return new(
                 Id: source.Id.Value,
-                Username: source.Username.Value,
+                Name: source.Name.Value,
                 IconUri: source.IconUri?.Value);
         }
     }

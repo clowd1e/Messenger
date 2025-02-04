@@ -11,7 +11,12 @@ namespace Messenger.Application.Features.Auth.Commands.Register
         {
             RuleFor(x => x.Username)
                 .NotEmpty()
-                .MaximumLength(30);
+                .MaximumLength(Username.MaxLength)
+                .Matches("^[a-zA-Z0-9]+$").WithMessage("Username can only contain letters or digits");
+
+            RuleFor(x => x.Name)
+                .NotEmpty()
+                .MaximumLength(Name.MaxLength);
 
             RuleFor(x => x.Email)
                 .NotEmpty()

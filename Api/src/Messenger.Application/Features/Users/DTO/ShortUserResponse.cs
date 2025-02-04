@@ -2,6 +2,6 @@
 {
     public sealed record ShortUserResponse(
         Guid Id,
-        string Username,
+        string Name,
         string? IconUri);
 }
