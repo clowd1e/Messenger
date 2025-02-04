@@ -2,7 +2,7 @@
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace Messenger.Infrastructure.Persistense.Repositories
+namespace Messenger.Infrastructure.Persistence.Repositories
 {
     public sealed class UserRepository : IUserRepository
     {

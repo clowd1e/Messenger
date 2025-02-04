@@ -11,6 +11,7 @@ namespace Messenger.Domain.Aggregates.Users
     {
         private readonly HashSet<Chat> _chats = [];
         private Username _username;
+        private Name _name;
         private Email _email;
 
         private User()
@@ -19,10 +20,12 @@ namespace Messenger.Domain.Aggregates.Users
         private User(
             UserId userId,
             Username username,
+            Name name,
             Email email,
             ImageUri? iconUri) : base(userId)
         {
             Username = username;
+            Name = name;
             Email = email;
             IconUri = iconUri;
         }
@@ -35,6 +38,16 @@ namespace Messenger.Domain.Aggregates.Users
                 ArgumentNullException.ThrowIfNull(value);
 
                 _username = value;
+            }
+        }
+
+        public Name Name
+        {
+            get => _name;
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value);
+                _name = value;
             }
         }
 
@@ -78,12 +91,14 @@ namespace Messenger.Domain.Aggregates.Users
         public static Result<User> Create(
             UserId userId,
             Username username,
+            Name name,
             Email email,
             ImageUri? iconUri)
         {
             return new User(
                 userId,
                 username,
+                name,
                 email,
                 iconUri);
         }

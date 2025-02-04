@@ -2,11 +2,11 @@
 using Messenger.Domain.Aggregates.Chats.Messages.ValueObjects;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
-using Messenger.Infrastructure.Persistense.Configurations.Common;
+using Messenger.Infrastructure.Persistence.Configurations.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Messenger.Infrastructure.Persistense.Configurations
+namespace Messenger.Infrastructure.Persistence.Configurations
 {
     internal sealed class ChatConfiguration : IEntityTypeConfiguration<Chat>
     {

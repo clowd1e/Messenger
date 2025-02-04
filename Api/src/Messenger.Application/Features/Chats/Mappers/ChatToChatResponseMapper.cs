@@ -23,10 +23,10 @@ namespace Messenger.Application.Features.Chats.Mappers
                 Users: users);
         }
 
-        private List<MessageResponse> MapMessages(
+        private static List<MessageResponse> MapMessages(
             IReadOnlyCollection<Message> messages)
         {
-            List<MessageResponse> result = new();
+            List<MessageResponse> result = [];
 
             foreach (var message in messages)
             {
@@ -41,16 +41,17 @@ namespace Messenger.Application.Features.Chats.Mappers
             return result;
         }
 
-        private List<UserResponse> MapUsers(
+        private static List<UserResponse> MapUsers(
             IReadOnlyCollection<User> users)
         {
-            List<UserResponse> result = new();
+            List<UserResponse> result = [];
 
             foreach (var user in users)
             {
                 var userResponse = new UserResponse(
                     Id: user.Id.Value,
                     Username: user.Username.Value,
+                    Name: user.Name.Value,
                     Email: user.Email.Value,
                     IconUri: user.IconUri?.Value);
 

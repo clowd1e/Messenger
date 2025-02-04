@@ -1,6 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Users;
-using Messenger.Infrastructure.Persistense.Repositories;
+using Messenger.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Messenger.Infrastructure.Extensions.DI

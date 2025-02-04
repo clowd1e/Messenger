@@ -4,30 +4,30 @@ using Messenger.Domain.Shared;
 
 namespace Messenger.Domain.Aggregates.Users.ValueObjects
 {
-    public sealed class Username : ValueObject
+    public sealed class Name : ValueObject
     {
         public const int MaxLength = 30;
 
-        private Username(string value)
+        private Name(string value)
         {
             Value = value;
         }
 
         public string Value { get; }
 
-        public static Result<Username> Create(string? value)
+        public static Result<Name> Create(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                return Result.Failure<Username>(UsernameErrors.Empty);
+                return Result.Failure<Name>(NameErrors.Empty);
             }
 
             if (value!.Length > MaxLength)
             {
-                return Result.Failure<Username>(UsernameErrors.TooLong(MaxLength));
+                return Result.Failure<Name>(NameErrors.TooLong(MaxLength));
             }
 
-            return new Username(value);
+            return new Name(value);
         }
 
         protected override IEnumerable<object> GetAtomicValues()

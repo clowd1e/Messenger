@@ -19,6 +19,15 @@ namespace Messenger.Application.Features.Auth.Mappers
 
             var username = usernameResult.Value;
 
+            var nameResult = Name.Create(source.Name);
+
+            if (nameResult.IsFailure)
+            {
+                return Result.Failure<User>(nameResult.Error);
+            }
+
+            var name = nameResult.Value;
+
             var emailResult = Email.Create(source.Email);
 
             if (emailResult.IsFailure)
@@ -33,6 +42,7 @@ namespace Messenger.Application.Features.Auth.Mappers
             return User.Create(
                 userId: userId,
                 username: username,
+                name: name,
                 email: email,
                 iconUri: null);
         }

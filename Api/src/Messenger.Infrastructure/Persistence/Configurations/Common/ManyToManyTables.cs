@@ -1,4 +1,4 @@
-﻿namespace Messenger.Infrastructure.Persistense.Configurations.Common
+﻿namespace Messenger.Infrastructure.Persistence.Configurations.Common
 {
     public static class ManyToManyTables
     {
