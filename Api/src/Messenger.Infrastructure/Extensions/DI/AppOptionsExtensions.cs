@@ -2,7 +2,7 @@
 using Messenger.Infrastructure.Authentication.Options;
 using Messenger.Infrastructure.Extensions.DI.Shared;
 using Messenger.Infrastructure.External.Blobs.Options;
-using Messenger.Infrastructure.Persistense.Options;
+using Messenger.Infrastructure.Persistence.Options;
 using Messenger.Infrastructure.Services.Options;
 using Microsoft.Extensions.DependencyInjection;
 

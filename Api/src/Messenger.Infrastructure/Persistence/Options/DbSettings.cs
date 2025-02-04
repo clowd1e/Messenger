@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Messenger.Infrastructure.Persistense.Options
+namespace Messenger.Infrastructure.Persistence.Options
 {
     public sealed class DbSettings
     {

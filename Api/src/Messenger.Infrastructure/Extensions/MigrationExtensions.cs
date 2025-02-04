@@ -1,4 +1,4 @@
-﻿using Messenger.Infrastructure.Persistense;
+﻿using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

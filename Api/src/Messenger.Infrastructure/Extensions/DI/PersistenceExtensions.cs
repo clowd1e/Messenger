@@ -1,17 +1,17 @@
 ﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Identity;
 using Messenger.Infrastructure.Extensions.DI.Shared;
-using Messenger.Infrastructure.Persistense;
-using Messenger.Infrastructure.Persistense.Options;
+using Messenger.Infrastructure.Persistence;
+using Messenger.Infrastructure.Persistence.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Messenger.Infrastructure.Extensions.DI
 {
-    public static class PersistanseExtensions
+    public static class PersistenceExtensions
     {
-        public static IServiceCollection AddPersistense(this IServiceCollection services)
+        public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
             services.AddMessengerDbContext();
 

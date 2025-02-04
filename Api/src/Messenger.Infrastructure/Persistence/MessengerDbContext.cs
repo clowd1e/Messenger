@@ -4,7 +4,7 @@ using Messenger.Domain.Aggregates.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Messenger.Infrastructure.Persistense
+namespace Messenger.Infrastructure.Persistence
 {
     public sealed class MessengerDbContext : IdentityDbContext<ApplicationUser>
     {

@@ -3,7 +3,7 @@ using Messenger.Domain.Aggregates.Chats.ValueObjects;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace Messenger.Infrastructure.Persistense.Repositories
+namespace Messenger.Infrastructure.Persistence.Repositories
 {
     public sealed class ChatRepository : IChatRepository
     {

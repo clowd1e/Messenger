@@ -1,6 +1,6 @@
 ﻿using Messenger.Application.Abstractions.Data;
 
-namespace Messenger.Infrastructure.Persistense
+namespace Messenger.Infrastructure.Persistence
 {
     public sealed class UnitOfWork : IUnitOfWork
     {

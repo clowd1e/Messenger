@@ -1,11 +1,11 @@
 ﻿using Messenger.Domain.Aggregates.Common.ImageUri;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
-using Messenger.Infrastructure.Persistense.Configurations.Common;
+using Messenger.Infrastructure.Persistence.Configurations.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Messenger.Infrastructure.Persistense.Configurations
+namespace Messenger.Infrastructure.Persistence.Configurations
 {
     internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
     {
@@ -26,6 +26,12 @@ namespace Messenger.Infrastructure.Persistense.Configurations
 
             builder.HasIndex(user => user.Username)
                 .IsUnique();
+
+            builder.Property(user => user.Name)
+                .HasMaxLength(Name.MaxLength)
+                .HasConversion(
+                    name => name.Value,
+                    value => Name.Create(value).Value);
 
             builder.Property(user => user.Email)
                 .HasMaxLength(Email.MaxLength)
