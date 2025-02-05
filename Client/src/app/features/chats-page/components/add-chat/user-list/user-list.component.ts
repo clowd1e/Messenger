@@ -18,7 +18,7 @@ export class UserListComponent {
   mappedUserList = () => this.userList()?.map(userItem => {
     return {
       id: this.uuidHelper.toShortUuid(userItem.id),
-      username: userItem.username,
+      name: userItem.name,
       iconUri: userItem.iconUri,
     }
   })
