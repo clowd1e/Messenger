@@ -1,5 +1,5 @@
 export type UserItem = {
     id: string;
-    username: string;
+    name: string;
     iconUri: string | null;
 }

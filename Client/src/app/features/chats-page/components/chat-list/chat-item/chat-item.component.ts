@@ -16,7 +16,7 @@ export class ChatItemComponent {
 
   currentUserId = input.required<string>();
 
-  chatName = () => this.chatItem().users.find(user => user.id !== this.currentUserId())?.username || 'Unknown';
+  chatName = () => this.chatItem().users.find(user => user.id !== this.currentUserId())?.name || 'Unknown';
   
   chatLastMessageContent = () => this.truncateMessageContent(this.chatLastMessage().content);
 

@@ -20,6 +20,7 @@ import { HttpError } from '../../shared/models/errors/HttpError';
 export class SignupComponent {
   signupRequest: RegisterRequest = {
     username: '',
+    name: '',
     email: '',
     password: '',
   };
@@ -27,6 +28,7 @@ export class SignupComponent {
 
   errorMessage: string = '';
   usernameErrorMessage: string = '';
+  nameErrorMessage: string = '';
   emailErrorMessage: string = '';
   passwordErrorMessage: string = '';
   repeatPasswordErrorMessage: string = '';
@@ -54,6 +56,9 @@ export class SignupComponent {
             switch (error.code.toLowerCase()) {
               case 'username':
                 this.usernameErrorMessage = 'Invalid username';
+                break;
+              case 'name':
+                this.nameErrorMessage = 'Invalid name';
                 break;
               case 'email':
                 this.emailErrorMessage = 'Invalid email';
@@ -83,6 +88,7 @@ export class SignupComponent {
   private resetErrorMessages() {
     this.errorMessage = '';
     this.usernameErrorMessage = '';
+    this.nameErrorMessage = '';
     this.emailErrorMessage = '';
     this.passwordErrorMessage = '';
     this.repeatPasswordErrorMessage = '';

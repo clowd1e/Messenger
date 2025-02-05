@@ -12,12 +12,12 @@ import { UserItem } from '../../models/UserItem';
 export class UserItemComponent {
   userItem = input.required<UserItem>();
 
-  username = () => this.truncateUsername(this.userItem().username);
+  name = () => this.truncateName(this.userItem().name);
 
   userIcon = () => this.userItem().iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-  private truncateUsername(username: string) {
+  private truncateName(name: string) {
     const maxLength = 30;
-    return username.length > maxLength ? username.substring(0, maxLength - 3) + '...' : username;
+    return name.length > maxLength ? name.substring(0, maxLength - 3) + '...' : name;
   }
 }

@@ -6,11 +6,18 @@
             <div>
                 <app-auth-input
                     [inputType]="'text'" 
-                    [imageSource]="'/images/user.svg'" 
+                    [imageSource]="'/images/at.svg'" 
                     [inputPlaceholder]="'Type your username'"
                     [(ngModel)]="signupRequest.username"
                     [name]="'username'"></app-auth-input>
                 <p class="error-message" *ngIf="usernameErrorMessage">{{ usernameErrorMessage }}</p>
+                <app-auth-input
+                    [inputType]="'text'"
+                    [imageSource]="'/images/user.svg'"
+                    [inputPlaceholder]="'Type your name'"
+                    [(ngModel)]="signupRequest.name"
+                    [name]="'name'"></app-auth-input>
+                <p class="error-message" *ngIf="nameErrorMessage">{{ nameErrorMessage }}</p>
                 <app-auth-input
                     [inputType]="'email'" 
                     [imageSource]="'/images/envelope.svg'" 
