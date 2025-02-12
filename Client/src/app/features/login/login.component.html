@@ -1,6 +1,6 @@
 <div class="container">
     <div class="form-background">
-        <form class="login-form">
+        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <h2>Messenger</h2>
             
             <div>
@@ -8,18 +8,35 @@
                     [inputType]="'email'" 
                     [imageSource]="'/images/envelope.svg'" 
                     [inputPlaceholder]="'Type your email'"
-                    [(ngModel)]="loginRequest.email"
-                    [name]="'email'"></app-auth-input>
-                <p class="error-message" *ngIf="emailErrorMessage">{{ emailErrorMessage }}</p>
+                    formControlName="email"></app-auth-input>
+                @if (formControlInvalid('email')) {
+                    @if (formControlContainsError('email', 'required')) {
+                        <p class="error-message">Email is required</p>
+                    }
+                    @if (formControlContainsError('email', 'email')) {
+                        <p class="error-message">Email must be a valid email address</p>
+                    }
+                    @if (formControlContainsError('email', 'maxlength')) {
+                        <p class="error-message">Email must be at most 50 characters long</p>
+                    }
+                }
                 <app-auth-input
                     [inputType]="'password'"
                     [imageSource]="'/images/password.svg'"
                     [inputPlaceholder]="'Type your password'"
-                    [(ngModel)]="loginRequest.password"
-                    [name]="'password'"></app-auth-input>
-                <p class="error-message" *ngIf="passwordErrorMessage">{{ passwordErrorMessage }}</p>
+                    formControlName="password"></app-auth-input>
+                @if (formControlInvalid('password')) {
+                    @if (formControlContainsError('password', 'required')) {
+                        <p class="error-message">Password is required</p>
+                    }
+                    @if (formControlContainsError('password', 'minlength')) {
+                        <p class="error-message">Password must be at least 8 characters long</p>
+                    }
+                    @if (formControlContainsError('password', 'maxlength')) {
+                        <p class="error-message">Password must be at most 30 characters long</p>
+                    }
+                }
             </div>
-            <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
 
             <app-auth-button 
                 class="login-button"
