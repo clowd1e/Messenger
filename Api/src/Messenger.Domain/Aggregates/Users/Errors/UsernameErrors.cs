@@ -9,6 +9,11 @@ namespace Messenger.Domain.Aggregates.Users.Errors
                 code: "Username.Empty",
                 description: "Username cannot be empty.");
 
+        public static Error TooShort(int minLength) =>
+            Error.Validation(
+                code: "Username.TooShort",
+                description: $"Username must be at least {minLength} characters long.");
+
         public static Error TooLong(int maxLength) =>
             Error.Validation(
                 code: "Username.TooLong",

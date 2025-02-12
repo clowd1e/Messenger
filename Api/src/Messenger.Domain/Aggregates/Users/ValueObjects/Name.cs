@@ -6,6 +6,7 @@ namespace Messenger.Domain.Aggregates.Users.ValueObjects
 {
     public sealed class Name : ValueObject
     {
+        public const int MinLength = 1;
         public const int MaxLength = 30;
 
         private Name(string value)
@@ -20,6 +21,11 @@ namespace Messenger.Domain.Aggregates.Users.ValueObjects
             if (string.IsNullOrWhiteSpace(value))
             {
                 return Result.Failure<Name>(NameErrors.Empty);
+            }
+
+            if (value!.Length < MinLength)
+            {
+                return Result.Failure<Name>(NameErrors.TooShort(MinLength));
             }
 
             if (value!.Length > MaxLength)
