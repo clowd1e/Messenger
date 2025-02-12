@@ -1,0 +1,97 @@
+<div class="container">
+    <div class="form-background">
+        <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <h2>Messenger</h2>
+            
+            <div>
+                <app-auth-input
+                    [inputType]="'text'" 
+                    [imageSource]="'/images/at.svg'" 
+                    [inputPlaceholder]="'Type your username'"
+                    formControlName="username"></app-auth-input>
+                @if (formControlInvalid('username')) {
+                    @if (formControlContainsError('username', 'required')) {
+                        <p class="error-message">Username is required</p>
+                    }
+                    @if (formControlContainsError('username', 'minlength')) {
+                        <p class="error-message">Username must be at least 3 characters long</p>
+                    }
+                    @if (formControlContainsError('username', 'maxlength')) {
+                        <p class="error-message">Username must be at most 30 characters long</p>
+                    }
+                    @if (formControlContainsError('username', 'pattern')) {
+                        <p class="error-message">Username can only contain letters or digits</p>
+                    }
+                }
+                <app-auth-input
+                    [inputType]="'text'"
+                    [imageSource]="'/images/user.svg'"
+                    [inputPlaceholder]="'Type your name'"
+                    formControlName="name"></app-auth-input>
+                @if (formControlInvalid('name')) {
+                    @if (formControlContainsError('name', 'required')) {
+                        <p class="error-message">Name is required</p>
+                    }
+                    @if (formControlContainsError('name', 'minlength')) {
+                        <p class="error-message">Name must be at least 1 characters long</p>
+                    }
+                    @if (formControlContainsError('name', 'maxlength')) {
+                        <p class="error-message">Name must be at most 30 characters long</p>
+                    }
+                }
+                <app-auth-input
+                    [inputType]="'email'" 
+                    [imageSource]="'/images/envelope.svg'" 
+                    [inputPlaceholder]="'Type your email'"
+                    formControlName="email"></app-auth-input>
+                @if (formControlInvalid('email')) {
+                    @if (formControlContainsError('email', 'required')) {
+                        <p class="error-message">Email is required</p>
+                    }
+                    @if (formControlContainsError('email', 'email')) {
+                        <p class="error-message">Email must be a valid email address</p>
+                    }
+                    @if (formControlContainsError('email', 'maxlength')) {
+                        <p class="error-message">Email must be at most 50 characters long</p>
+                    }
+                }
+                <app-auth-input
+                    [inputType]="'password'"
+                    [imageSource]="'/images/password.svg'"
+                    [inputPlaceholder]="'Type your password'"
+                    formControlName="password"></app-auth-input>
+                @if (formControlInvalid('password')) {
+                    @if (formControlContainsError('password', 'required')) {
+                        <p class="error-message">Password is required</p>
+                    }
+                    @if (formControlContainsError('password', 'minlength')) {
+                        <p class="error-message">Password must be at least 8 characters long</p>
+                    }
+                    @if (formControlContainsError('password', 'maxlength')) {
+                        <p class="error-message">Password must be at most 30 characters long</p>
+                    }
+                    @if (formControlContainsError('password', 'pattern')) {
+                        <p class="error-message">{{ registerForm.controls.password.errors?.["pattern"] }}</p>
+                    }
+                }
+                <app-auth-input
+                    [inputType]="'password'"
+                    [imageSource]="'/images/password.svg'"
+                    [inputPlaceholder]="'Repeat your password'"
+                    formControlName="repeatPassword"></app-auth-input>
+                @if (formControlInvalid('repeatPassword')) {
+                    @if (formControlContainsError('repeatPassword', 'required')) {
+                        <p class="error-message">Repeat password is required</p>
+                    }
+                    @if (formControlContainsError('repeatPassword', 'repeat')) {
+                        <p class="error-message">Passwords must match</p>
+                    }
+                }
+            </div>
+
+            <app-auth-button
+                class="register-button"
+                [buttonText]="'Sign up'"></app-auth-button>
+        </form>
+    </div>
+</div>
