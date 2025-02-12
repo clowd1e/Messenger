@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { LoginRequest } from '../../../features/login/models/LoginRequest';
-import { RegisterRequest } from '../../../features/signup/models/RegisterRequest';
 import { CreateChatCommand } from '../../../features/chats-page/models/CreateChatCommand';
 import { Observable } from 'rxjs';
 import { LoginResponse } from '../../../features/login/models/LoginResponse';
 import { UserItem } from '../../../features/chats-page/components/add-chat/models/UserItem';
 import { ChatItem } from '../../../features/chats-page/models/ChatItem';
+import { RegisterRequest } from '../../../features/register/models/RegisterRequest';
 
 @Injectable({
   providedIn: 'root'

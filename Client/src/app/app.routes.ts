@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './features/layout/layout.component';
-import { SignupComponent } from './features/signup/signup.component';
 import { LoginComponent } from './features/login/login.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { ChatsPageComponent } from './features/chats-page/chats-page.component';
+import { RegisterComponent } from './features/register/register.component';
 
 export const routes: Routes = [
     {
@@ -18,7 +18,7 @@ export const routes: Routes = [
     },
     {
         path: 'signup',
-        component: SignupComponent,
+        component: RegisterComponent,
         pathMatch: 'full'
     },
     {
