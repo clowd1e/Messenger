@@ -57,11 +57,54 @@ namespace Messenger.Infrastructure.Persistence.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<Chat>> GetUserChatsPaginated(
+            UserId userId,
+            int page,
+            int pageSize,
+            DateTime createdBefore,
+            CancellationToken cancellationToken = default)
+        {
+            var chats = await _context.Chats
+                .Where(chat => chat.Users.Any(user => user.Id == userId))
+                .Include(chat => chat.Users)
+                .ToListAsync(cancellationToken);
+
+            var result = chats
+                .Where(chat => chat.CreationDate.Value <= createdBefore)
+                .OrderByDescending(GetLatestMessageTimestamp)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
+
+            return result;
+        }
+
+        public async Task<int> CountUserChatsAsync(
+            UserId userId,
+            DateTime createdBefore,
+            CancellationToken cancellationToken = default)
+        {
+            var chats = await _context.Chats
+                .Where(chat => chat.Users.Any(user => user.Id == userId))
+                .ToListAsync(cancellationToken);
+
+            var result = chats
+                .Count(chat => chat.CreationDate.Value <= createdBefore);
+
+            return result;
+        }
+
         public async Task InsertAsync(
             Chat chat,
             CancellationToken cancellationToken = default)
         {
             await _context.Chats.AddAsync(chat, cancellationToken);
+        }
+
+        private static DateTime GetLatestMessageTimestamp(Chat chat)
+        {
+            return chat.Messages.OrderByDescending(
+                    message => message.Timestamp.Value)
+                .First().Timestamp.Value;
         }
     }
 }

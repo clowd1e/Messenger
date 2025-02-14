@@ -7,7 +7,7 @@ using Messenger.Application.Abstractions.Data;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Application.Exceptions;
 
-namespace Messenger.Application.Features.Users.Queries.GetCurrentUserChats
+namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChats
 {
     internal sealed class GetCurrentUserChatsQueryHandler
         : IRequestHandler<GetCurrentUserChatsQuery, Result<IEnumerable<ChatResponse>>>

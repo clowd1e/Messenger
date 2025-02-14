@@ -25,7 +25,7 @@ namespace Messenger.Application.Features.Users.Queries.GetById
             CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(
-                userId: new(request.UserId.Value), cancellationToken);
+                userId: new(request.UserId), cancellationToken);
 
             if (user is null)
             {

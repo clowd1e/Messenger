@@ -2,7 +2,7 @@
 using Messenger.Application.Features.Chats.Commands.Create;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.Queries.GetById;
-using Messenger.Application.Features.Users.Queries.GetCurrentUserChats;
+using Messenger.Application.Features.Chats.Queries.GetCurrentUserChats;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -82,7 +82,7 @@ namespace Messenger.WebAPI.Hubs
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            
+
         }
     }
 }

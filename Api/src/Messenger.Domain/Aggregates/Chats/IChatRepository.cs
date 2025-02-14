@@ -16,6 +16,18 @@ namespace Messenger.Domain.Aggregates.Chats
             UserId userId,
             CancellationToken cancellationToken = default);
 
+        Task<IEnumerable<Chat>> GetUserChatsPaginated(
+            UserId userId,
+            int page,
+            int pageSize,
+            DateTime createdBefore,
+            CancellationToken cancellationToken = default);
+
+        Task<int> CountUserChatsAsync(
+            UserId userId,
+            DateTime createdBefore,
+            CancellationToken cancellationToken = default);
+
         Task<bool> ExistsAsync(
             ChatId chatId,
             CancellationToken cancellationToken = default);
