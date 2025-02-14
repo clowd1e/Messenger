@@ -2,6 +2,7 @@
 using Messenger.Application.Features.Chats.Commands.Create;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.Queries.GetById;
+using Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated;
 using Messenger.WebAPI.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,20 @@ namespace Messenger.WebAPI.Controllers
             [FromRoute] Guid chatId)
         {
             var queryResult = await _sender.Send(new GetChatByIdQuery(chatId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("{chatId:guid}/messages")]
+        public async Task<IActionResult> GetChatMessagesPaginated(
+            [FromRoute] Guid chatId,
+            [FromQuery] int page,
+            [FromQuery] int pageSize,
+            [FromQuery] DateTime retrievalCutoff)
+        {
+            var query = new GetChatMessagesPaginatedQuery(chatId, page, pageSize, retrievalCutoff);
+
+            var queryResult = await _sender.Send(query);
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
