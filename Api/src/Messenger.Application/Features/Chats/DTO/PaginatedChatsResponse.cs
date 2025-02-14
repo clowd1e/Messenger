@@ -1,6 +1,6 @@
 ﻿namespace Messenger.Application.Features.Chats.DTO
 {
-    public sealed record PaginatedChatResponse(
+    public sealed record PaginatedChatsResponse(
         IEnumerable<ShortChatResponse> Chats,
         bool IsLastPage);
 }

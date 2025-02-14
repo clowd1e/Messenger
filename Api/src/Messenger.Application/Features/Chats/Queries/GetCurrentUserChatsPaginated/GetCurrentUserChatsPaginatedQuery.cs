@@ -6,5 +6,5 @@ namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPagina
     public sealed record GetCurrentUserChatsPaginatedQuery(
         int Page,
         int PageSize,
-        DateTime RetrievalCutoff) : IRequest<Result<PaginatedChatResponse>>;
+        DateTime RetrievalCutoff) : IRequest<Result<PaginatedChatsResponse>>;
 }

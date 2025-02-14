@@ -1,7 +1,9 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
+using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Messenger.Infrastructure.Persistence.Repositories
 {
@@ -61,7 +63,7 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             UserId userId,
             int page,
             int pageSize,
-            DateTime createdBefore,
+            DateTime retrievalCutoff,
             CancellationToken cancellationToken = default)
         {
             var chats = await _context.Chats
@@ -70,7 +72,7 @@ namespace Messenger.Infrastructure.Persistence.Repositories
                 .ToListAsync(cancellationToken);
 
             var result = chats
-                .Where(chat => chat.CreationDate.Value <= createdBefore)
+                .Where(chat => chat.CreationDate.Value <= retrievalCutoff)
                 .OrderByDescending(GetLatestMessageTimestamp)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
@@ -78,9 +80,30 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             return result;
         }
 
+        public async Task<IEnumerable<Message>> GetChatMessagesPaginated(
+            ChatId chatId,
+            int page,
+            int pageSize,
+            DateTime retrievalCutoff,
+            CancellationToken cancellationToken = default)
+        {
+            var chat = await _context.Chats.FirstOrDefaultAsync(
+                chat => chat.Id == chatId,
+                cancellationToken);
+
+            var result = chat.Messages
+                .Where(message => message.Timestamp.Value <= retrievalCutoff)
+                .OrderByDescending(message => message.Timestamp.Value)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Reverse();
+
+            return result;
+        }
+
         public async Task<int> CountUserChatsAsync(
             UserId userId,
-            DateTime createdBefore,
+            DateTime retrievalCutoff,
             CancellationToken cancellationToken = default)
         {
             var chats = await _context.Chats
@@ -88,9 +111,34 @@ namespace Messenger.Infrastructure.Persistence.Repositories
                 .ToListAsync(cancellationToken);
 
             var result = chats
-                .Count(chat => chat.CreationDate.Value <= createdBefore);
+                .Count(chat => chat.CreationDate.Value <= retrievalCutoff);
 
             return result;
+        }
+
+        public async Task<int> CountChatMessagesAsync(
+            ChatId chatId,
+            DateTime retrievalCutoff,
+            CancellationToken cancellationToken = default)
+        {
+            var chat = await _context.Chats
+                .FirstOrDefaultAsync(chat => chat.Id == chatId, cancellationToken);
+
+            var result = chat.Messages
+                .Count(message => message.Timestamp.Value <= retrievalCutoff);
+
+            return result;
+        }
+
+        public async Task<bool> IsUserInChatAsync(
+            UserId userId,
+            ChatId chatId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Chats
+                .AnyAsync(chat => chat.Id == chatId &&
+                    chat.Users.Any(user => user.Id == userId),
+                cancellationToken);
         }
 
         public async Task InsertAsync(
