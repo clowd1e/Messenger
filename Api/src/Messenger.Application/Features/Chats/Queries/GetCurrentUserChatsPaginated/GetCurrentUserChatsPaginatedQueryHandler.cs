@@ -11,7 +11,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated
 {
     internal sealed class GetCurrentUserChatsPaginatedQueryHandler
-        : IRequestHandler<GetCurrentUserChatsPaginatedQuery, Result<PaginatedChatResponse>>
+        : IRequestHandler<GetCurrentUserChatsPaginatedQuery, Result<PaginatedChatsResponse>>
     {
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IChatRepository _chatRepository;
@@ -30,7 +30,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPagina
             _chatMapper = chatMapper;
         }
 
-        public async Task<Result<PaginatedChatResponse>> Handle(
+        public async Task<Result<PaginatedChatsResponse>> Handle(
             GetCurrentUserChatsPaginatedQuery request,
             CancellationToken cancellationToken)
         {
@@ -62,7 +62,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPagina
                 request.PageSize,
                 totalUserChats);
 
-            return new PaginatedChatResponse(chatResponses, isLastPage);
+            return new PaginatedChatsResponse(chatResponses, isLastPage);
         }
     }
 }
