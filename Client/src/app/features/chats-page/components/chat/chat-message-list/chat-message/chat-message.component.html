@@ -4,6 +4,6 @@
     </div>
     <div class="message-box">
         <p>{{ messageContent() }}</p>
-        <p class="timestamp">{{ messageTime() }}</p>
+        <p class="timestamp">{{ messageTimestamp() | date:'HH:mm' }}</p>
     </div>
 </div>

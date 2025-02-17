@@ -9,6 +9,6 @@
         <p>{{ chatLastMessageContent() }}</p>
     </div>
     <div class="time-box">
-        <p>{{ chatLastMessageTimeFormated() }}</p>
+        <p>{{ chatLastMessage().timestamp | date:'HH:mm' }}</p>
     </div>
 </a>
