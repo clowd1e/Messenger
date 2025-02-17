@@ -22,7 +22,7 @@ namespace Messenger.Infrastructure.Persistence.Configurations
             builder.Property(chat => chat.CreationDate)
                 .HasConversion(
                     date => date.Value,
-                    value => ChatCreationDate.Create(value).Value);
+                    value => ChatCreationDate.Create(value.ToUniversalTime()).Value);
 
             builder.OwnsMany(chat => chat.Messages, messagesBuilder =>
             {
@@ -40,7 +40,7 @@ namespace Messenger.Infrastructure.Persistence.Configurations
                 messagesBuilder.Property(message => message.Timestamp)
                     .HasConversion(
                         timestamp => timestamp.Value,
-                        value => MessageTimestamp.Create(value).Value);
+                        value => MessageTimestamp.Create(value.ToUniversalTime()).Value);
             });
 
             builder
