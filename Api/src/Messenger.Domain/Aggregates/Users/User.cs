@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Common.ImageUri;
+using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Primitives;
@@ -10,6 +11,7 @@ namespace Messenger.Domain.Aggregates.Users
     public sealed class User : AggregateRoot<UserId>
     {
         private readonly HashSet<Chat> _chats = [];
+        private readonly HashSet<Message> _messages = [];
         private Username _username;
         private Name _name;
         private Email _email;
@@ -66,6 +68,8 @@ namespace Messenger.Domain.Aggregates.Users
 
         public IReadOnlyCollection<Chat> Chats => _chats;
 
+        public IReadOnlyCollection<Message> Messages => _messages;
+
         public Result AddChat(Chat chat)
         {
             if (_chats.Contains(chat))
@@ -74,6 +78,15 @@ namespace Messenger.Domain.Aggregates.Users
             }
 
             _chats.Add(chat);
+
+            return Result.Success();
+        }
+
+        public Result AddMessage(Message message)
+        {
+            ArgumentNullException.ThrowIfNull(message);
+
+            _messages.Add(message);
 
             return Result.Success();
         }

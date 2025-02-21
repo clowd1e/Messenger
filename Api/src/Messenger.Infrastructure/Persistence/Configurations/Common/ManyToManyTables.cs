@@ -2,6 +2,6 @@
 {
     public static class ManyToManyTables
     {
-        public const string UsersChats = "UsersChats";
+        public const string UserChat = "user_chat";
     }
 }

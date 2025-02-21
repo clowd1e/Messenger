@@ -43,7 +43,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPagina
                 throw new AuthenticatedUserNotFoundException();
             }
 
-            var chats = await _chatRepository.GetUserChatsPaginated(
+            var chats = await _chatRepository.GetUserChatsPaginatedWithLastMessage(
                 userId,
                 request.Page,
                 request.PageSize,

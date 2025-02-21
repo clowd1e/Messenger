@@ -6,5 +6,5 @@ namespace Messenger.Application.Features.Chats.DTO
         Guid Id,
         DateTime CreationDate,
         List<MessageResponse> Messages,
-        List<UserResponse> Users);
+        List<ShortUserResponse> Users);
 }

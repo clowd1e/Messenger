@@ -4,10 +4,10 @@ using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Features.Chats.DTO;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.Errors;
+using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
-using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
 
 namespace Messenger.Application.Features.Chats.Commands.Create
 {
@@ -16,21 +16,24 @@ namespace Messenger.Application.Features.Chats.Commands.Create
     {
         private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;
+        private readonly IMessageRepository _messageRepository;
         private readonly IUserContextService<Guid> _userContextService;
         private readonly Mapper<CreateChatRequestModel, Result<Chat>> _chatMapper;
-        private readonly Mapper<SendMessageRequestModel, Result<Message>> _messageMapper;
+        private readonly Mapper<CreateMessageRequestModel, Result<Message>> _messageMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateChatCommandHandler(
             IUserRepository userRepository,
             IChatRepository chatRepository,
+            IMessageRepository messageRepository,
             IUserContextService<Guid> userContextService,
             Mapper<CreateChatRequestModel, Result<Chat>> chatMapper,
-            Mapper<SendMessageRequestModel, Result<Message>> messageMapper,
+            Mapper<CreateMessageRequestModel, Result<Message>> messageMapper,
             IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _chatRepository = chatRepository;
+            _messageRepository = messageRepository;
             _userContextService = userContextService;
             _chatMapper = chatMapper;
             _messageMapper = messageMapper;
@@ -51,7 +54,7 @@ namespace Messenger.Application.Features.Chats.Commands.Create
                 return Result.Failure<Guid>(UserErrors.NotFound);
             }
 
-            var inviteeId = new UserId(request.InviteeId.Value);
+            var inviteeId = new UserId(request.InviteeId);
 
             var invitee = await _userRepository.GetByIdAsync(inviteeId, cancellationToken);
 
@@ -83,11 +86,8 @@ namespace Messenger.Application.Features.Chats.Commands.Create
 
             var chat = mappingResult.Value;
 
-            invitee.AddChat(chat);
-            inviter.AddChat(chat);
-
-            var messageRequestModel = new SendMessageRequestModel(
-                request.Message, inviter.Id);
+            var messageRequestModel = new CreateMessageRequestModel(
+                request.Message);
 
             var messageMappingResult = _messageMapper.Map(messageRequestModel);
 
@@ -98,15 +98,25 @@ namespace Messenger.Application.Features.Chats.Commands.Create
 
             var message = messageMappingResult.Value;
 
-            var addMessageResult = chat.AddMessage(message);
+            message.SetUser(inviter);
+            message.SetChat(chat);
 
-            if (addMessageResult.IsFailure)
+            var addMessageToChatResult = chat.AddMessage(message);
+
+            if (addMessageToChatResult.IsFailure)
             {
-                return Result.Failure<Guid>(addMessageResult.Error);
+                return Result.Failure<Guid>(addMessageToChatResult.Error);
+            }
+
+            var addMessageToUserResult = inviter.AddMessage(message);
+
+            if (addMessageToUserResult.IsFailure)
+            {
+                return Result.Failure<Guid>(addMessageToUserResult.Error);
             }
 
             await _chatRepository.InsertAsync(chat, cancellationToken);
-
+            await _messageRepository.InsertAsync(message, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success(chat.Id.Value);

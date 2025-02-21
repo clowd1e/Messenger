@@ -1,31 +1,23 @@
 ﻿using Messenger.Domain.Aggregates.Chats.ValueObjects;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
-using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
 
 namespace Messenger.Domain.Aggregates.Chats
 {
     public interface IChatRepository
     {
-        Task<Chat?> GetByIdAsync(
+        Task<Chat?> GetByIdWithUsersAsync(
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Chat>> GetAllAsync(
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Chat>> GetUserChats(
+        Task<IEnumerable<Chat>> GetUserChatsWithLastMessage(
             UserId userId,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Chat>> GetUserChatsPaginated(
+        Task<IEnumerable<Chat>> GetUserChatsPaginatedWithLastMessage(
             UserId userId,
-            int page,
-            int pageSize,
-            DateTime retrievalCutoff,
-            CancellationToken cancellationToken = default);
-
-        Task<IEnumerable<Message>> GetChatMessagesPaginated(
-            ChatId chatId,
             int page,
             int pageSize,
             DateTime retrievalCutoff,
@@ -33,11 +25,6 @@ namespace Messenger.Domain.Aggregates.Chats
 
         Task<int> CountUserChatsAsync(
             UserId userId,
-            DateTime retrievalCutoff,
-            CancellationToken cancellationToken = default);
-
-        Task<int> CountChatMessagesAsync(
-            ChatId chatId,
             DateTime retrievalCutoff,
             CancellationToken cancellationToken = default);
 

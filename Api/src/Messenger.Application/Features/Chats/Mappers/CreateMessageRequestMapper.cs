@@ -1,15 +1,15 @@
 ﻿using Messenger.Application.Abstractions.Data;
-using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.DTO;
 using Messenger.Domain.Aggregates.Chats.Messages.ValueObjects;
-using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Messages;
+using Messenger.Domain.Aggregates.Messages.ValueObjects;
 
 namespace Messenger.Application.Features.Chats.Mappers
 {
-    internal sealed class SendMessageCommandMapper
-        : Mapper<SendMessageRequestModel, Result<Message>>
+    internal sealed class CreateMessageRequestMapper
+        : Mapper<CreateMessageRequestModel, Result<Message>>
     {
-        public override Result<Message> Map(SendMessageRequestModel source)
+        public override Result<Message> Map(CreateMessageRequestModel request)
         {
             var timestampResult = MessageTimestamp.UtcNow();
 
@@ -20,7 +20,7 @@ namespace Messenger.Application.Features.Chats.Mappers
 
             var timestamp = timestampResult.Value;
 
-            var contentResult = MessageContent.Create(source.Message);
+            var contentResult = MessageContent.Create(request.Message);
 
             if (contentResult.IsFailure)
             {
@@ -30,9 +30,9 @@ namespace Messenger.Application.Features.Chats.Mappers
             var content = contentResult.Value;
 
             return Message.Create(
+                messageId: new MessageId(Guid.NewGuid()),
                 timestamp: timestamp,
-                content: content,
-                userId: source.UserId);
+                content: content);
         }
     }
 }

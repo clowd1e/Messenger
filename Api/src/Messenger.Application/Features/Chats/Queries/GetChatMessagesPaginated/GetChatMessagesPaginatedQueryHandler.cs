@@ -7,9 +7,9 @@ using Messenger.Application.Helpers;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
-using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
 
 namespace Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated
 {
@@ -18,17 +18,20 @@ namespace Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated
     {
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IChatRepository _chatRepository;
+        private readonly IMessageRepository _messageRepository;
         private readonly IUserRepository _userRepository;
         private readonly Mapper<Message, MessageResponse> _messageMapper;
 
         public GetChatMessagesPaginatedQueryHandler(
             IUserContextService<Guid> userContextService,
             IChatRepository chatRepository,
+            IMessageRepository messageRepository,
             IUserRepository userRepository,
             Mapper<Message, MessageResponse> messageMapper)
         {
             _userContextService = userContextService;
             _chatRepository = chatRepository;
+            _messageRepository = messageRepository;
             _userRepository = userRepository;
             _messageMapper = messageMapper;
         }
@@ -67,7 +70,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated
                 return Result.Failure<PaginatedMessagesResponse>(ChatErrors.UserNotInChat);
             }
 
-            var messages = await _chatRepository.GetChatMessagesPaginated(
+            var messages = await _messageRepository.GetChatMessagesPaginated(
                 chatId,
                 request.Page,
                 request.PageSize,
@@ -76,7 +79,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated
 
             var messagesMap = _messageMapper.Map(messages);
 
-            var totalChatMessages = await _chatRepository.CountChatMessagesAsync(
+            var totalChatMessages = await _messageRepository.CountChatMessagesAsync(
                 chatId,
                 request.RetrievalCutoff,
                 cancellationToken);
