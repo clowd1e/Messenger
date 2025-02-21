@@ -1,6 +1,8 @@
 ﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Features.Chats.DTO;
-using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
+using Messenger.Application.Features.Users.DTO;
+using Messenger.Domain.Aggregates.Messages;
+using Messenger.Domain.Aggregates.Users;
 
 namespace Messenger.Application.Features.Chats.Mappers
 {
@@ -10,9 +12,17 @@ namespace Messenger.Application.Features.Chats.Mappers
         public override MessageResponse Map(Message source)
         {
             return new MessageResponse(
-                UserId: source.UserId.Value,
+                Sender: MapUser(source.User),
                 Timestamp: source.Timestamp.Value,
                 Content: source.Content.Value);
+        }
+
+        private static ShortUserResponse MapUser(User user)
+        {
+            return new ShortUserResponse(
+                Id: user.Id.Value,
+                Name: user.Name.Value,
+                IconUri: user.IconUri?.Value);
         }
     }
 }

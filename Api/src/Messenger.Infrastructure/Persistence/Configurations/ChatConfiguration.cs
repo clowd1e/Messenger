@@ -1,7 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
-using Messenger.Domain.Aggregates.Chats.Messages.ValueObjects;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
-using Messenger.Domain.Aggregates.Users.ValueObjects;
+using Messenger.Domain.Aggregates.Users;
 using Messenger.Infrastructure.Persistence.Configurations.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -12,41 +11,34 @@ namespace Messenger.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Chat> builder)
         {
+            builder.ToTable("chat");
+
             builder.HasIndex(chat => chat.Id)
                 .IsUnique();
 
-            builder.Property(chat => chat.Id).HasConversion(
-                id => id.Value,
-                value => new ChatId(value));
+            builder.Property(chat => chat.Id)
+                .HasConversion(
+                    id => id.Value,
+                    value => new ChatId(value))
+                .HasColumnName("id");
 
             builder.Property(chat => chat.CreationDate)
                 .HasConversion(
                     date => date.Value,
-                    value => ChatCreationDate.Create(value.ToUniversalTime()).Value);
+                    value => ChatCreationDate.Create(value.ToUniversalTime()).Value)
+                .HasColumnName("creation_date");
 
-            builder.OwnsMany(chat => chat.Messages, messagesBuilder =>
-            {
-                messagesBuilder.Property(message => message.UserId)
-                    .HasConversion(
-                        userId => userId.Value,
-                        value => new UserId(value));
-
-                messagesBuilder.Property(message => message.Content)
-                    .HasMaxLength(MessageContent.MaxLength)
-                    .HasConversion(
-                        content => content.Value,
-                        value => MessageContent.Create(value).Value);
-
-                messagesBuilder.Property(message => message.Timestamp)
-                    .HasConversion(
-                        timestamp => timestamp.Value,
-                        value => MessageTimestamp.Create(value.ToUniversalTime()).Value);
-            });
+            builder
+                .HasMany(chat => chat.Messages)
+                .WithOne(message => message.Chat);
 
             builder
                 .HasMany(chat => chat.Users)
                 .WithMany(user => user.Chats)
-                .UsingEntity(join => join.ToTable(ManyToManyTables.UsersChats));
+                .UsingEntity(
+                    ManyToManyTables.UserChat,
+                    l => l.HasOne(typeof(Chat)).WithMany().HasForeignKey("chats_id"),
+                    r => r.HasOne(typeof(User)).WithMany().HasForeignKey("users_id"));
         }
     }
 }

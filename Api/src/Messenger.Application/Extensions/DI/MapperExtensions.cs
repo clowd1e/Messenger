@@ -7,8 +7,8 @@ using Messenger.Application.Features.Users.DTO;
 using Messenger.Application.Features.Users.Mappers;
 using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.Chats;
+using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Users;
-using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Messenger.Application.Extensions.DI
@@ -28,8 +28,11 @@ namespace Messenger.Application.Extensions.DI
             services.AddMapper<Chat, ChatResponse, ChatToChatResponseMapper>();
             services.AddMapper<Chat, ShortChatResponse, ChatToShortChatResponseMapper>();
             services.AddMapper<Message, MessageResponse, MessageToMessageResponseMapper>();
-            services.AddMapper<SendMessageRequestModel, Result<Message>, SendMessageCommandMapper>();
             services.AddMapper<CreateChatRequestModel, Result<Chat>, CreateChatCommandMapper>();
+            #endregion
+
+            #region Messages
+            services.AddMapper<CreateMessageRequestModel, Result<Message>, CreateMessageRequestMapper>();
             #endregion
 
             return services;

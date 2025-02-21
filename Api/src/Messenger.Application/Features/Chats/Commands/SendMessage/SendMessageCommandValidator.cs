@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Messenger.Domain.Aggregates.Chats.Messages.ValueObjects;
+using Messenger.Domain.Aggregates.Messages.ValueObjects;
 
 namespace Messenger.Application.Features.Chats.Commands.SendMessage
 {

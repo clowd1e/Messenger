@@ -1,6 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
-using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
@@ -42,7 +42,7 @@ namespace Messenger.Domain.Aggregates.Chats
 
         public Result AddMessage(Message message)
         {
-            if (!Users.Select(u => u.Id).Contains(message.UserId))
+            if (!Users.Contains(message.User))
             {
                 return ChatErrors.UserNotInChat;
             }
