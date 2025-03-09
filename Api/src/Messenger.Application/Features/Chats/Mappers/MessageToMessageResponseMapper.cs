@@ -12,6 +12,7 @@ namespace Messenger.Application.Features.Chats.Mappers
         public override MessageResponse Map(Message source)
         {
             return new MessageResponse(
+                Id: source.Id.Value,
                 Sender: MapUser(source.User),
                 Timestamp: source.Timestamp.Value,
                 Content: source.Content.Value);

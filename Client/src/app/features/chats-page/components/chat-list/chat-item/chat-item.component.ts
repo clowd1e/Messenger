@@ -23,7 +23,9 @@ export class ChatItemComponent {
 
   chatIcon = () => this.chatItem().users.find(user => user.id !== this.currentUserId())?.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-  chatLastMessage = () => this.chatItem().messages[this.chatItem().messages.length - 1];
+  chatLastMessage = () => {
+    return this.chatItem().messages[this.chatItem().messages.length - 1];
+  }
 
   private truncateMessageContent(message: string) {
     const maxLength = 30;

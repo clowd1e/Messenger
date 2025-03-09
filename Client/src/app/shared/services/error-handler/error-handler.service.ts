@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { HttpError } from '../../models/errors/HttpError';
 import { HttpValidationError } from '../../models/errors/HttpValidationError';
+import { Error } from '../../models/errors/Error';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,10 @@ export class ErrorHandlerService {
   handleHttpError(error: HttpErrorResponse): void {
     switch (error.status) {
       case HttpStatusCode.NotFound:
-        this.processClientError(error);
+        this.processHttpError(error);
         break;
       case HttpStatusCode.BadRequest:
-        this.processClientError(error);
+        this.processHttpError(error);
         break;
       case HttpStatusCode.InternalServerError:
         this.toastr.error('Server error.');
@@ -27,15 +28,23 @@ export class ErrorHandlerService {
     }
   }
 
-  private processClientError(error: HttpErrorResponse) {
-    if (this.isHttpValidationError(error.error)) {
-      let apiError: HttpValidationError = error.error;
+  handleError(error: any): void {
+    this.processClientError(error);
+  }
+
+  private processHttpError(error: HttpErrorResponse): void {
+    this.processClientError(error.error);
+  }
+
+  private processClientError(error: any) {
+    if (this.isHttpValidationError(error)) {
+      let apiError: HttpValidationError = error;
 
       for (let error of apiError.errors) {
         this.toastr.error(error.description, error.code)
       }
     } else {
-      let apiError: HttpError = error.error;
+      let apiError: HttpError = error;
       
       let description: string = apiError.errors.description;
       this.toastr.error(description, 'Error');

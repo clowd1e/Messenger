@@ -12,33 +12,27 @@ namespace Messenger.Application.Features.Chats.Mappers
     {
         public override ChatResponse Map(Chat source)
         {
-            var messages = MapMessages(source.Messages);
+            var lastMessage = MapLastMessage(source.Messages);
 
             var users = MapUsers(source.Users);
 
             return new(
                 Id: source.Id.Value,
                 CreationDate: source.CreationDate.Value,
-                Messages: messages,
+                LastMessage: lastMessage,
                 Users: users);
         }
 
-        private static List<MessageResponse> MapMessages(
+        private static MessageResponse MapLastMessage(
             IReadOnlyCollection<Message> messages)
         {
-            List<MessageResponse> result = [];
+            var message = messages.OrderByDescending(m => m.Timestamp.Value).First();
 
-            foreach (var message in messages)
-            {
-                var messageResponse = new MessageResponse(
-                    Sender: MapUser(message.User),
-                    Timestamp: message.Timestamp.Value,
-                    Content: message.Content.Value);
-
-                result.Add(messageResponse);
-            }
-
-            return result;
+            return new MessageResponse(
+                Id: message.Id.Value,
+                Sender: MapUser(message.User),
+                Timestamp: message.Timestamp.Value,
+                Content: message.Content.Value);
         }
 
         private static List<ShortUserResponse> MapUsers(

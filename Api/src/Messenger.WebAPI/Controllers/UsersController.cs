@@ -28,7 +28,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetUserByIdQuery(userId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
         }
 
         [HttpGet]
@@ -36,7 +36,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllUsersQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
         }
 
         [HttpGet("except-current")]
@@ -44,7 +44,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllUsersExceptCurrentQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
         }
 
         [HttpPut("set-icon")]
@@ -53,7 +53,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToActionResult();
         }
 
         [HttpPut("remove-icon")]
@@ -61,7 +61,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new RemoveUserIconCommand());
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToActionResult();
         }
     }
 }

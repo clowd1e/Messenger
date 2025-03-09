@@ -16,13 +16,13 @@ namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPagina
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IChatRepository _chatRepository;
         private readonly IUserRepository _userRepository;
-        private readonly Mapper<Chat, ShortChatResponse> _chatMapper;
+        private readonly Mapper<Chat, ChatResponse> _chatMapper;
 
         public GetCurrentUserChatsPaginatedQueryHandler(
             IUserContextService<Guid> userContextService,
             IChatRepository chatRepository,
             IUserRepository userRepository,
-            Mapper<Chat, ShortChatResponse> chatMapper)
+            Mapper<Chat, ChatResponse> chatMapper)
         {
             _userContextService = userContextService;
             _chatRepository = chatRepository;

@@ -58,7 +58,7 @@ export class LoginComponent {
         this.storageService.setAccessTokenToSessionStorage(response.accessToken);
         this.storageService.setRefreshTokenToLocalStorage(response.refreshToken);
         
-        this.router.navigateByUrl('chats/#');
+        this.router.navigateByUrl('chats/');
       },
       error: (httpError: HttpErrorResponse) => {
         this.errorHandler.handleHttpError(httpError);

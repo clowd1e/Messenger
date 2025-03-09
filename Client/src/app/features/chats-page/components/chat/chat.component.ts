@@ -12,7 +12,7 @@ import { ChatMessageListComponent } from './chat-message-list/chat-message-list.
   styleUrl: './chat.component.scss'
 })
 export class ChatComponent {
-  chat = input<ChatItem>();
+  chat = input.required<ChatItem | undefined>();
 
   @Output() messageSubmitted = new EventEmitter<string>();
 
