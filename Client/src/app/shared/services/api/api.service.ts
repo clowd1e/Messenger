@@ -15,7 +15,7 @@ import { PaginatedChatsResponse } from '../../../features/chats-page/models/Pagi
   providedIn: 'root'
 })
 export class ApiService {
-private readonly apiUrl = environment.API_BASE_URL;
+  private readonly apiUrl = environment.API_BASE_URL;
 
   httpClient = inject(HttpClient);
 
