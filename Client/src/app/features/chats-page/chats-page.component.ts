@@ -19,6 +19,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MapChatToChatItem } from './mappers/ChatToChatItemMapper';
 import { Message } from './models/Message';
 import { PaginatedChatsResponse } from './models/PaginatedChatsResponse';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-chats-page',
@@ -34,7 +35,7 @@ export class ChatsPageComponent {
 
   addChatVisible = signal(false);
   chatsLoading: boolean = false;
-  chatRetrievalCutoff = new Date();
+  chatRetrievalCutoff = environment.production ? new Date(Date.now() - 100) : new Date();
 
   apiService = inject(ApiService);
   signalrService = inject(SignalrService);

@@ -8,6 +8,7 @@ import { PaginatedMessagesResponse } from '../../../models/PaginatedMessagesResp
 import { ErrorHandlerService } from '../../../../../shared/services/error-handler/error-handler.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChatItem } from '../../../models/ChatItem';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-chat-message-list',
@@ -24,7 +25,7 @@ export class ChatMessageListComponent {
 
   currentPage = 1;
   itemsPerPage = 20;
-  retrieveCutoff = new Date();
+  retrieveCutoff = environment.production ? new Date(Date.now() - 100) : new Date();
   isLastPage = false;
   
   userContextService = inject(UserContextService);
