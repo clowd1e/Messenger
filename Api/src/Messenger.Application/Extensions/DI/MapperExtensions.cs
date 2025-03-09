@@ -26,7 +26,6 @@ namespace Messenger.Application.Extensions.DI
 
             #region Chats
             services.AddMapper<Chat, ChatResponse, ChatToChatResponseMapper>();
-            services.AddMapper<Chat, ShortChatResponse, ChatToShortChatResponseMapper>();
             services.AddMapper<Message, MessageResponse, MessageToMessageResponseMapper>();
             services.AddMapper<CreateChatRequestModel, Result<Chat>, CreateChatCommandMapper>();
             #endregion

@@ -5,7 +5,7 @@ namespace Messenger.WebAPI.Extensions
 {
     public static class ResultExtensions
     {
-        public static IActionResult ToProblemDetails(this Result result)
+        public static ProblemDetails ToProblemDetails(this Result result)
         {
             if (result.IsSuccess)
             {
@@ -36,6 +36,13 @@ namespace Messenger.WebAPI.Extensions
                         .ToArray();
                 }
             }
+
+            return problemDetails;
+        }
+
+        public static IActionResult ToActionResult(this Result result)
+        {
+            var problemDetails = result.ToProblemDetails();
 
             return new ObjectResult(problemDetails)
             {

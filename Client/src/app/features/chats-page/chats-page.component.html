@@ -10,9 +10,9 @@
             (click)="navigateToAddChat()"></app-add-chat-button>
         <app-chat-list
             class="chat-list"
-            [chatListLoading]="userChatsLoading"
+            [chatListLoading]="chatsLoading"
             [currentUserId]="currentUserId"
-            [chatList]="userChats"
+            [chatList]="chats"
             [selectedChatId]="selectedChat()?.id"></app-chat-list>
     </div>
     <div class="chat-box" [ngClass]="selectedChat() ? 'chat-selected' : 'chat-not-selected'">

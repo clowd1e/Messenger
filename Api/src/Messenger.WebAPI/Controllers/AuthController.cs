@@ -25,7 +25,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command, cancellationToken);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToActionResult();
         }
 
         [HttpPost("login")]
@@ -35,7 +35,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command, cancellationToken);
 
-            return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToActionResult();
         }
 
         [HttpPost("refresh")]
@@ -45,7 +45,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command, cancellationToken);
 
-            return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToActionResult();
         }
     }
 }
