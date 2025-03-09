@@ -14,7 +14,7 @@ export class ChatMessageComponent {
   currentUserId = input.required<string>();
 
   isCurrentUser() {
-    return this.messageDto().message.userId === this.currentUserId();
+    return this.messageDto().message.sender.id === this.currentUserId();
   }
 
   userIconVisible() {

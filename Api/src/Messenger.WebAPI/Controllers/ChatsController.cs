@@ -3,6 +3,7 @@ using Messenger.Application.Features.Chats.Commands.Create;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated;
+using Messenger.Application.Features.Chats.Queries.GetCurrentUserChats;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated;
 using Messenger.WebAPI.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,16 @@ namespace Messenger.WebAPI.Controllers
         #region Queries
 
         [HttpGet]
+        public async Task<IActionResult> GetChatsForCurrentUser()
+        {
+            var query = new GetCurrentUserChatsQuery();
+
+            var queryResult = await _sender.Send(query);
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
+        }
+
+        [HttpGet("paginated")]
         public async Task<IActionResult> GetPaginatedChatsForCurrentUser(
             [FromQuery] int page,
             [FromQuery] int pageSize,
@@ -34,7 +45,7 @@ namespace Messenger.WebAPI.Controllers
 
             var queryResult = await _sender.Send(query);
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
         }
 
         [HttpGet("{chatId:guid}")]
@@ -43,7 +54,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetChatByIdQuery(chatId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
         }
 
         [HttpGet("{chatId:guid}/messages")]
@@ -57,7 +68,7 @@ namespace Messenger.WebAPI.Controllers
 
             var queryResult = await _sender.Send(query);
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
         }
 
         #endregion
@@ -70,7 +81,7 @@ namespace Messenger.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? Ok() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? Ok() : commandResult.ToActionResult();
         }
 
         [HttpPost]
@@ -87,7 +98,7 @@ namespace Messenger.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return commandResult.ToProblemDetails();
+            return commandResult.ToActionResult();
         }
 
         #endregion

@@ -5,15 +5,20 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserContextService } from '../../shared/services/user-context/user-context.service';
 import { UuidHelperService } from '../../shared/services/uuid-helper/uuid-helper.service';
 import { map } from 'rxjs';
+import { Chat } from './models/Chat';
 import { ChatItem } from './models/ChatItem';
 import { CreateChatCommand } from './models/CreateChatCommand';
 import { SendMessageCommand } from './models/SendMessageCommand';
-import { MessageResponse } from './models/MessageResponse';
 import { CommonModule } from '@angular/common';
 import { AddChatButtonComponent } from './components/add-chat-button/add-chat-button.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { AddChatComponent } from './components/add-chat/add-chat.component';
+import { ErrorHandlerService } from '../../shared/services/error-handler/error-handler.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MapChatToChatItem } from './mappers/ChatToChatItemMapper';
+import { Message } from './models/Message';
+import { PaginatedChatsResponse } from './models/PaginatedChatsResponse';
 
 @Component({
   selector: 'app-chats-page',
@@ -24,13 +29,12 @@ import { AddChatComponent } from './components/add-chat/add-chat.component';
   styleUrl: './chats-page.component.scss'
 })
 export class ChatsPageComponent {
-  addChatVisible = signal(false);
-
-  userChats: ChatItem[] = [];
-
-  userChatsLoading: boolean = false;
-
+  chats: ChatItem[] = [];
   selectedChat = signal<ChatItem | undefined>(undefined);
+
+  addChatVisible = signal(false);
+  chatsLoading: boolean = false;
+  chatRetrievalCutoff = new Date();
 
   apiService = inject(ApiService);
   signalrService = inject(SignalrService);
@@ -38,11 +42,13 @@ export class ChatsPageComponent {
   router = inject(Router);
   userContextService = inject(UserContextService);
   uuidHelper = inject(UuidHelperService);
+  errorHandler = inject(ErrorHandlerService);
 
   currentUserId = this.userContextService.getCurrentUserId();
 
   ngOnInit() {
     this.connectSignalR();
+    this.loadUserChats();
 
     this.route.url.pipe(map(urlSegments => urlSegments)).subscribe(urlSegments => {
       const isAddRoute = urlSegments.some(segment => segment.path === 'add');
@@ -52,21 +58,56 @@ export class ChatsPageComponent {
         this.handleChatRoute();
       }
     });
+  }
 
-    this.signalrService.listenForMessages(this.handleMessageReceived.bind(this));
-    this.signalrService.listenForErrors(this.handleErrorReceived.bind(this));
+  private connectSignalR() : void {
+    this.signalrService.connect().then(() => {
+      this.signalrService.listenForMessages(this.handleMessageReceived.bind(this));
+      this.signalrService.listenForErrors(this.handleErrorReceived.bind(this));
+    })
+  }
+
+  private loadUserChats() {
+    this.chatsLoading = true;
+    
+    this.apiService.getUserChatsPaginated(1, 10, this.chatRetrievalCutoff).subscribe({
+      next: (response: PaginatedChatsResponse) => {
+        let chatItems: ChatItem[] = response.chats.map(MapChatToChatItem);
+        this.chats = chatItems;
+      },
+      error: (httpError: HttpErrorResponse) => {
+        this.errorHandler.handleHttpError(httpError);
+      }
+    });
+
+    this.chatsLoading = false;
   }
 
   private handleChatRoute() {
     this.addChatVisible.set(false);
     const chatId = this.uuidHelper.toUuid(this.route.snapshot.paramMap.get('chatId'));
+
     if (chatId) {
       this.signalrService.joinChat(chatId);
-      this.selectedChat.set(this.userChats.find(chat => chat.id === chatId));
+
+      if (this.chats.length > 0) {
+        let chat = this.chats.find(chat => chat.id === chatId);;
+        this.selectedChat.set(chat);
+      } else {
+        const checkChatInterval = setInterval(() => {
+          if (this.chats.length > 0) {
+            let chat = this.chats.find(chat => chat.id === chatId);;
+            this.selectedChat.set(chat);
+
+            clearInterval(checkChatInterval);
+          }
+        }, 0);
+      }
     } else {
       this.selectedChat.set(undefined);
     }
   }
+
 
   private handleAddRoute() {
     const userId = this.uuidHelper.toUuid(this.route.snapshot.paramMap.get('userId'));
@@ -90,24 +131,6 @@ export class ChatsPageComponent {
     this.router.navigateByUrl('chats/add');
   }
 
-  private connectSignalR() : void {
-    this.userChatsLoading = true;
-
-    this.signalrService.connect().then(() => {
-      this.signalrService.getHubConnection().on('ReceiveUserChats',
-        (chats: Array<ChatItem>) => {
-          this.userChats = chats;
-          this.userChatsLoading = false;
-      });
-
-      this.signalrService.getHubConnection().on('ReceiveError',
-        (error: Error) => {
-
-        }
-      )
-    })
-  }
-
   sendMessageToChat(message: string) {
     if (!this.selectedChat) {
       return;
@@ -125,15 +148,16 @@ export class ChatsPageComponent {
       this.apiService.createChat(command).subscribe({
         next: (chatId: string) => {
           this.apiService.getChatById(chatId).subscribe({
-            next: (chat: ChatItem) => {
-              this.selectedChat = signal(chat);
+            next: (chat: Chat) => {
+              let chatItem: ChatItem = MapChatToChatItem(chat);
+              this.selectedChat = signal(chatItem);
               
               this.router.navigateByUrl(`/chats/${chat.id}`);
             }
           });
         },
         error: (httpError: any) => {
-
+          this.errorHandler.handleHttpError(httpError);
         }
       });
     } else {
@@ -147,18 +171,19 @@ export class ChatsPageComponent {
       message: message
     };
 
-    this.signalrService
-      .sendMessage(command);
+    this.signalrService.sendMessage(command);
   }
 
-  private handleMessageReceived(message: MessageResponse): void {
+  private handleMessageReceived(message: Message): void {
+    console.log('Message received:', message);
     if (this.selectedChat()) {
       this.selectedChat()!.messages = [...this.selectedChat()!.messages, message];
     }
   }
 
-  private handleErrorReceived(error: Error): void {
-    
+  private handleErrorReceived(error: any): void {
+    this.errorHandler.handleError(error);
   }
 
 }
+

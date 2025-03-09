@@ -24,7 +24,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetById
             GetChatByIdQuery request,
             CancellationToken cancellationToken)
         {
-            var chat = await _chatRepository.GetByIdAsync(
+            var chat = await _chatRepository.GetByIdWithUsersAsync(
                 chatId: new(request.ChatId), cancellationToken);
 
             if (chat is null)

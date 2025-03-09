@@ -1,11 +1,11 @@
 ﻿using Messenger.Application.Features.Chats.DTO;
-using Messenger.Domain.Shared;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.WebAPI.Hubs
 {
     public interface IChatHub
     {
-        Task ReceiveError(Error error);
+        Task ReceiveError(ProblemDetails error);
 
         Task ReceiveUserChats(IEnumerable<ChatResponse> chats);
 

@@ -4,7 +4,7 @@ import { HttpTransportType, HubConnection, HubConnectionBuilder } from '@microso
 import * as signalR from '@microsoft/signalr';
 import { StorageService } from '../../../../shared/services/storage/storage.service';
 import { SendMessageCommand } from '../../models/SendMessageCommand';
-import { MessageResponse } from '../../models/MessageResponse';
+import { Message } from '../../models/Message';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +23,7 @@ export class SignalrService {
         skipNegotiation: true,
         transport: HttpTransportType.WebSockets,
         accessTokenFactory: () => `${accessToken}` })
+      .withAutomaticReconnect()
       .configureLogging(environment.production ? signalR.LogLevel.None : signalR.LogLevel.Information)
       .build();
   }
@@ -32,32 +33,62 @@ export class SignalrService {
   }
 
   async connect(): Promise<void> {
+    if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
+      console.log('Already connected to SignalR.');
+      return;
+    }
+
     try {
-      // console.log(`Connecting to SignalR hub: ${this.hubConnection.baseUrl}`);
+      console.log(`Connecting to SignalR hub: ${this.hubConnection.baseUrl}`);
       await this.hubConnection.start();
-      // console.log('SignalR connection started');
+      console.log('SignalR connection started');
     } catch (err) {
-      // console.error('Error while establishing connection.', err);
+      console.error('Error while establishing connection.', err);
     }
   }
 
   async sendMessage(command: SendMessageCommand): Promise<void> {
-    return this.hubConnection.invoke('SendMessage', command);
-      // .then(() => console.log('Message sent successfully'))
-      // .catch(err => console.error('Error sending message:', err));
+    return this.hubConnection.invoke('SendMessage', command)
+      .then(() => console.log('Message sent successfully'))
+      .catch(err => console.error('Error sending message:', err));
   }
 
   async joinChat(chatId: string): Promise<void> {
-    return this.hubConnection.invoke('JoinChat', chatId);
-      // .then(() => console.log('Joined chat successfully'))
-      // .catch(err => console.error('Error joining chat:', err));
+    await this.ensureConnected();
+
+    return this.hubConnection.invoke('JoinChat', chatId)
+      .then(() => console.log('Joined chat successfully'))
+      .catch(err => console.error('Error joining chat:', err));
+  }
+
+  private async ensureConnected(): Promise<void> {
+    if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
+      console.log('SignalR is already connected.');
+      return;
+    }
+  
+    if (this.hubConnection.state === signalR.HubConnectionState.Connecting) {
+      console.log('SignalR is already connecting. Waiting...');
+      while (this.hubConnection.state === signalR.HubConnectionState.Connecting) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      return;
+    }
+  
+    if (this.hubConnection.state !== signalR.HubConnectionState.Disconnected) {
+      console.warn(`Cannot start SignalR connection because the state is: ${this.hubConnection.state}`);
+      return;
+    }
+  
+    console.log('Starting SignalR connection...');
+    await this.connect();
   }
   
-  listenForMessages(onMessageReceived: (message: MessageResponse) => void): void {
+  listenForMessages(onMessageReceived: (message: Message) => void): void {
     this.hubConnection.on('ReceiveUserMessage', onMessageReceived);
   }
   
-  listenForErrors(onErrorReceived: (error: Error) => void): void {
+  listenForErrors(onErrorReceived: (error: any) => void): void {
     this.hubConnection.on('ReceiveError', onErrorReceived);
   }
 }

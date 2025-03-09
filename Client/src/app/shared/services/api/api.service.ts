@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { LoginRequest } from '../../../features/login/models/LoginRequest';
@@ -6,8 +6,10 @@ import { CreateChatCommand } from '../../../features/chats-page/models/CreateCha
 import { Observable } from 'rxjs';
 import { LoginResponse } from '../../../features/login/models/LoginResponse';
 import { UserItem } from '../../../features/chats-page/components/add-chat/models/UserItem';
-import { ChatItem } from '../../../features/chats-page/models/ChatItem';
 import { RegisterRequest } from '../../../features/register/models/RegisterRequest';
+import { Chat } from '../../../features/chats-page/models/Chat';
+import { PaginatedMessagesResponse } from '../../../features/chats-page/models/PaginatedMessagesResponse';
+import { PaginatedChatsResponse } from '../../../features/chats-page/models/PaginatedChatsResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +31,37 @@ private readonly apiUrl = environment.API_BASE_URL;
     return this.httpClient.get<UserItem[]>(`${this.apiUrl}/users/except-current`);
   }
 
+  getUserChats(): Observable<Chat[]> {
+    return this.httpClient.get<Chat[]>(`${this.apiUrl}/chats`);
+  }
+
+  getUserChatsPaginated(page: number, pageSize: number, retrievalCutoff: Date): Observable<PaginatedChatsResponse> {
+    const options = {
+      params: new HttpParams()
+        .set('page', page)
+        .set('pageSize', pageSize)
+        .set('retrievalCutoff', retrievalCutoff.toISOString())
+    }
+
+    return this.httpClient.get<PaginatedChatsResponse>(`${this.apiUrl}/chats/paginated`, options);
+  }
+
   createChat(createChatCommand: CreateChatCommand): Observable<string> {
     return this.httpClient.post<string>(`${this.apiUrl}/chats`, createChatCommand);
   }
 
-  getChatById(chatId: string): Observable<ChatItem> {
-    return this.httpClient.get<ChatItem>(`${this.apiUrl}/chats/${chatId}`);
+  getChatById(chatId: string): Observable<Chat> {
+    return this.httpClient.get<Chat>(`${this.apiUrl}/chats/${chatId}`);
+  }
+
+  getChatMessagesPaginated(chatId: string, page: number, pageSize: number, retrievalCutoff: Date): Observable<PaginatedMessagesResponse> {
+    const options = { 
+      params: new HttpParams()
+        .set('page', page)
+        .set('pageSize', pageSize)
+        .set('retrievalCutoff', retrievalCutoff.toISOString())
+    };
+
+    return this.httpClient.get<PaginatedMessagesResponse>(`${this.apiUrl}/chats/${chatId}/messages`, options);
   }
 }

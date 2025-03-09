@@ -1,8 +1,7 @@
-import { Message } from "./Message";
+import { Message } from "../../../models/Message";
 
 export type MessageDto = {
     message: Message;
     userIconVisible: boolean;
-    uniqueId: number;
     iconUri: string;
 };

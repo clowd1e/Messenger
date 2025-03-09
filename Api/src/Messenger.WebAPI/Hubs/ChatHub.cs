@@ -2,7 +2,7 @@
 using Messenger.Application.Features.Chats.Commands.Create;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.Queries.GetById;
-using Messenger.Application.Features.Chats.Queries.GetCurrentUserChats;
+using Messenger.WebAPI.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -21,17 +21,6 @@ namespace Messenger.WebAPI.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            var queryResult = await _sender.Send(new GetCurrentUserChatsQuery());
-
-            if (queryResult.IsFailure)
-            {
-                await Clients.Caller.ReceiveError(queryResult.Error);
-                return;
-            }
-
-            var chats = queryResult.Value;
-
-            await Clients.Caller.ReceiveUserChats(chats);
         }
 
         public async Task CreateChat(CreateChatCommand command)
@@ -40,7 +29,7 @@ namespace Messenger.WebAPI.Hubs
 
             if (commandResult.IsFailure)
             {
-                await Clients.Caller.ReceiveError(commandResult.Error);
+                await Clients.Caller.ReceiveError(commandResult.ToProblemDetails());
                 return;
             }
 
@@ -50,7 +39,7 @@ namespace Messenger.WebAPI.Hubs
 
             if (queryResult.IsFailure)
             {
-                await Clients.Caller.ReceiveError(queryResult.Error);
+                await Clients.Caller.ReceiveError(queryResult.ToProblemDetails());
                 return;
             }
 
@@ -66,7 +55,7 @@ namespace Messenger.WebAPI.Hubs
 
             if (commandResult.IsFailure)
             {
-                await Clients.Caller.ReceiveError(commandResult.Error);
+                await Clients.Caller.ReceiveError(commandResult.ToProblemDetails());
                 return;
             }
 

@@ -2,8 +2,8 @@
 using Messenger.Application.Features.Chats.DTO;
 using Messenger.Application.Features.Users.DTO;
 using Messenger.Domain.Aggregates.Chats;
+using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Users;
-using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
 
 namespace Messenger.Application.Features.Chats.Mappers
 {
@@ -12,53 +12,50 @@ namespace Messenger.Application.Features.Chats.Mappers
     {
         public override ChatResponse Map(Chat source)
         {
-            var messages = MapMessages(source.Messages);
+            var lastMessage = MapLastMessage(source.Messages);
 
             var users = MapUsers(source.Users);
 
             return new(
                 Id: source.Id.Value,
                 CreationDate: source.CreationDate.Value,
-                Messages: messages,
+                LastMessage: lastMessage,
                 Users: users);
         }
 
-        private static List<MessageResponse> MapMessages(
+        private static MessageResponse MapLastMessage(
             IReadOnlyCollection<Message> messages)
         {
-            List<MessageResponse> result = [];
+            var message = messages.OrderByDescending(m => m.Timestamp.Value).First();
 
-            foreach (var message in messages)
-            {
-                var messageResponse = new MessageResponse(
-                    UserId: message.UserId.Value,
-                    Timestamp: message.Timestamp.Value,
-                    Content: message.Content.Value);
-
-                result.Add(messageResponse);
-            }
-
-            return result;
+            return new MessageResponse(
+                Id: message.Id.Value,
+                Sender: MapUser(message.User),
+                Timestamp: message.Timestamp.Value,
+                Content: message.Content.Value);
         }
 
-        private static List<UserResponse> MapUsers(
+        private static List<ShortUserResponse> MapUsers(
             IReadOnlyCollection<User> users)
         {
-            List<UserResponse> result = [];
+            List<ShortUserResponse> result = [];
 
             foreach (var user in users)
             {
-                var userResponse = new UserResponse(
-                    Id: user.Id.Value,
-                    Username: user.Username.Value,
-                    Name: user.Name.Value,
-                    Email: user.Email.Value,
-                    IconUri: user.IconUri?.Value);
+                var userResponse = MapUser(user);
 
                 result.Add(userResponse);
             }
 
             return result;
+        }
+
+        private static ShortUserResponse MapUser(User user)
+        {
+            return new ShortUserResponse(
+                Id: user.Id.Value,
+                Name: user.Name.Value,
+                IconUri: user.IconUri?.Value);
         }
     }
 }

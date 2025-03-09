@@ -1,9 +1,9 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
-using Messenger.Domain.Aggregates.ValueObjects.Chats.ValueObjects;
 using Microsoft.EntityFrameworkCore;
-using System;
+using System.Linq.Expressions;
 
 namespace Messenger.Infrastructure.Persistence.Repositories
 {
@@ -40,7 +40,7 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             return await _context.Chats.ToListAsync(cancellationToken);
         }
 
-        public async Task<Chat?> GetByIdAsync(
+        public async Task<Chat?> GetByIdWithUsersAsync(
             ChatId chatId,
             CancellationToken cancellationToken = default)
         {
@@ -49,17 +49,18 @@ namespace Messenger.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(chat => chat.Id == chatId, cancellationToken);
         }
 
-        public async Task<IEnumerable<Chat>> GetUserChats(
+        public async Task<IEnumerable<Chat>> GetUserChatsWithLastMessage(
             UserId userId,
             CancellationToken cancellationToken = default)
         {
             return await _context.Chats
                 .Where(chat => chat.Users.Any(user => user.Id == userId))
                 .Include(chat => chat.Users)
+                .Include(IncludeLastMessage())
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Chat>> GetUserChatsPaginated(
+        public async Task<IEnumerable<Chat>> GetUserChatsPaginatedWithLastMessage(
             UserId userId,
             int page,
             int pageSize,
@@ -69,34 +70,13 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             var chats = await _context.Chats
                 .Where(chat => chat.Users.Any(user => user.Id == userId))
                 .Include(chat => chat.Users)
+                .Include(IncludeLastMessage())
                 .ToListAsync(cancellationToken);
 
             var result = chats
                 .Where(chat => chat.CreationDate.Value <= retrievalCutoff)
-                .OrderByDescending(GetLatestMessageTimestamp)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
-
-            return result;
-        }
-
-        public async Task<IEnumerable<Message>> GetChatMessagesPaginated(
-            ChatId chatId,
-            int page,
-            int pageSize,
-            DateTime retrievalCutoff,
-            CancellationToken cancellationToken = default)
-        {
-            var chat = await _context.Chats.FirstOrDefaultAsync(
-                chat => chat.Id == chatId,
-                cancellationToken);
-
-            var result = chat.Messages
-                .Where(message => message.Timestamp.Value <= retrievalCutoff)
-                .OrderByDescending(message => message.Timestamp.Value)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Reverse();
 
             return result;
         }
@@ -112,20 +92,6 @@ namespace Messenger.Infrastructure.Persistence.Repositories
 
             var result = chats
                 .Count(chat => chat.CreationDate.Value <= retrievalCutoff);
-
-            return result;
-        }
-
-        public async Task<int> CountChatMessagesAsync(
-            ChatId chatId,
-            DateTime retrievalCutoff,
-            CancellationToken cancellationToken = default)
-        {
-            var chat = await _context.Chats
-                .FirstOrDefaultAsync(chat => chat.Id == chatId, cancellationToken);
-
-            var result = chat.Messages
-                .Count(message => message.Timestamp.Value <= retrievalCutoff);
 
             return result;
         }
@@ -148,11 +114,11 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             await _context.Chats.AddAsync(chat, cancellationToken);
         }
 
-        private static DateTime GetLatestMessageTimestamp(Chat chat)
+        private static Expression<Func<Chat, IEnumerable<Message>>> IncludeLastMessage()
         {
-            return chat.Messages.OrderByDescending(
-                    message => message.Timestamp.Value)
-                .First().Timestamp.Value;
+            return chat => chat.Messages
+                .OrderByDescending(message => message.Timestamp)
+                .Take(1);
         }
     }
 }

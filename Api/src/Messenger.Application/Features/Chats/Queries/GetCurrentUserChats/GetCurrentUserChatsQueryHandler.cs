@@ -42,7 +42,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChats
                 throw new AuthenticatedUserNotFoundException();
             }
 
-            var chats = await _chatRepository.GetUserChats(userId, cancellationToken);
+            var chats = await _chatRepository.GetUserChatsWithLastMessage(userId, cancellationToken);
 
             return Result.Success(_chatMapper.Map(chats));
         }
