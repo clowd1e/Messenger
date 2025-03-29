@@ -50,6 +50,12 @@ namespace Messenger.Infrastructure.Persistence.Configurations
                     value => Email.Create(value).Value)
                 .HasColumnName("email");
 
+            builder.Property(user => user.RegistrationDate)
+                .HasConversion(
+                    registrationDate => registrationDate.Value,
+                    value => RegistrationDate.Create(value.ToUniversalTime()).Value)
+                .HasColumnName("registration_date");
+
             builder.Property(user => user.IconUri)
                 .HasMaxLength(ImageUri.MaxLength)
                 .HasConversion(
