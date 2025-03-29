@@ -32,6 +32,23 @@ namespace Messenger.Infrastructure.Services
             _tokenHashService = tokenHashService;
         }
 
+        public async Task<Result> ConfirmEmailAsync(
+            ApplicationUser identityUser,
+            string token)
+        {
+            ArgumentNullException.ThrowIfNull(identityUser);
+            ArgumentException.ThrowIfNullOrWhiteSpace(token);
+
+            var result = await _userManager.ConfirmEmailAsync(identityUser, token);
+
+            if (!result.Succeeded)
+            {
+                return UserErrors.InvalidEmailConfirmationToken;
+            }
+
+            return Result.Success();
+        }
+
         public async Task CreateAsync(
             ApplicationUser identityUser,
             string password)

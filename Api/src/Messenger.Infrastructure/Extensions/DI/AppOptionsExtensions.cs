@@ -3,7 +3,8 @@ using Messenger.Infrastructure.Authentication.Options;
 using Messenger.Infrastructure.Extensions.DI.Shared;
 using Messenger.Infrastructure.External.Blobs.Options;
 using Messenger.Infrastructure.Persistence.Options;
-using Messenger.Infrastructure.Services.Options;
+using Messenger.Infrastructure.Services.Emails.Options;
+using Messenger.Infrastructure.Services.Security.Options;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Messenger.Infrastructure.Extensions.DI
@@ -25,6 +26,10 @@ namespace Messenger.Infrastructure.Extensions.DI
                 AzureBlobStorageSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<ImageSettings>(
                 ImageSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<SmtpClientSettings>(
+                SmtpClientSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<EmailLinkGeneratorSettings>(
+                EmailLinkGeneratorSettings.SectionName);
 
             return services;
         }
