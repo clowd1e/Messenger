@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Messenger.Infrastructure.Services.Options
+namespace Messenger.Infrastructure.Services.Security.Options
 {
     public sealed class HashSettings
     {
