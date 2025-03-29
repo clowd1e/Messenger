@@ -15,12 +15,6 @@ namespace Messenger.Domain.Aggregates.Chats.Messages.ValueObjects
 
         public static Result<MessageTimestamp> Create(DateTime timestamp)
         {
-            if (timestamp == default)
-            {
-                return Result.Failure<MessageTimestamp>(
-                    MessageTimestampErrors.Empty);
-            }
-
             if (timestamp > DateTime.UtcNow)
             {
                 return Result.Failure<MessageTimestamp>(

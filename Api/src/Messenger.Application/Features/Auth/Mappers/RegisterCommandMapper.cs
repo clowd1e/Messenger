@@ -37,6 +37,15 @@ namespace Messenger.Application.Features.Auth.Mappers
 
             var email = emailResult.Value;
 
+            var registrationDateResult = RegistrationDate.UtcNow();
+
+            if (registrationDateResult.IsFailure)
+            {
+                return Result.Failure<User>(registrationDateResult.Error);
+            }
+
+            var registrationDate = registrationDateResult.Value;
+
             UserId userId = new(Guid.NewGuid());
 
             return User.Create(
@@ -44,6 +53,7 @@ namespace Messenger.Application.Features.Auth.Mappers
                 username: username,
                 name: name,
                 email: email,
+                registrationDate: registrationDate,
                 iconUri: null);
         }
     }

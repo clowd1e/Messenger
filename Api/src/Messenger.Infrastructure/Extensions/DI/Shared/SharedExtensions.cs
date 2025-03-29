@@ -20,7 +20,7 @@ namespace Messenger.Infrastructure.Extensions.DI.Shared
 
         public static TOptions GetOptions<TOptions>(this IServiceProvider serviceProvider)
             where TOptions : class
-        {           
+        {
             return serviceProvider.GetRequiredService<IOptions<TOptions>>().Value;
         }
     }

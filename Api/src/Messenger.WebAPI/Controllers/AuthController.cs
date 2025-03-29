@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Messenger.Application.Features.Auth.Commands.ConfirmEmail;
 using Messenger.Application.Features.Auth.Commands.Login;
 using Messenger.Application.Features.Auth.Commands.RefreshToken;
 using Messenger.Application.Features.Auth.Commands.Register;
@@ -46,6 +47,16 @@ namespace Messenger.WebAPI.Controllers
             var commandResult = await _sender.Send(command, cancellationToken);
 
             return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToActionResult();
+        }
+
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmailAsync(
+            [FromBody] ConfirmEmailCommand command,
+            CancellationToken cancellationToken)
+        {
+            var commandResult = await _sender.Send(command, cancellationToken);
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToActionResult();
         }
     }
 }

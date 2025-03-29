@@ -17,6 +17,8 @@ namespace Messenger.Infrastructure
 
             services.AddRepositories();
 
+            services.AddAppRazorTemplating();
+
             return services;
         }
     }

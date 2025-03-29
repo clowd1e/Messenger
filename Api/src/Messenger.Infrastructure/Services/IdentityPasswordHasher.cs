@@ -1,5 +1,5 @@
 ﻿using Messenger.Application.Identity;
-using Messenger.Infrastructure.Services.Options;
+using Messenger.Infrastructure.Services.Security.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 

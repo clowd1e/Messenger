@@ -61,6 +61,11 @@ namespace Messenger.Application.Features.Auth.Commands.Login
                 throw new DataInconsistencyException();
             }
 
+            if (!user.EmailConfirmed)
+            {
+                return Result.Failure<LoginResponse>(UserErrors.EmailNotConfirmed);
+            }
+
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             await _identityService.PopulateRefreshTokenAsync(identityUser, refreshToken);

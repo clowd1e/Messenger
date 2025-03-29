@@ -15,6 +15,7 @@ namespace Messenger.Domain.Aggregates.Users
         private Username _username;
         private Name _name;
         private Email _email;
+        private RegistrationDate _registrationDate;
 
         private User()
             : base(new(Guid.NewGuid())) { }
@@ -24,11 +25,13 @@ namespace Messenger.Domain.Aggregates.Users
             Username username,
             Name name,
             Email email,
+            RegistrationDate registrationDate,
             ImageUri? iconUri) : base(userId)
         {
             Username = username;
             Name = name;
             Email = email;
+            RegistrationDate = registrationDate;
             IconUri = iconUri;
         }
 
@@ -64,7 +67,19 @@ namespace Messenger.Domain.Aggregates.Users
             }
         }
 
+        public RegistrationDate RegistrationDate
+        {
+            get => _registrationDate;
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value);
+                _registrationDate = value;
+            }
+        }
+
         public ImageUri? IconUri { get; private set; }
+
+        public bool EmailConfirmed { get; private set; } = false;
 
         public IReadOnlyCollection<Chat> Chats => _chats;
 
@@ -91,6 +106,18 @@ namespace Messenger.Domain.Aggregates.Users
             return Result.Success();
         }
 
+        public Result ConfirmEmail()
+        {
+            if (EmailConfirmed)
+            {
+                return Result.Failure(UserErrors.EmailAlreadyConfirmed);
+            }
+
+            EmailConfirmed = true;
+
+            return Result.Success();
+        }
+
         public void SetIconUri(ImageUri? iconUri)
         {
             IconUri = iconUri;
@@ -106,6 +133,7 @@ namespace Messenger.Domain.Aggregates.Users
             Username username,
             Name name,
             Email email,
+            RegistrationDate registrationDate,
             ImageUri? iconUri)
         {
             return new User(
@@ -113,6 +141,7 @@ namespace Messenger.Domain.Aggregates.Users
                 username,
                 name,
                 email,
+                registrationDate,
                 iconUri);
         }
     }

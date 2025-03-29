@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Messenger.Application.Abstractions.Data;
+using Messenger.Application.Abstractions.Emails;
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.User.Errors;
@@ -14,6 +15,7 @@ namespace Messenger.Application.Features.Auth.Commands.Register
         private readonly IUserRepository _userRepository;
         private readonly Mapper<RegisterCommand, Result<User>> _commandMapper;
         private readonly Mapper<User, ApplicationUser> _userMapper;
+        private readonly IEmailService _emailService;
         private readonly IUnitOfWork _unitOfWork;
 
         public RegisterCommandHandler(
@@ -21,12 +23,14 @@ namespace Messenger.Application.Features.Auth.Commands.Register
             IUserRepository userRepository,
             Mapper<RegisterCommand, Result<User>> commandMapper,
             Mapper<User, ApplicationUser> userMapper,
+            IEmailService emailService,
             IUnitOfWork unitOfWork)
         {
             _identityService = identityService;
             _userRepository = userRepository;
             _commandMapper = commandMapper;
             _userMapper = userMapper;
+            _emailService = emailService;
             _unitOfWork = unitOfWork;
         }
 
@@ -60,6 +64,11 @@ namespace Messenger.Application.Features.Auth.Commands.Register
             await _identityService.CreateAsync(identityUser, request.Password);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _emailService.SendConfirmationEmailAsync(
+                request.Email,
+                user.Id.Value.ToString(),
+                identityUser);
 
             return Result.Success();
         }
