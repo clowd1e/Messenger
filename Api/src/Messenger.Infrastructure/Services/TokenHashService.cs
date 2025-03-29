@@ -1,5 +1,5 @@
 ﻿using Messenger.Application.Abstractions.Identity;
-using Messenger.Infrastructure.Services.Options;
+using Messenger.Infrastructure.Services.Security.Options;
 using Microsoft.Extensions.Options;
 
 namespace Messenger.Infrastructure.Services
