@@ -32,6 +32,13 @@ services:
     volumes:
       - messenger_blob_storage_data:/data
 
+  messenger-mailhog:
+    image: mailhog/mailhog
+    container_name: messenger.mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 
 volumes:
   messenger_db_data: 
