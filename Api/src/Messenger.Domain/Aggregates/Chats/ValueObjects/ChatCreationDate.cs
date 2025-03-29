@@ -15,12 +15,6 @@ namespace Messenger.Domain.Aggregates.Chats.ValueObjects
 
         public static Result<ChatCreationDate> Create(DateTime creationDate)
         {
-            if (creationDate == default)
-            {
-                return Result.Failure<ChatCreationDate>(
-                    ChatCreationDateErrors.Empty);
-            }
-
             if (creationDate > DateTime.UtcNow)
             {
                 return Result.Failure<ChatCreationDate>(
