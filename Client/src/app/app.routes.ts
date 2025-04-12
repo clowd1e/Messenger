@@ -4,6 +4,7 @@ import { LoginComponent } from './features/login/login.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { ChatsPageComponent } from './features/chats-page/chats-page.component';
 import { RegisterComponent } from './features/register/register.component';
+import { EmailConfirmComponent } from './features/email-confirm/email-confirm.component';
 
 export const routes: Routes = [
     {
@@ -19,6 +20,11 @@ export const routes: Routes = [
     {
         path: 'signup',
         component: RegisterComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'confirm-email',
+        component: EmailConfirmComponent,
         pathMatch: 'full'
     },
     {
