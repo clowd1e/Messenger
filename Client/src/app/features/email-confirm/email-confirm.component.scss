@@ -1,0 +1,63 @@
+@import "../../../assets/styles/devices-size";
+
+.email-confirm-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 0;
+
+    .email-confirm-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        text-align: center;
+        gap: 20px;
+
+        img {
+            width: 150px;
+            height: 150px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+
+        .back-to-main-button {
+            margin-top: 50px;
+        }
+    }
+}
+
+@media (max-width: $mobileM-width) {
+    .email-confirm-container {
+        padding: 0 20px;
+
+        .email-confirm-content {
+            img {
+                width: 100px;
+                height: 100px;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+                margin-bottom: 5px;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .back-to-main-button {
+                margin-top: 75px;
+            }
+        }
+    }
+}

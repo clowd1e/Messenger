@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddChatButtonComponent } from './add-chat-button.component';
+import { EmailConfirmComponent } from './email-confirm.component';
 
-describe('AddChatButtonComponent', () => {
-  let component: AddChatButtonComponent;
-  let fixture: ComponentFixture<AddChatButtonComponent>;
+describe('EmailConfirmComponent', () => {
+  let component: EmailConfirmComponent;
+  let fixture: ComponentFixture<EmailConfirmComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddChatButtonComponent]
+      imports: [EmailConfirmComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AddChatButtonComponent);
+    fixture = TestBed.createComponent(EmailConfirmComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

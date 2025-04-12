@@ -1,0 +1,28 @@
+<div class="email-confirm-container">
+    <ngx-spinner
+        bdColor="rgba(0, 0, 0, 0)"
+        size="medium"
+        color="#6799EF"
+        type="ball-beat"
+        [disableAnimation]="true"
+        [fullScreen]="true"><p>Loading...</p></ngx-spinner>
+
+    @if (!isLoading) {
+        <div class="email-confirm-content">
+            <img [src]="isSuccess ? '/images/success.png' : '/images/error.png'" />
+            <div>
+                <h1>{{ isSuccess ? 'Success!' : 'Error!' }}</h1>
+                <p>{{ message }}</p>
+            </div>
+            <app-common-button
+                class="back-to-main-button"
+                [text]="'Back to main page'"
+                [textColor]="'#FFFFFF'"
+                [padding]="isMobileM ? '16px 30px' : '20px 50px'"
+                [fontSize]="isMobileM ? 12 : 20"
+                [borderRadius]="isMobileM ? 15 : 20"
+                [fontWeight]="600"
+                (click)="toMainPage()"></app-common-button>
+        </div>
+    }
+</div>

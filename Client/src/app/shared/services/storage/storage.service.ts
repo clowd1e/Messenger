@@ -27,4 +27,13 @@ export class StorageService {
   removeRefreshTokenFromLocalStorage() {
     localStorage.removeItem('refreshToken');
   }
+
+  setUserEmailConfirmedToLocalStorage(userId: string) {
+    localStorage.setItem(`EmailConfirmed:${userId}`, JSON.stringify(true));
+  }
+
+  getUserEmailConfirmedFromLocalStorage(userId: string): boolean {
+    const value = localStorage.getItem(`EmailConfirmed:${userId}`);
+    return value ? JSON.parse(value) : false;
+  }
 }

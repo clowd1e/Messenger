@@ -10,6 +10,7 @@ import { RegisterRequest } from '../../../features/register/models/RegisterReque
 import { Chat } from '../../../features/chats-page/models/Chat';
 import { PaginatedMessagesResponse } from '../../../features/chats-page/models/PaginatedMessagesResponse';
 import { PaginatedChatsResponse } from '../../../features/chats-page/models/PaginatedChatsResponse';
+import { ConfirmEmailCommand } from '../../../features/email-confirm/models/ConfirmEmailCommand';
 
 @Injectable({
   providedIn: 'root'
@@ -63,5 +64,9 @@ export class ApiService {
     };
 
     return this.httpClient.get<PaginatedMessagesResponse>(`${this.apiUrl}/chats/${chatId}/messages`, options);
+  }
+
+  confirmEmail(confirmEmailCommand: ConfirmEmailCommand) : Observable<void> {
+    return this.httpClient.post<void>(`${this.apiUrl}/auth/confirm-email`, confirmEmailCommand);
   }
 }

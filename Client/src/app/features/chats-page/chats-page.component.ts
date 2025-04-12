@@ -10,7 +10,6 @@ import { ChatItem } from './models/ChatItem';
 import { CreateChatCommand } from './models/CreateChatCommand';
 import { SendMessageCommand } from './models/SendMessageCommand';
 import { CommonModule } from '@angular/common';
-import { AddChatButtonComponent } from './components/add-chat-button/add-chat-button.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { AddChatComponent } from './components/add-chat/add-chat.component';
@@ -20,11 +19,12 @@ import { MapChatToChatItem } from './mappers/ChatToChatItemMapper';
 import { Message } from './models/Message';
 import { PaginatedChatsResponse } from './models/PaginatedChatsResponse';
 import { environment } from '../../../environments/environment';
+import { CommonButtonComponent } from "../../shared/components/common-button/common-button.component";
 
 @Component({
   selector: 'app-chats-page',
   standalone: true,
-  imports: [ChatComponent, AddChatComponent, ChatListComponent, AddChatButtonComponent, CommonModule],
+  imports: [ChatComponent, AddChatComponent, ChatListComponent, CommonModule, CommonButtonComponent],
   providers: [SignalrService],
   templateUrl: './chats-page.component.html',
   styleUrl: './chats-page.component.scss'
@@ -35,7 +35,7 @@ export class ChatsPageComponent {
 
   addChatVisible = signal(false);
   chatsLoading: boolean = false;
-  chatRetrievalCutoff = environment.production ? new Date(Date.now() - 100) : new Date();
+  chatRetrievalCutoff = environment.production ? new Date(Date.now() - 5000) : new Date();
 
   apiService = inject(ApiService);
   signalrService = inject(SignalrService);
@@ -176,7 +176,6 @@ export class ChatsPageComponent {
   }
 
   private handleMessageReceived(message: Message): void {
-    console.log('Message received:', message);
     if (this.selectedChat()) {
       this.selectedChat()!.messages = [...this.selectedChat()!.messages, message];
     }
