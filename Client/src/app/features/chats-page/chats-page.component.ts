@@ -18,7 +18,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MapChatToChatItem } from './mappers/ChatToChatItemMapper';
 import { Message } from './models/Message';
 import { PaginatedChatsResponse } from './models/PaginatedChatsResponse';
-import { environment } from '../../../environments/environment';
 import { CommonButtonComponent } from "../../shared/components/common-button/common-button.component";
 
 @Component({
@@ -35,7 +34,7 @@ export class ChatsPageComponent {
 
   addChatVisible = signal(false);
   chatsLoading: boolean = false;
-  chatRetrievalCutoff = environment.production ? new Date(Date.now() - 5000) : new Date();
+  chatRetrievalCutoff = new Date();
 
   apiService = inject(ApiService);
   signalrService = inject(SignalrService);
