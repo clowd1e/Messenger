@@ -20,7 +20,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated
 
             RuleFor(x => x.RetrievalCutoff)
                 .NotEmpty()
-                .LessThanOrEqualTo(DateTime.UtcNow);
+                .LessThanOrEqualTo(DateTime.UtcNow.AddSeconds(2));
         }
     }
 }
