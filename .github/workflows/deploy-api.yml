@@ -3,7 +3,7 @@ name: Deploy Web API project
 env:
   AZURE_WEBAPP_NAME: messengerm-api
   AZURE_WEBAPP_PACKAGE_PATH: "Api/publish"
-  DOTNET_VERSION: "8.0.x"
+  DOTNET_VERSION: "9.0.x"
 
 on:
   workflow_dispatch:
