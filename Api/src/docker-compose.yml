@@ -1,8 +1,9 @@
 version: '3.4'
+name: messenger-api-docker-compose
 
 services:
   messenger-webapi:
-    image: ${DOCKER_REGISTRY-}messengerwebapi
+    image: messenger.webapi
     container_name: messenger.webapi
     build:
       context: .

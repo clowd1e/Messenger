@@ -10,10 +10,8 @@ namespace Messenger.WebAPI.Extensions.DI
         public static IServiceCollection ConfigureSwaggerGen(
             this IServiceCollection services)
         {
-            services.AddSwaggerGen(options =>
-            {
-                ConfigureSwaggerAuthorization(options);
-            });
+            services.AddSwaggerGen(
+                ConfigureSwaggerAuthorization);
 
             return services;
         }

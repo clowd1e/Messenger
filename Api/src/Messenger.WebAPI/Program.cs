@@ -5,8 +5,10 @@ using Messenger.WebAPI.Extensions.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddOpenApi();
+
 builder.Services.ConfigureCors(builder.Configuration
-    .GetSection("Cors:AllowedOrigins").Get<string[]>());
+    .GetSection("Cors:AllowedOrigins").Get<string[]>()!);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -24,6 +26,9 @@ var app = builder.Build();
 app.AddMiddleware();
 
 app.ApplyMigration();
+
+app.MapOpenApi();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
