@@ -25,7 +25,7 @@ namespace Messenger.Domain.Aggregates.Common.ImageUri
             if (value.Length > MaxLength)
             {
                 return Result.Failure<ImageUri>(
-                    ImageUriErrors.TooLongText(allowedLength: MaxLength));
+                    ImageUriErrors.TooLong(allowedLength: MaxLength));
             }
 
             if (!IsValidUri(value))

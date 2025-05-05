@@ -34,12 +34,14 @@ namespace Messenger.Infrastructure.Persistence.Configurations
                     value => MessageTimestamp.Create(value.ToUniversalTime()).Value)
                 .HasColumnName("timestamp");
 
-            builder.HasOne(message => message.Chat)
+            builder
+                .HasOne(message => message.Chat)
                 .WithMany(chat => chat.Messages)
                 .HasForeignKey("chat_id")
                 .IsRequired();
 
-            builder.HasOne(message => message.User)
+            builder
+                .HasOne(message => message.User)
                 .WithMany(user => user.Messages)
                 .HasForeignKey("user_id")
                 .IsRequired();
