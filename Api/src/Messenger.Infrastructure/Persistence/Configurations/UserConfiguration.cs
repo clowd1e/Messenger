@@ -74,6 +74,10 @@ namespace Messenger.Infrastructure.Persistence.Configurations
             builder
                 .HasMany(user => user.Messages)
                 .WithOne(message => message.User);
+
+            builder
+                .HasMany(user => user.ResetPasswordTokens)
+                .WithOne(resetPasswordToken => resetPasswordToken.User);
         }
     }
 }

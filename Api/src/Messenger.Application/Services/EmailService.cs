@@ -42,5 +42,24 @@ namespace Messenger.Application.Services
                 recipientEmail,
                 letter);
         }
+
+        public async Task SendPasswordRecoveryEmailAsync(
+            string recipientEmail,
+            string userId,
+            string tokenId,
+            string token)
+        {
+            var escapedToken = Uri.EscapeDataString(token);
+
+            var passwordRecoveryLink = _emailLinkGenerator
+                .GeneratePasswordRecoveryEmailLink(userId, tokenId, escapedToken);
+
+            var letter = await _emailLetterGenerator.GeneratePasswordRecoveryLetter(
+                passwordRecoveryLink);
+
+            await _emailSender.SendEmailAsync(
+                recipientEmail,
+                letter);
+        }
     }
 }

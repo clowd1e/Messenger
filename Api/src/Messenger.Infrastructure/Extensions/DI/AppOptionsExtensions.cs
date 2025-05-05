@@ -1,4 +1,5 @@
-﻿using Messenger.Application.Images.Options;
+﻿using Messenger.Application.Identity.Options;
+using Messenger.Application.Images.Options;
 using Messenger.Infrastructure.Authentication.Options;
 using Messenger.Infrastructure.Extensions.DI.Shared;
 using Messenger.Infrastructure.External.Blobs.Options;
@@ -30,6 +31,8 @@ namespace Messenger.Infrastructure.Extensions.DI
                 SmtpClientSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<EmailLinkGeneratorSettings>(
                 EmailLinkGeneratorSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<ResetPasswordTokenSettings>(
+                ResetPasswordTokenSettings.SectionName);
 
             return services;
         }

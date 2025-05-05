@@ -14,5 +14,9 @@ namespace Messenger.Infrastructure.Services.Emails.Options
         [Required]
         [StringLength(100)]
         public string EmailConfirmationPath { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string PasswordRecoveryPath { get; set; }
     }
 }

@@ -20,5 +20,12 @@ namespace Messenger.Infrastructure.Services.Emails
 
             return confirmationLink;
         }
+
+        public string GeneratePasswordRecoveryEmailLink(string userId, string tokenId, string token)
+        {
+            var passwordRecoveryLink = @$"{_settings.ClientAppUrl}/{_settings.PasswordRecoveryPath}?userId={userId}&tokenId={tokenId}&token={token}";
+
+            return passwordRecoveryLink;
+        }
     }
 }

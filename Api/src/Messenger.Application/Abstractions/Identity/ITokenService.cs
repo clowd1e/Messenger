@@ -8,6 +8,8 @@ namespace Messenger.Application.Abstractions.Identity
 
         string GenerateRefreshToken();
 
+        string GenerateResetPasswordToken();
+
         Task<Result> ValidateAccessTokenAsync(
             string token, bool validateLifetime = true);
     }

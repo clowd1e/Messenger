@@ -1,5 +1,7 @@
 ﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Features.Auth.Commands.Register;
+using Messenger.Application.Features.Auth.Commands.RequestPasswordRecovery;
+using Messenger.Application.Features.Auth.DTO;
 using Messenger.Application.Features.Auth.Mappers;
 using Messenger.Application.Features.Chats.DTO;
 using Messenger.Application.Features.Chats.Mappers;
@@ -8,7 +10,9 @@ using Messenger.Application.Features.Users.Mappers;
 using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Messages;
+using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.Users;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Messenger.Application.Extensions.DI
@@ -32,6 +36,13 @@ namespace Messenger.Application.Extensions.DI
 
             #region Messages
             services.AddMapper<CreateMessageRequestModel, Result<Message>, CreateMessageRequestMapper>();
+            #endregion
+
+            #region ResetPasswordTokens
+
+            services.AddMapper<RequestPasswordRecoveryCommand, Result<Email>, RequestPasswordRecoveryCommandMapper>();
+            services.AddMapper<CreateResetPasswordTokenRequestModel, Result<ResetPasswordToken>, CreateResetPasswordTokenRequestMapper>();
+
             #endregion
 
             return services;
