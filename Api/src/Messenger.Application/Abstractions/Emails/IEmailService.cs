@@ -8,5 +8,11 @@ namespace Messenger.Application.Abstractions.Emails
             string recipientEmail,
             string userId,
             ApplicationUser identityUser);
+
+        Task SendPasswordRecoveryEmailAsync(
+            string recipientEmail,
+            string userId,
+            string tokenId,
+            string token);
     }
 }

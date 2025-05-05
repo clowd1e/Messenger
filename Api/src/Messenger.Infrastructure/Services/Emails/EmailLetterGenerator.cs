@@ -13,5 +13,14 @@ namespace Messenger.Infrastructure.Services.Emails
 
             return new Letter("Email Confirmation", emailBody);
         }
+
+        public async Task<Letter> GeneratePasswordRecoveryLetter(string passwordRecoveryLink)
+        {
+            var emailBody = await RazorTemplateEngine.RenderAsync(
+                "PasswordRecoveryTemplate",
+                passwordRecoveryLink);
+
+            return new Letter("Password Recovery", emailBody);
+        }
     }
 }
