@@ -11,6 +11,10 @@ namespace Messenger.Application.Abstractions.Identity
 
         Task<TIdentityUser?> GetByEmailAsync(Email email);
 
+        Task<TIdentityUser?> GetByIdAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default);
+
         Task<Result> LoginAsync(TIdentityUser identityUser, string password);
 
         Task<Result> ConfirmEmailAsync(TIdentityUser identityUser, string token);
@@ -21,5 +25,8 @@ namespace Messenger.Application.Abstractions.Identity
 
         Task<Result<TIdentityUser>> GetByRefreshTokenAsync(string refreshToken);
 
+        Task<Result> ResetPasswordAsync(
+            TIdentityUser identityUser,
+            string newPassword);
     }
 }

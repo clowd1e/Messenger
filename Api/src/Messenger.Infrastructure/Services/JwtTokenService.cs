@@ -59,6 +59,12 @@ namespace Messenger.Infrastructure.Services
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
 
+        public string GenerateResetPasswordToken()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        }
+
+
         #region Private Methods
 
         private JwtSecurityToken GenerateJwtToken(

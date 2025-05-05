@@ -79,6 +79,15 @@ namespace Messenger.Infrastructure.Services
             return identityUser;
         }
 
+        public async Task<ApplicationUser?> GetByIdAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default)
+        {
+            var identityUser = await _userManager.FindByIdAsync(userId.Value.ToString());
+
+            return identityUser;
+        }
+
         public async Task<Result<ApplicationUser>> GetByRefreshTokenAsync(string refreshToken)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(refreshToken);
@@ -132,6 +141,26 @@ namespace Messenger.Infrastructure.Services
                 _loginSettings.RefreshTokenExpiryInDays.Value);
 
             await _userManager.UpdateAsync(identityUser);
+        }
+
+        public async Task<Result> ResetPasswordAsync(
+            ApplicationUser identityUser,
+            string newPassword)
+        {
+            ArgumentNullException.ThrowIfNull(identityUser);
+            ArgumentException.ThrowIfNullOrWhiteSpace(newPassword);
+
+            var result = await _userManager.RemovePasswordAsync(identityUser);
+
+            HandleIdentityResult(result, "Failed to remove password.");
+
+            var addPasswordResult = await _userManager.AddPasswordAsync(
+                identityUser,
+                newPassword);
+
+            HandleIdentityResult(addPasswordResult, "Failed to add password.");
+
+            return Result.Success();
         }
 
         public Result ValidateRefreshToken(ApplicationUser user)
