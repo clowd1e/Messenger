@@ -25,7 +25,6 @@ namespace Messenger.Infrastructure.Extensions.DI
 
             #region Email services
             services.AddScoped<IEmailSender, EmailSender>();
-            services.AddScoped<IEmailTokenGenerator, EmailTokenGenerator>();
             services.AddScoped<IEmailLinkGenerator, EmailLinkGenerator>();
             services.AddScoped<IEmailLetterGenerator, EmailLetterGenerator>();
             services.AddFluentEmailSender();

@@ -56,12 +56,17 @@ namespace Messenger.Infrastructure.Services
 
         public string GenerateRefreshToken()
         {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            return GetRandomToken();
         }
 
         public string GenerateResetPasswordToken()
         {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            return GetRandomToken();
+        }
+
+        public string GenerateEmailConfirmationToken()
+        {
+            return GetRandomToken();
         }
 
 
@@ -107,6 +112,11 @@ namespace Messenger.Infrastructure.Services
                 ValidAudience = _jwtSettings.Audience,
                 IssuerSigningKey = _symmetricSecurityKey
             };
+        }
+
+        private static string GetRandomToken()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
 
         #endregion

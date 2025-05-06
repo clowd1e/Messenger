@@ -17,7 +17,7 @@ namespace Messenger.Application.Abstractions.Identity
 
         Task<Result> LoginAsync(TIdentityUser identityUser, string password);
 
-        Task<Result> ConfirmEmailAsync(TIdentityUser identityUser, string token);
+        Task<Result> ConfirmEmailAsync(TIdentityUser identityUser);
 
         Task PopulateRefreshTokenAsync(TIdentityUser identityUser, string refreshToken);
 

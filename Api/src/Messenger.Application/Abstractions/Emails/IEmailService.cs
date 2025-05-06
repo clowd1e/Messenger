@@ -7,7 +7,8 @@ namespace Messenger.Application.Abstractions.Emails
         Task SendConfirmationEmailAsync(
             string recipientEmail,
             string userId,
-            ApplicationUser identityUser);
+            string tokenId,
+            string token);
 
         Task SendPasswordRecoveryEmailAsync(
             string recipientEmail,

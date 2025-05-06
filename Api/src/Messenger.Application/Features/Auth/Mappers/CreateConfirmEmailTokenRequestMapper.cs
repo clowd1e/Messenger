@@ -3,25 +3,25 @@ using Messenger.Application.Features.Auth.DTO.RequestModel;
 using Messenger.Application.Identity.Options;
 using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Common.TokenHash;
-using Messenger.Domain.Aggregates.ResetPasswordTokens;
-using Messenger.Domain.Aggregates.ResetPasswordTokens.ValueObjects;
+using Messenger.Domain.Aggregates.ConfirmEmailTokens;
+using Messenger.Domain.Aggregates.ConfirmEmailTokens.ValueObjects;
 using Microsoft.Extensions.Options;
 
 namespace Messenger.Application.Features.Auth.Mappers
 {
-    internal sealed class CreateResetPasswordTokenRequestMapper
-        : Mapper<CreateResetPasswordTokenRequestModel, Result<ResetPasswordToken>>
+    internal sealed class CreateConfirmEmailTokenRequestMapper
+        : Mapper<CreateConfirmEmailTokenRequestModel, Result<ConfirmEmailToken>>
     {
-        private readonly ResetPasswordTokenSettings _settings;
+        private readonly ConfirmEmailTokenSettings _settings;
 
-        public CreateResetPasswordTokenRequestMapper(
-            IOptions<ResetPasswordTokenSettings> settings)
+        public CreateConfirmEmailTokenRequestMapper(
+            IOptions<ConfirmEmailTokenSettings> settings)
         {
             _settings = settings.Value;
         }
 
-        public override Result<ResetPasswordToken> Map(
-            CreateResetPasswordTokenRequestModel source)
+        public override Result<ConfirmEmailToken> Map(
+            CreateConfirmEmailTokenRequestModel source)
         {
             // Generate token hash
 
@@ -29,14 +29,14 @@ namespace Messenger.Application.Features.Auth.Mappers
 
             if (tokenHashResult.IsFailure)
             {
-                return Result.Failure<ResetPasswordToken>(tokenHashResult.Error);
+                return Result.Failure<ConfirmEmailToken>(tokenHashResult.Error);
             }
 
             var tokenHash = tokenHashResult.Value;
 
-            // Generate a new ResetPasswordTokenId
+            // Generate a new ConfirmEmailTokenId
 
-            var tokenId = new ResetPasswordTokenId(Guid.NewGuid());
+            var tokenId = new ConfirmEmailTokenId(Guid.NewGuid());
 
             // Generate UTC now timestamp
 
@@ -44,7 +44,7 @@ namespace Messenger.Application.Features.Auth.Mappers
 
             if (utcNowResult.IsFailure)
             {
-                return Result.Failure<ResetPasswordToken>(utcNowResult.Error);
+                return Result.Failure<ConfirmEmailToken>(utcNowResult.Error);
             }
 
             var utcNow = utcNowResult.Value;
@@ -53,27 +53,27 @@ namespace Messenger.Application.Features.Auth.Mappers
 
             var expiresAtResult = Timestamp.Create(
                 utcNow.Value.Add(
-                    TimeSpan.FromHours(_settings.ExpirationTimeInHours)
+                    TimeSpan.FromDays(_settings.ExpirationTimeInDays)
                     ));
 
             if (expiresAtResult.IsFailure)
             {
-                return Result.Failure<ResetPasswordToken>(expiresAtResult.Error);
+                return Result.Failure<ConfirmEmailToken>(expiresAtResult.Error);
             }
 
             var expiresAt = expiresAtResult.Value;
 
-            // Create ResetPasswordToken
+            // Create ConfirmEmailToken
 
-            var tokenResult = ResetPasswordToken.Create(
-                resetPasswordTokenId: tokenId,
+            var tokenResult = ConfirmEmailToken.Create(
+                confirmEmailTokenId: tokenId,
                 tokenHash: tokenHash,
                 expiresAt: expiresAt,
                 user: source.User);
 
             if (tokenResult.IsFailure)
             {
-                return Result.Failure<ResetPasswordToken>(tokenResult.Error);
+                return Result.Failure<ConfirmEmailToken>(tokenResult.Error);
             }
 
             return tokenResult.Value;

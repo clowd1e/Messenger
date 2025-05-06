@@ -14,9 +14,9 @@ namespace Messenger.Infrastructure.Services.Emails
             _settings = emailLinkGeneratorSettings.Value;
         }
 
-        public string GenerateConfirmationEmailLink(string userId, string token)
+        public string GenerateConfirmationEmailLink(string userId, string tokenId, string token)
         {
-            var confirmationLink = @$"{_settings.ClientAppUrl}/{_settings.EmailConfirmationPath}?userId={userId}&token={token}";
+            var confirmationLink = @$"{_settings.ClientAppUrl}/{_settings.EmailConfirmationPath}?userId={userId}&tokenId={tokenId}&token={token}";
 
             return confirmationLink;
         }
