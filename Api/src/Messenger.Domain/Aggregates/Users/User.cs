@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Common.ImageUri;
+using Messenger.Domain.Aggregates.ConfirmEmailTokens;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.User.Errors;
@@ -13,6 +14,7 @@ namespace Messenger.Domain.Aggregates.Users
     {
         private readonly HashSet<Chat> _chats = [];
         private readonly HashSet<Message> _messages = [];
+        private readonly HashSet<ConfirmEmailToken> _confirmEmailTokens = [];
         private readonly HashSet<ResetPasswordToken> _resetPasswordTokens = [];
         private Username _username;
         private Name _name;
@@ -86,6 +88,8 @@ namespace Messenger.Domain.Aggregates.Users
         public IReadOnlyCollection<Chat> Chats => _chats;
 
         public IReadOnlyCollection<Message> Messages => _messages;
+
+        public IReadOnlyCollection<ConfirmEmailToken> ConfirmEmailTokens => _confirmEmailTokens;
 
         public IReadOnlyCollection<ResetPasswordToken> ResetPasswordTokens => _resetPasswordTokens;
 

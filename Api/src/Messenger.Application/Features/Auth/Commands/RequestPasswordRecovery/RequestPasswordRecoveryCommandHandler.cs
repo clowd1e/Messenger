@@ -2,7 +2,7 @@
 using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Emails;
 using Messenger.Application.Abstractions.Identity;
-using Messenger.Application.Features.Auth.DTO;
+using Messenger.Application.Features.Auth.DTO.RequestModel;
 using Messenger.Application.Identity.Options;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.ResetPasswordTokens.Errors;

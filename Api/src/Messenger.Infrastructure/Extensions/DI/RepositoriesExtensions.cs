@@ -1,4 +1,5 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
+using Messenger.Domain.Aggregates.ConfirmEmailTokens;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.Users;
@@ -14,6 +15,7 @@ namespace Messenger.Infrastructure.Extensions.DI
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IConfirmEmailTokenRepository, ConfirmEmailTokenRepository>();
             services.AddScoped<IResetPasswordTokenRepository, ResetPasswordTokenRepository>();
 
             return services;

@@ -4,6 +4,7 @@
     {
         string GenerateConfirmationEmailLink(
             string userId,
+            string tokenId,
             string token);
 
         string GeneratePasswordRecoveryEmailLink(

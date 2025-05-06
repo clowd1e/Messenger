@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Exceptions;
-using Messenger.Application.Features.Auth.DTO;
+using Messenger.Application.Features.Auth.DTO.Response;
 using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;

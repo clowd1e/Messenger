@@ -33,18 +33,11 @@ namespace Messenger.Infrastructure.Services
         }
 
         public async Task<Result> ConfirmEmailAsync(
-            ApplicationUser identityUser,
-            string token)
+            ApplicationUser identityUser)
         {
             ArgumentNullException.ThrowIfNull(identityUser);
-            ArgumentException.ThrowIfNullOrWhiteSpace(token);
 
-            var result = await _userManager.ConfirmEmailAsync(identityUser, token);
-
-            if (!result.Succeeded)
-            {
-                return UserErrors.InvalidEmailConfirmationToken;
-            }
+            identityUser.EmailConfirmed = true;
 
             return Result.Success();
         }

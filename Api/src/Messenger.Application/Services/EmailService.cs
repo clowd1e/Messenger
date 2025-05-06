@@ -8,32 +8,27 @@ namespace Messenger.Application.Services
         private readonly IEmailSender _emailSender;
         private readonly IEmailLinkGenerator _emailLinkGenerator;
         private readonly IEmailLetterGenerator _emailLetterGenerator;
-        private readonly IEmailTokenGenerator _emailTokenGenerator;
 
         public EmailService(
             IEmailSender emailSender,
             IEmailLinkGenerator emailLinkGenerator,
-            IEmailLetterGenerator emailLetterGenerator,
-            IEmailTokenGenerator emailTokenGenerator)
+            IEmailLetterGenerator emailLetterGenerator)
         {
             _emailSender = emailSender;
             _emailLinkGenerator = emailLinkGenerator;
             _emailLetterGenerator = emailLetterGenerator;
-            _emailTokenGenerator = emailTokenGenerator;
         }
 
         public async Task SendConfirmationEmailAsync(
             string recipientEmail,
             string userId,
-            ApplicationUser identityUser)
+            string tokenId,
+            string token)
         {
-            var token = await _emailTokenGenerator
-                .GenerateEmailConfirmationToken(identityUser);
-
             var escapedToken = Uri.EscapeDataString(token);
 
             var confirmationLink = _emailLinkGenerator
-                .GenerateConfirmationEmailLink(userId, escapedToken);
+                .GenerateConfirmationEmailLink(userId, tokenId, escapedToken);
 
             var letter = await _emailLetterGenerator.GenerateConfirmationLetter(
                 confirmationLink);

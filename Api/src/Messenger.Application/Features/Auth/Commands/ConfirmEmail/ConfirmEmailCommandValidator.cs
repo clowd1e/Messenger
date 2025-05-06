@@ -10,6 +10,9 @@ namespace Messenger.Application.Features.Auth.Commands.ConfirmEmail
             RuleFor(x => x.UserId)
                 .NotEmpty();
 
+            RuleFor(x => x.TokenId)
+                .NotEmpty();
+
             RuleFor(x => x.Token)
                 .NotEmpty();
         }
