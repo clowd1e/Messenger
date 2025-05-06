@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
-using Messenger.Application.Features.Auth.DTO;
+using Messenger.Application.Features.Auth.DTO.Response;
 using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.ResetPasswordTokens.Errors;
@@ -36,6 +36,8 @@ namespace Messenger.Application.Features.Auth.Commands.ResetPassword
             ResetPasswordCommand request,
             CancellationToken cancellationToken)
         {
+            #region Validate request
+
             // Check if the user exists
 
             var userId = new UserId(request.UserId);
@@ -83,6 +85,8 @@ namespace Messenger.Application.Features.Auth.Commands.ResetPassword
                 return Result.Failure<ValidatePasswordRecoveryResponse>(
                     ResetPasswordTokenErrors.Expired);
             }
+
+            #endregion
 
             // Unescape the token
 

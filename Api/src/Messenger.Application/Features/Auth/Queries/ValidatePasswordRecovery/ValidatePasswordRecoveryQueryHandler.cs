@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Messenger.Application.Features.Auth.DTO;
+using Messenger.Application.Features.Auth.DTO.Response;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.ResetPasswordTokens.Errors;
 using Messenger.Domain.Aggregates.ResetPasswordTokens.ValueObjects;

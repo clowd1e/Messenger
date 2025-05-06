@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Messenger.Application.Features.Auth.DTO;
+using Messenger.Application.Features.Auth.DTO.Response;
 
 namespace Messenger.Application.Features.Auth.Commands.Login
 {
