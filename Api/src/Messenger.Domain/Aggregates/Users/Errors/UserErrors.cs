@@ -44,11 +44,6 @@ namespace Messenger.Domain.Aggregates.User.Errors
                 code: "User.EmailAlreadyConfirmed",
                 description: "User's email is already confirmed.");
 
-        public static readonly Error InvalidEmailConfirmationToken =
-            Error.Validation(
-                code: "User.InvalidEmailConfirmationToken",
-                description: "The provided email confirmation token is invalid.");
-
         public static readonly Error EmailNotConfirmed =
             Error.Validation(
                 code: "User.EmailNotConfirmed",
