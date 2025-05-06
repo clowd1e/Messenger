@@ -5,13 +5,14 @@ using Messenger.Application.Features.Auth.Commands.RefreshToken;
 using Messenger.Application.Features.Auth.Commands.Register;
 using Messenger.Application.Features.Auth.Commands.RequestPasswordRecovery;
 using Messenger.Application.Features.Auth.Commands.ResetPassword;
+using Messenger.Application.Features.Auth.Queries.ValidateEmailConfirmation;
 using Messenger.Application.Features.Auth.Queries.ValidatePasswordRecovery;
 using Messenger.WebAPI.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.WebAPI.Controllers
 {
-    [Route("api/auth")]
+    [Route("api")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -23,6 +24,19 @@ namespace Messenger.WebAPI.Controllers
         }
 
         #region Queries
+
+        [HttpGet("validate-email-confirmation")]
+        public async Task<IActionResult> ValidateEmailConfirmationAsync(
+            [FromQuery] Guid userId,
+            [FromQuery] Guid tokenId,
+            CancellationToken cancellationToken)
+        {
+            var query = new ValidateEmailConfirmationQuery(userId, tokenId);
+
+            var queryResult = await _sender.Send(query, cancellationToken);
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
+        }
 
         [HttpGet("validate-password-recovery")]
         public async Task<IActionResult> ValidatePasswordRecoveryAsync(
