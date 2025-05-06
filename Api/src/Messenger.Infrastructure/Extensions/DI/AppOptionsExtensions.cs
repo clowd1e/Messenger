@@ -31,6 +31,8 @@ namespace Messenger.Infrastructure.Extensions.DI
                 SmtpClientSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<EmailLinkGeneratorSettings>(
                 EmailLinkGeneratorSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<ConfirmEmailTokenSettings>(
+                ConfirmEmailTokenSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<ResetPasswordTokenSettings>(
                 ResetPasswordTokenSettings.SectionName);
 
