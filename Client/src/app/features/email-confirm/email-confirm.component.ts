@@ -34,34 +34,42 @@ export class EmailConfirmComponent {
 
     this.route.queryParams.subscribe(params => {
       const userId = params['userId'];
+      const tokenId = params['tokenId'];
       const token = params['token'];
 
-      if (!userId || !token) {
+      if (!userId || !tokenId || !token) {
         this.finishLoading();
         return;
       } else {
+        
+        let validationResult = this.validateEmailConfirmation(userId, tokenId);
+
+        if (!validationResult) {
+          this.finishLoading();
+          return;
+        }
+
         const command = {
           userId: userId,
+          tokenId: tokenId,
           token: token
         };
 
         if (this.storage.getUserEmailConfirmedFromLocalStorage(userId)) {
-          this.isSuccess = false;
-          this.message = 'Your email has already been verified.';
+          this.raiseError('Your email has already been verified.');
           this.finishLoading();
           return;
         }
 
         this.apiService.confirmEmail(command).subscribe({
           next: () => {
-            this.isSuccess = true;
-            this.message = 'Your email has been successfully verified.';
+            this.raiseSuccess('Your email has been successfully verified.');
             this.storage.setUserEmailConfirmedToLocalStorage(userId);
             this.finishLoading();
           },
           error: (error) => {
-            this.isSuccess = false;
-            this.handleError(error, userId);
+            this.raiseError();
+            this.handleConfirmEmailError(error, userId);
             this.finishLoading();
           },
         });
@@ -73,16 +81,64 @@ export class EmailConfirmComponent {
     this.router.navigateByUrl('/login');
   }
 
-  private handleError(error: any, userId: string) {
+  private handleConfirmEmailError(error: any, userId: string) {
     let errorCode = error.error.errors.code;
 
     if (errorCode == 'User.EmailAlreadyConfirmed') {
       this.message = 'Your email has already been verified. You can login now.';
       this.storage.setUserEmailConfirmedToLocalStorage(userId);
-    } else {
+    }
+    else {
       this.message = 'Something went wrong. Please try again later.';
     }
   }
+
+  private validateEmailConfirmation(userId: string, tokenId: string): boolean {
+    let expiresAt = this.storage.getTokenExpirationFromLocalStorage(tokenId);
+
+    if (expiresAt && expiresAt < new Date()) {
+      this.raiseError('The confirmation link has expired.');
+      return false;
+    }
+
+    this.apiService.validateEmailConfirmation(userId, tokenId).subscribe({
+      next: (response) => {
+        const expiresAt = new Date(response.expiresAt);
+
+        this.storage.setTokenExpirationToLocalStorage(tokenId, expiresAt);
+
+        if (expiresAt < new Date()) {
+          this.raiseError('The confirmation link has expired.');
+          return false;
+        }
+
+        return true;
+      },
+      error: (error) => { 
+        this.raiseError();
+        this.handleValidateEmailConfirmationError(error);
+        return false;
+      }
+    });
+
+    return false;
+  }
+
+  private handleValidateEmailConfirmationError(error: any): void {
+    let errorCode = error.error.errors.code;
+
+    if (errorCode == 'User.ConfirmEmailToken.AlreadyUsed') {
+      this.message = 'You have already used this confirmation link.';
+    } 
+    else if (errorCode == 'ConfirmEmailToken.Expired') {
+      this.message = 'The confirmation link has expired.';
+    } 
+    else {
+      this.message = 'Something went wrong. Please try again later.';
+    }
+  }
+
+  // View methods 
 
   private startLoading() {
     this.isLoading = true;
@@ -103,4 +159,17 @@ export class EmailConfirmComponent {
         this.isMobileM = result.matches;
       });
   }
+
+  // Logic methods
+
+  private raiseError(message: string = ''): void {
+    this.isSuccess = false;
+    this.message = message;
+  }
+
+  private raiseSuccess(message: string): void {
+    this.isSuccess = true;
+    this.message = message;
+  }
 }
+
