@@ -28,6 +28,16 @@ export class StorageService {
     localStorage.removeItem('refreshToken');
   }
 
+  setTokenExpirationToLocalStorage(tokenId: string, expiration: Date) {
+    localStorage.setItem(`TokenExpiration:${tokenId}`, expiration.toString());
+  }
+
+  getTokenExpirationFromLocalStorage(tokenId: string): Date | null {
+    const value = localStorage.getItem(`TokenExpiration:${tokenId}`);
+    
+    return value ? new Date(value) : null;
+  }
+
   setUserEmailConfirmedToLocalStorage(userId: string) {
     localStorage.setItem(`EmailConfirmed:${userId}`, JSON.stringify(true));
   }
