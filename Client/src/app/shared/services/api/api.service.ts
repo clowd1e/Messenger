@@ -11,6 +11,7 @@ import { Chat } from '../../../features/chats-page/models/Chat';
 import { PaginatedMessagesResponse } from '../../../features/chats-page/models/PaginatedMessagesResponse';
 import { PaginatedChatsResponse } from '../../../features/chats-page/models/PaginatedChatsResponse';
 import { ConfirmEmailCommand } from '../../../features/email-confirm/models/ConfirmEmailCommand';
+import { ValidateEmailConfirmationResponse } from '../../../features/email-confirm/models/ValidateEmailConfirmationResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +22,11 @@ export class ApiService {
   httpClient = inject(HttpClient);
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
-    return this.httpClient.post<LoginResponse>(`${this.apiUrl}/auth/login`, loginRequest);
+    return this.httpClient.post<LoginResponse>(`${this.apiUrl}/login`, loginRequest);
   }
 
   register(registerRequest: RegisterRequest): Observable<void> {
-    return this.httpClient.post<void>(`${this.apiUrl}/auth/register`, registerRequest);
+    return this.httpClient.post<void>(`${this.apiUrl}/register`, registerRequest);
   }
 
   getAllUsersExceptCurrent(): Observable<UserItem[]> {
@@ -67,6 +68,16 @@ export class ApiService {
   }
 
   confirmEmail(confirmEmailCommand: ConfirmEmailCommand) : Observable<void> {
-    return this.httpClient.post<void>(`${this.apiUrl}/auth/confirm-email`, confirmEmailCommand);
+    return this.httpClient.post<void>(`${this.apiUrl}/confirm-email`, confirmEmailCommand);
+  }
+
+  validateEmailConfirmation(userId: string, tokenId: string): Observable<ValidateEmailConfirmationResponse> {
+    const options = { 
+      params: new HttpParams()
+        .set('userId', userId)
+        .set('tokenId', tokenId)
+    };
+
+    return this.httpClient.get<ValidateEmailConfirmationResponse>(`${this.apiUrl}/validate-email-confirmation`, options);
   }
 }

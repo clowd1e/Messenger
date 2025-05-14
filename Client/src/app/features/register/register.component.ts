@@ -72,7 +72,7 @@ export class RegisterComponent {
     this.apiService.register(registerRequest).subscribe({
       next: () => {
         this.router.navigateByUrl('login');
-        this.toastr.success('Registration successful!');
+        this.toastr.success('Registration successful! Please confirm your email.');
       },
       error: (httpError: HttpErrorResponse) => {
         this.errorHandler.handleHttpError(httpError);
