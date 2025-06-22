@@ -16,6 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="9.0.6" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="8.9.0" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.9.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.9.0" />

@@ -21,6 +21,12 @@ builder.Services.ConfigureAuthentication();
 
 builder.Services.ConfigureSignalR();
 
+builder.Services.AddLogging(logs =>
+{
+    logs.AddConsole();
+    logs.AddAzureWebAppDiagnostics();
+});
+
 var app = builder.Build();
 
 app.AddMiddleware();
