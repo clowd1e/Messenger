@@ -5,7 +5,6 @@ using Messenger.Infrastructure.Extensions.DI.Shared;
 using Messenger.Infrastructure.Services;
 using Messenger.Infrastructure.Services.Emails;
 using Messenger.Infrastructure.Services.Emails.Options;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Mail;
@@ -17,7 +16,6 @@ namespace Messenger.Infrastructure.Extensions.DI
         public static IServiceCollection AddInfrastructureServices(
             this IServiceCollection services)
         {
-            services.AddScoped<IPasswordHasher<ApplicationUser>, IdentityPasswordHasher>();
             services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<IIdentityService<ApplicationUser>, IdentityService>();
             services.AddScoped<ITokenHashService, TokenHashService>();
@@ -42,7 +40,7 @@ namespace Messenger.Infrastructure.Extensions.DI
             SmtpClient client = new SmtpClient(smtpClientSettings.Host, smtpClientSettings.Port)
             {
                 Credentials = new NetworkCredential(
-                    smtpClientSettings.Username, 
+                    smtpClientSettings.Username,
                     smtpClientSettings.Password),
                 EnableSsl = smtpClientSettings.EnableSsl
             };
