@@ -1,16 +1,19 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../../../environments/environment';
 import { HttpTransportType, HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
 import { StorageService } from '../../../../shared/services/storage/storage.service';
 import { SendMessageCommand } from '../../models/SendMessageCommand';
 import { Message } from '../../models/Message';
+import { ConfigService } from '../../../../shared/services/config/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalrService {
-  private readonly hubUrl = environment.HUB_BASE_URL;
+  config = inject(ConfigService);
+
+  private readonly hubUrl = this.config.get<string>('hubBaseUrl');
+  private readonly production = this.config.get<boolean>('production');
   private readonly hubConnection: HubConnection;
 
   storageService = inject(StorageService);
@@ -24,7 +27,7 @@ export class SignalrService {
         transport: HttpTransportType.WebSockets,
         accessTokenFactory: () => `${accessToken}` })
       .withAutomaticReconnect()
-      .configureLogging(environment.production ? signalR.LogLevel.None : signalR.LogLevel.Information)
+      .configureLogging(this.production ? signalR.LogLevel.None : signalR.LogLevel.Information)
       .build();
   }
 

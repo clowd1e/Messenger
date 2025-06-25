@@ -1,6 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment';
 import { LoginRequest } from '../../../features/login/models/LoginRequest';
 import { CreateChatCommand } from '../../../features/chats-page/models/CreateChatCommand';
 import { Observable } from 'rxjs';
@@ -12,14 +11,16 @@ import { PaginatedMessagesResponse } from '../../../features/chats-page/models/P
 import { PaginatedChatsResponse } from '../../../features/chats-page/models/PaginatedChatsResponse';
 import { ConfirmEmailCommand } from '../../../features/email-confirm/models/ConfirmEmailCommand';
 import { ValidateEmailConfirmationResponse } from '../../../features/email-confirm/models/ValidateEmailConfirmationResponse';
+import { ConfigService } from '../config/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly apiUrl = environment.API_BASE_URL;
-
+  config = inject(ConfigService);
   httpClient = inject(HttpClient);
+
+  private readonly apiUrl = this.config.get<string>('apiBaseUrl');
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.httpClient.post<LoginResponse>(`${this.apiUrl}/login`, loginRequest);
