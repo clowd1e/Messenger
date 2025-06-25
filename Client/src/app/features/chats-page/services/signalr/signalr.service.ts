@@ -4,16 +4,14 @@ import * as signalR from '@microsoft/signalr';
 import { StorageService } from '../../../../shared/services/storage/storage.service';
 import { SendMessageCommand } from '../../models/SendMessageCommand';
 import { Message } from '../../models/Message';
-import { ConfigService } from '../../../../shared/services/config/config.service';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalrService {
-  config = inject(ConfigService);
-
-  private readonly hubUrl = this.config.get<string>('hubBaseUrl');
-  private readonly production = this.config.get<boolean>('production');
+  private readonly hubUrl = environment.HUB_BASE_URL;
+  private readonly production = environment.production;
   private readonly hubConnection: HubConnection;
 
   storageService = inject(StorageService);
