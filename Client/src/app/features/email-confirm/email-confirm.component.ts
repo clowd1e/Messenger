@@ -5,6 +5,7 @@ import { ApiService } from '../../shared/services/api/api.service';
 import { CommonButtonComponent } from "../../shared/components/common-button/common-button.component";
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { StorageService } from '../../shared/services/storage/storage.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-email-confirm',
@@ -32,7 +33,7 @@ export class EmailConfirmComponent {
 
     this.startLoading();
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe(async params => {
       const userId = params['userId'];
       const tokenId = params['tokenId'];
       const token = params['token'];
@@ -41,9 +42,20 @@ export class EmailConfirmComponent {
         this.finishLoading();
         return;
       } else {
-        
-        let validationResult = this.validateEmailConfirmation(userId, tokenId);
+        if (this.storage.getUserEmailConfirmedFromLocalStorage(userId)) {
+          this.raiseError('Your email has already been verified.');
+          this.finishLoading();
+          return;
+        }
 
+        let emailConfirmErrorFromLocalStorage = this.storage.getEmailConfirmErrorFromLocalStorage(userId);
+        if (emailConfirmErrorFromLocalStorage) {
+          this.raiseError(emailConfirmErrorFromLocalStorage);
+          this.finishLoading();
+          return;
+        }
+
+        let validationResult = await this.validateEmailConfirmation(userId, tokenId);
         if (!validationResult) {
           this.finishLoading();
           return;
@@ -54,12 +66,6 @@ export class EmailConfirmComponent {
           tokenId: tokenId,
           token: token
         };
-
-        if (this.storage.getUserEmailConfirmedFromLocalStorage(userId)) {
-          this.raiseError('Your email has already been verified.');
-          this.finishLoading();
-          return;
-        }
 
         this.apiService.confirmEmail(command).subscribe({
           next: () => {
@@ -93,45 +99,38 @@ export class EmailConfirmComponent {
     }
   }
 
-  private validateEmailConfirmation(userId: string, tokenId: string): boolean {
+  private async validateEmailConfirmation(userId: string, tokenId: string): Promise<boolean> {
     let expiresAt = this.storage.getTokenExpirationFromLocalStorage(tokenId);
-
     if (expiresAt && expiresAt < new Date()) {
       this.raiseError('The confirmation link has expired.');
       return false;
     }
 
-    this.apiService.validateEmailConfirmation(userId, tokenId).subscribe({
-      next: (response) => {
-        const expiresAt = new Date(response.expiresAt);
-
-        this.storage.setTokenExpirationToLocalStorage(tokenId, expiresAt);
-
-        if (expiresAt < new Date()) {
-          this.raiseError('The confirmation link has expired.');
-          return false;
-        }
-
-        return true;
-      },
-      error: (error) => { 
-        this.raiseError();
-        this.handleValidateEmailConfirmationError(error);
+    try {
+      const response = await firstValueFrom(this.apiService.validateEmailConfirmation(userId, tokenId));
+      const expiresAt = new Date(response.expiresAt);
+      this.storage.setTokenExpirationToLocalStorage(tokenId, expiresAt);
+      if (expiresAt < new Date()) {
+        this.raiseError('The confirmation link has expired.');
         return false;
       }
-    });
-
-    return false;
+      return true;
+    } catch (error) {
+        this.handleValidateEmailConfirmationError(userId, error);
+        return false;
+    };
   }
 
-  private handleValidateEmailConfirmationError(error: any): void {
+  private handleValidateEmailConfirmationError(userId: string, error: any): void {
     let errorCode = error.error.errors.code;
 
-    if (errorCode == 'User.ConfirmEmailToken.AlreadyUsed') {
+    if (errorCode == 'ConfirmEmailToken.AlreadyUsed') {
       this.message = 'You have already used this confirmation link.';
-    } 
+      this.storage.setEmailConfirmErrorToLocalStorage(userId, this.message);
+    }
     else if (errorCode == 'ConfirmEmailToken.Expired') {
       this.message = 'The confirmation link has expired.';
+      this.storage.setEmailConfirmErrorToLocalStorage(userId, this.message);
     } 
     else {
       this.message = 'Something went wrong. Please try again later.';

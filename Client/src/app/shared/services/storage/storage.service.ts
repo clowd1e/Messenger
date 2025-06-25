@@ -46,4 +46,12 @@ export class StorageService {
     const value = localStorage.getItem(`EmailConfirmed:${userId}`);
     return value ? JSON.parse(value) : false;
   }
+
+  setEmailConfirmErrorToLocalStorage(userId: string, error: string) {
+    localStorage.setItem(`EmailConfirmError:${userId}`, error);
+  }
+
+  getEmailConfirmErrorFromLocalStorage(userId: string): string | null {
+    return localStorage.getItem(`EmailConfirmError:${userId}`);
+  }
 }
