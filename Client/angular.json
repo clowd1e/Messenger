@@ -35,6 +35,11 @@
                 "glob": "web.config",
                 "input": "src",
                 "output": "./"
+              },
+              {
+                "glob": "environment.json",
+                "input": "src/environments/",
+                "output": "./"
               }
             ],
             "styles": [
@@ -54,12 +59,6 @@
                 },
                 "fonts": false
               },
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
               "budgets": [
                 {
                   "type": "initial",

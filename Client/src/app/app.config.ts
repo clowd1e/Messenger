@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -6,6 +6,11 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { accessTokenInterceptor } from './shared/interceptors/access-token/access-token.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
+import { ConfigService } from './shared/services/config/config.service';
+
+export function loadConfig(configService: ConfigService): () => Promise<void> {
+  return () => configService.loadConfig()
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,5 +27,12 @@ export const appConfig: ApplicationConfig = {
       accessTokenInterceptor
     ])),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes)]
+    provideRouter(routes),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: loadConfig,
+      deps: [ConfigService],
+      multi: true
+    }
+  ]
 };

@@ -6,10 +6,8 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { ApiService } from '../../../../shared/services/api/api.service';
 import { ErrorHandlerService } from '../../../../shared/services/error-handler/error-handler.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Chat } from '../../models/Chat';
 import { MapChatToChatItem } from '../../mappers/ChatToChatItemMapper';
 import { PaginatedChatsResponse } from '../../models/PaginatedChatsResponse';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-chat-list',
@@ -25,7 +23,7 @@ export class ChatListComponent {
   selectedChatId = input<string>();
   currentPage = 1;
   itemsPerPage = 10;
-  retrieveCutoff = environment.production ? new Date(Date.now() - 100) : new Date();
+  retrieveCutoff = new Date();
   isLastPage = false;
 
   uuidHelper = inject(UuidHelperService);
