@@ -11,16 +11,15 @@ import { PaginatedMessagesResponse } from '../../../features/chats-page/models/P
 import { PaginatedChatsResponse } from '../../../features/chats-page/models/PaginatedChatsResponse';
 import { ConfirmEmailCommand } from '../../../features/email-confirm/models/ConfirmEmailCommand';
 import { ValidateEmailConfirmationResponse } from '../../../features/email-confirm/models/ValidateEmailConfirmationResponse';
-import { ConfigService } from '../config/config.service';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  config = inject(ConfigService);
-  httpClient = inject(HttpClient);
+  private readonly apiUrl = environment.API_BASE_URL;
 
-  private readonly apiUrl = this.config.get<string>('apiBaseUrl');
+  httpClient = inject(HttpClient);
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.httpClient.post<LoginResponse>(`${this.apiUrl}/login`, loginRequest);

@@ -1,5 +1,0 @@
-{
-    "apiBaseUrl": "http://localhost:5000/api",
-    "hubBaseUrl": "http://localhost:5000/hubs",
-    "production": false
-}
