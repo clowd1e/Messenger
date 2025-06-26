@@ -1,6 +1,6 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Auth.DTO.Response;
 using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
@@ -12,7 +12,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Auth.Commands.ResetPassword
 {
     internal sealed class ResetPasswordCommandHandler
-        : IRequestHandler<ResetPasswordCommand, Result>
+        : ICommandHandler<ResetPasswordCommand>
     {
         private readonly IIdentityService<ApplicationUser> _identityService;
         private readonly IResetPasswordTokenRepository _resetPasswordTokenRepository;

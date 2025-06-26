@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Auth.DTO.Response;
 using Messenger.Domain.Aggregates.ConfirmEmailTokens;
 using Messenger.Domain.Aggregates.ConfirmEmailTokens.Errors;
@@ -10,7 +10,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Auth.Queries.ValidateEmailConfirmation
 {
     internal sealed class ValidateEmailConfirmationQueryHandler
-        : IRequestHandler<ValidateEmailConfirmationQuery, Result<ValidateEmailConfirmationResponse>>
+        : IQueryHandler<ValidateEmailConfirmationQuery, ValidateEmailConfirmationResponse>
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfirmEmailTokenRepository _confirmEmailTokenRepository;

@@ -1,6 +1,6 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Abstractions.Storage;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;
@@ -9,7 +9,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Users.Commands.RemoveIcon
 {
     internal sealed class RemoveUserIconCommandHandler
-        : IRequestHandler<RemoveUserIconCommand, Result>
+        : ICommandHandler<RemoveUserIconCommand>
     {
         private readonly IImageService _imageService;
         private readonly IUserRepository _userRepository;

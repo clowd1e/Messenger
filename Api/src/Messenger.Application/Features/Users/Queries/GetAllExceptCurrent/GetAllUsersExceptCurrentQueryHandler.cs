@@ -1,6 +1,6 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Exceptions;
 using Messenger.Application.Features.Users.DTO;
 using Messenger.Domain.Aggregates.Users;
@@ -9,7 +9,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Users.Queries.GetAllExceptCurrent
 {
     internal sealed class GetAllUsersExceptCurrentQueryHandler
-        : IRequestHandler<GetAllUsersExceptCurrentQuery, Result<IEnumerable<ShortUserResponse>>>
+        : IQueryHandler<GetAllUsersExceptCurrentQuery, IEnumerable<ShortUserResponse>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserContextService<Guid> _userContextService;

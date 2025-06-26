@@ -1,6 +1,6 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Chats.DTO;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.Errors;
@@ -12,7 +12,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Chats.Commands.Create
 {
     internal sealed class CreateChatCommandHandler
-        : IRequestHandler<CreateChatCommand, Result<Guid>>
+        : ICommandHandler<CreateChatCommand, Guid>
     {
         private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;

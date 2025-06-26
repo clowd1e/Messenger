@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Auth.DTO.Response;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.ResetPasswordTokens.Errors;
@@ -10,7 +10,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Auth.Queries.ValidatePasswordRecovery
 {
     internal sealed class ValidatePasswordRecoveryQueryHandler
-        : IRequestHandler<ValidatePasswordRecoveryQuery, Result<ValidatePasswordRecoveryResponse>>
+        : IQueryHandler<ValidatePasswordRecoveryQuery, ValidatePasswordRecoveryResponse>
     {
         private readonly IUserRepository _userRepository;
         private readonly IResetPasswordTokenRepository _resetPasswordTokenRepository;

@@ -1,31 +1,31 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Chats.Commands.Create;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
+using Messenger.Application.Features.Chats.DTO;
 using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.WebAPI.Extensions;
+using Messenger.WebAPI.Factories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Messenger.WebAPI.Hubs
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public sealed class ChatHub : Hub<IChatHub>
+    public sealed class ChatHub(
+        ProblemDetailsFactory problemDetailsFactory) : Hub<IChatHub>
     {
-        private readonly ISender _sender;
-
-        public ChatHub(ISender sender)
-        {
-            _sender = sender;
-        }
-
         public override async Task OnConnectedAsync()
         {
         }
 
-        public async Task CreateChat(CreateChatCommand command)
+        public async Task CreateChat(
+            [FromServices] ICommandHandler<CreateChatCommand, Guid> commandHandler,
+            [FromServices] IQueryHandler<GetChatByIdQuery, ChatResponse> queryHandler,
+            CreateChatCommand command)
         {
-            var commandResult = await _sender.Send(command);
+            var commandResult = await commandHandler.Handle(command, default);
 
             if (commandResult.IsFailure)
             {
@@ -35,7 +35,9 @@ namespace Messenger.WebAPI.Hubs
 
             var chatId = commandResult.Value;
 
-            var queryResult = await _sender.Send(new GetChatByIdQuery(chatId));
+            var query = new GetChatByIdQuery(chatId);
+
+            var queryResult = await queryHandler.Handle(query, default);
 
             if (queryResult.IsFailure)
             {
@@ -49,9 +51,11 @@ namespace Messenger.WebAPI.Hubs
             await Clients.User(command.InviteeId.ToString()).ReceiveChat(chat);
         }
 
-        public async Task SendMessage(SendMessageCommand command)
+        public async Task SendMessage(
+            [FromServices] ICommandHandler<SendMessageCommand, MessageResponse> commandHandler,
+            SendMessageCommand command)
         {
-            var commandResult = await _sender.Send(command);
+            var commandResult = await commandHandler.Handle(command, default);
 
             if (commandResult.IsFailure)
             {

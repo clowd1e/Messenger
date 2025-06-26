@@ -1,5 +1,5 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Identity;
+﻿using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Exceptions;
 using Messenger.Application.Features.Auth.DTO.Response;
 using Messenger.Application.Identity;
@@ -10,7 +10,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Auth.Commands.Login
 {
     internal sealed class LoginCommandHandler
-        : IRequestHandler<LoginCommand, Result<LoginResponse>>
+        : ICommandHandler<LoginCommand, LoginResponse>
     {
         private readonly IIdentityService<ApplicationUser> _identityService;
         private readonly IUserRepository _userRepository;

@@ -1,6 +1,6 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Exceptions;
 using Messenger.Application.Features.Chats.DTO;
 using Messenger.Application.Helpers;
@@ -11,7 +11,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated
 {
     internal sealed class GetCurrentUserChatsPaginatedQueryHandler
-        : IRequestHandler<GetCurrentUserChatsPaginatedQuery, Result<PaginatedChatsResponse>>
+        : IQueryHandler<GetCurrentUserChatsPaginatedQuery, PaginatedChatsResponse>
     {
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IChatRepository _chatRepository;

@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Chats.Commands.Create;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
+using Messenger.Application.Features.Chats.DTO;
 using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChats;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated;
-using Messenger.WebAPI.Extensions;
+using Messenger.WebAPI.Factories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,61 +15,65 @@ namespace Messenger.WebAPI.Controllers
     [Route("api/chats")]
     [ApiController]
     [Authorize]
-    public class ChatsController : ControllerBase
+    public class ChatsController(
+        ProblemDetailsFactory problemDetailsFactory) : ControllerBase
     {
-        private readonly ISender _sender;
-
-        public ChatsController(ISender sender)
-        {
-            _sender = sender;
-        }
-
         #region Queries
 
         [HttpGet]
-        public async Task<IActionResult> GetChatsForCurrentUser()
+        public async Task<IActionResult> GetChatsForCurrentUser(
+            [FromServices] IQueryHandler<GetCurrentUserChatsQuery, IEnumerable<ChatResponse>> queryHandler,
+            CancellationToken cancellationToken)
         {
             var query = new GetCurrentUserChatsQuery();
 
-            var queryResult = await _sender.Send(query);
+            var queryResult = await queryHandler.Handle(query, cancellationToken);
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         [HttpGet("paginated")]
         public async Task<IActionResult> GetPaginatedChatsForCurrentUser(
+            [FromServices] IQueryHandler<GetCurrentUserChatsPaginatedQuery, PaginatedChatsResponse> queryHandler,
             [FromQuery] int page,
             [FromQuery] int pageSize,
-            [FromQuery] DateTime retrievalCutoff)
+            [FromQuery] DateTime retrievalCutoff,
+            CancellationToken cancellationToken)
         {
             var query = new GetCurrentUserChatsPaginatedQuery(page, pageSize, retrievalCutoff);
 
-            var queryResult = await _sender.Send(query);
+            var queryResult = await queryHandler.Handle(query, cancellationToken);
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         [HttpGet("{chatId:guid}")]
         public async Task<IActionResult> GetChatById(
-            [FromRoute] Guid chatId)
+            [FromServices] IQueryHandler<GetChatByIdQuery, ChatResponse> queryHandler,
+            [FromRoute] Guid chatId,
+            CancellationToken cancellationToken)
         {
-            var queryResult = await _sender.Send(new GetChatByIdQuery(chatId));
+            var query = new GetChatByIdQuery(chatId);
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
+            var queryResult = await queryHandler.Handle(query, cancellationToken);
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         [HttpGet("{chatId:guid}/messages")]
         public async Task<IActionResult> GetChatMessagesPaginated(
+            [FromServices] IQueryHandler<GetChatMessagesPaginatedQuery, PaginatedMessagesResponse> queryHandler,
             [FromRoute] Guid chatId,
             [FromQuery] int page,
             [FromQuery] int pageSize,
-            [FromQuery] DateTime retrievalCutoff)
+            [FromQuery] DateTime retrievalCutoff,
+            CancellationToken cancellationToken)
         {
             var query = new GetChatMessagesPaginatedQuery(chatId, page, pageSize, retrievalCutoff);
 
-            var queryResult = await _sender.Send(query);
+            var queryResult = await queryHandler.Handle(query, cancellationToken);
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         #endregion
@@ -77,18 +82,22 @@ namespace Messenger.WebAPI.Controllers
 
         [HttpPost("send-message")]
         public async Task<IActionResult> SendMessage(
-            [FromBody] SendMessageCommand command)
+            [FromServices] ICommandHandler<SendMessageCommand, MessageResponse> commandHandler,
+            [FromBody] SendMessageCommand command,
+            CancellationToken cancellationToken)
         {
-            var commandResult = await _sender.Send(command);
+            var commandResult = await commandHandler.Handle(command, cancellationToken);
 
-            return commandResult.IsSuccess ? Ok() : commandResult.ToActionResult();
+            return commandResult.IsSuccess ? Ok() : problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateChat(
-            [FromBody] CreateChatCommand command)
+            [FromServices] ICommandHandler<CreateChatCommand, Guid> commandHandler,
+            [FromBody] CreateChatCommand command,
+            CancellationToken cancellationToken)
         {
-            var commandResult = await _sender.Send(command);
+            var commandResult = await commandHandler.Handle(command, cancellationToken);
 
             if (commandResult.IsSuccess)
             {
@@ -98,7 +107,7 @@ namespace Messenger.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return commandResult.ToActionResult();
+            return problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         #endregion

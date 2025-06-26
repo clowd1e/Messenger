@@ -1,7 +1,7 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Emails;
 using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Auth.DTO.RequestModel;
 using Messenger.Application.Identity.Options;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 namespace Messenger.Application.Features.Auth.Commands.RequestPasswordRecovery
 {
     internal sealed class RequestPasswordRecoveryCommandHandler
-        : IRequestHandler<RequestPasswordRecoveryCommand, Result>
+        : ICommandHandler<RequestPasswordRecoveryCommand>
     {
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;

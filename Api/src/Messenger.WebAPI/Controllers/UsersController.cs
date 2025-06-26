@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Users.Commands.RemoveIcon;
 using Messenger.Application.Features.Users.Commands.SetIcon;
+using Messenger.Application.Features.Users.DTO;
 using Messenger.Application.Features.Users.Queries.GetAll;
 using Messenger.Application.Features.Users.Queries.GetAllExceptCurrent;
 using Messenger.Application.Features.Users.Queries.GetById;
-using Messenger.WebAPI.Extensions;
+using Messenger.WebAPI.Factories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,55 +14,75 @@ namespace Messenger.WebAPI.Controllers
     [Route("api/users")]
     [ApiController]
     [Authorize]
-    public sealed class UsersController : ControllerBase
+    public sealed class UsersController(
+        ProblemDetailsFactory problemDetailsFactory) : ControllerBase
     {
-        private readonly ISender _sender;
-
-        public UsersController(ISender sender)
-        {
-            _sender = sender;
-        }
+        #region Queries
 
         [HttpGet("{userId:guid}")]
         public async Task<IActionResult> GetUserById(
-            [FromRoute] Guid userId)
+            [FromServices] IQueryHandler<GetUserByIdQuery, UserResponse> queryHandler,
+            [FromRoute] Guid userId,
+            CancellationToken cancellationToken)
         {
-            var queryResult = await _sender.Send(new GetUserByIdQuery(userId));
+            var query = new GetUserByIdQuery(userId);
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
+            var queryResult = await queryHandler.Handle(query, cancellationToken);
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers(
+            [FromServices] IQueryHandler<GetAllUsersQuery, IEnumerable<UserResponse>> queryHandler,
+            CancellationToken cancellationToken)
         {
-            var queryResult = await _sender.Send(new GetAllUsersQuery());
+            var query = new GetAllUsersQuery();
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
+            var queryResult = await queryHandler.Handle(query, cancellationToken);
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         [HttpGet("except-current")]
-        public async Task<IActionResult> GetAllUsersExceptCurrent()
+        public async Task<IActionResult> GetAllUsersExceptCurrent(
+            [FromServices] IQueryHandler<GetAllUsersExceptCurrentQuery, IEnumerable<ShortUserResponse>> queryHandler,
+            CancellationToken cancellationToken)
         {
-            var queryResult = await _sender.Send(new GetAllUsersExceptCurrentQuery());
+            var query = new GetAllUsersExceptCurrentQuery();
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToActionResult();
+            var queryResult = await queryHandler.Handle(query, cancellationToken);
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : problemDetailsFactory.GetProblemDetails(queryResult);
         }
+
+        #endregion
+
+        #region Commands
 
         [HttpPut("set-icon")]
         public async Task<IActionResult> SetUserIcon(
-            [FromForm] SetUserIconCommand command)
+            [FromServices] ICommandHandler<SetUserIconCommand> commandHandler,
+            [FromForm] SetUserIconCommand command,
+            CancellationToken cancellationToken)
         {
-            var commandResult = await _sender.Send(command);
+            var commandResult = await commandHandler.Handle(command, cancellationToken);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToActionResult();
+            return commandResult.IsSuccess ? NoContent() : problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         [HttpPut("remove-icon")]
-        public async Task<IActionResult> RemoveUserIcon()
+        public async Task<IActionResult> RemoveUserIcon(
+            [FromServices] ICommandHandler<RemoveUserIconCommand> commandHandler,
+            CancellationToken cancellationToken)
         {
-            var commandResult = await _sender.Send(new RemoveUserIconCommand());
+            var command = new RemoveUserIconCommand();
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToActionResult();
+            var commandResult = await commandHandler.Handle(command, cancellationToken);
+
+            return commandResult.IsSuccess ? NoContent() : problemDetailsFactory.GetProblemDetails(commandResult);
         }
+
+        #endregion
     }
 }

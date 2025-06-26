@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Messaging;
 
 namespace Messenger.Application.Features.Auth.Commands.Register
 {
@@ -6,5 +6,5 @@ namespace Messenger.Application.Features.Auth.Commands.Register
         string Username,
         string Name,
         string Email,
-        string Password) : IRequest<Result>;
+        string Password) : ICommand;
 }
