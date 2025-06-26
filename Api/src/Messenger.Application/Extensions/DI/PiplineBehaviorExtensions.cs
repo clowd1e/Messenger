@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +8,9 @@ namespace Messenger.Application.Extensions.DI
     {
         public static IServiceCollection AddPipelineBehaviors(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+            services.TryDecorate(typeof(IQueryHandler<,>), typeof(ValidationDecorator.QueryHandler<,>));
+            services.TryDecorate(typeof(ICommandHandler<>), typeof(ValidationDecorator.CommandHandler<>));
+            services.TryDecorate(typeof(ICommandHandler<,>), typeof(ValidationDecorator.CommandHandler<,>));
 
             return services;
         }
