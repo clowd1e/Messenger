@@ -11,7 +11,7 @@ namespace Messenger.Application
 
             services.AddMappers();
 
-            services.AddMediatR();
+            services.AddMessaging();
 
             services.AddPipelineBehaviors();
 
