@@ -2,6 +2,7 @@ using Messenger.Infrastructure;
 using Messenger.Infrastructure.Extensions;
 using Messenger.Application;
 using Messenger.WebAPI.Extensions.DI;
+using Messenger.WebAPI.Factories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.AddInfrastructure();
 builder.Services.ConfigureAuthentication();
 
 builder.Services.ConfigureSignalR();
+
+builder.Services.AddSingleton<ProblemDetailsFactory>();
 
 builder.Services.AddLogging(logs =>
 {

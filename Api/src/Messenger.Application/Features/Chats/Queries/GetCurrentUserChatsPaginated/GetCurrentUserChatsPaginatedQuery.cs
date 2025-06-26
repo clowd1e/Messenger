@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Chats.DTO;
 
 namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated
@@ -6,5 +6,5 @@ namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPagina
     public sealed record GetCurrentUserChatsPaginatedQuery(
         int Page,
         int PageSize,
-        DateTime RetrievalCutoff) : IRequest<Result<PaginatedChatsResponse>>;
+        DateTime RetrievalCutoff) : IQuery<PaginatedChatsResponse>;
 }

@@ -1,5 +1,5 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Users.DTO;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;
@@ -7,7 +7,7 @@ using Messenger.Domain.Aggregates.Users;
 namespace Messenger.Application.Features.Users.Queries.GetById
 {
     internal sealed class GetUserByIdQueryHandler
-        : IRequestHandler<GetUserByIdQuery, Result<UserResponse>>
+        : IQueryHandler<GetUserByIdQuery, UserResponse>
     {
         private readonly IUserRepository _userRepository;
         private readonly Mapper<User, UserResponse> _userMapper;

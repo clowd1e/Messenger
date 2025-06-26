@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Messaging;
 
 namespace Messenger.Application.Features.Auth.Commands.ResetPassword
 {
@@ -6,5 +6,5 @@ namespace Messenger.Application.Features.Auth.Commands.ResetPassword
         Guid UserId,
         Guid TokenId,
         string Token,
-        string NewPassword) : IRequest<Result>;
+        string NewPassword) : ICommand;
 }

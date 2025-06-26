@@ -1,16 +1,16 @@
-﻿using MediatR;
+﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
+using Messenger.Application.Exceptions;
 using Messenger.Application.Features.Chats.DTO;
 using Messenger.Domain.Aggregates.Chats;
-using Messenger.Domain.Aggregates.Users.ValueObjects;
-using Messenger.Application.Abstractions.Data;
 using Messenger.Domain.Aggregates.Users;
-using Messenger.Application.Exceptions;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 
 namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChats
 {
     internal sealed class GetCurrentUserChatsQueryHandler
-        : IRequestHandler<GetCurrentUserChatsQuery, Result<IEnumerable<ChatResponse>>>
+        : IQueryHandler<GetCurrentUserChatsQuery, IEnumerable<ChatResponse>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;

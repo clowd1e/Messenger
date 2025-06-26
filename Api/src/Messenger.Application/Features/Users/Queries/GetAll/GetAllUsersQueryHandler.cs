@@ -1,12 +1,12 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Users.DTO;
 using Messenger.Domain.Aggregates.Users;
 
 namespace Messenger.Application.Features.Users.Queries.GetAll
 {
     internal sealed class GetAllUsersQueryHandler
-        : IRequestHandler<GetAllUsersQuery, Result<IEnumerable<UserResponse>>>
+        : IQueryHandler<GetAllUsersQuery, IEnumerable<UserResponse>>
     {
         private readonly IUserRepository _userRepository;
         private readonly Mapper<User, UserResponse> _userMapper;

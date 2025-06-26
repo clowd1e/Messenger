@@ -1,6 +1,6 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Exceptions;
 using Messenger.Application.Features.Auth.DTO.Response;
 using Messenger.Application.Identity;
@@ -14,7 +14,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Auth.Commands.ConfirmEmail
 {
     internal sealed class ConfirmEmailCommandHandler
-        : IRequestHandler<ConfirmEmailCommand, Result>
+        : ICommandHandler<ConfirmEmailCommand>
     {
         private readonly IConfirmEmailTokenRepository _confirmEmailTokenRepository;
         private readonly IIdentityService<ApplicationUser> _identityService;

@@ -1,7 +1,7 @@
-﻿using MediatR;
-using Messenger.Application.Abstractions.Data;
+﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Emails;
 using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Auth.DTO.RequestModel;
 using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.ConfirmEmailTokens;
@@ -11,7 +11,7 @@ using Messenger.Domain.Aggregates.Users;
 namespace Messenger.Application.Features.Auth.Commands.Register
 {
     internal sealed class RegisterCommandHandler
-        : IRequestHandler<RegisterCommand, Result>
+        : ICommandHandler<RegisterCommand>
     {
         private readonly IIdentityService<ApplicationUser> _identityService;
         private readonly IUserRepository _userRepository;
