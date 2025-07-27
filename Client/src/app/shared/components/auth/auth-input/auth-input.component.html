@@ -1,6 +1,8 @@
 <div class="input-wrapper">
-    <img [src]="imageSource()" />
-    <input 
+    <svg [style.margin-top]="svgConfig().marginTop" [attr.viewBox]="svgConfig().viewBox" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path [attr.d]="svgConfig().path" fill="currentColor"/>
+    </svg>
+    <input
         [type]="inputType()"
         [placeholder]="inputPlaceholder()"
         [value]="value"

@@ -5,85 +5,76 @@
             
             <div>
                 <app-auth-input
-                    [inputType]="'text'" 
-                    [imageSource]="'/images/at.svg'" 
+                    [svgConfig]="usernameIcon"
+                    [inputType]="'text'"
                     [inputPlaceholder]="'Type your username'"
                     formControlName="username"></app-auth-input>
                 @if (formControlInvalid('username')) {
                     @if (formControlContainsError('username', 'required')) {
                         <p class="error-message">Username is required</p>
-                    }
-                    @if (formControlContainsError('username', 'minlength')) {
+                    } @else if (formControlContainsError('username', 'minlength')) {
                         <p class="error-message">Username must be at least 3 characters long</p>
-                    }
-                    @if (formControlContainsError('username', 'maxlength')) {
+                    } @else if (formControlContainsError('username', 'maxlength')) {
                         <p class="error-message">Username must be at most 30 characters long</p>
-                    }
-                    @if (formControlContainsError('username', 'pattern')) {
+                    } @else if (formControlContainsError('username', 'pattern')) {
                         <p class="error-message">Username can only contain letters or digits</p>
                     }
                 }
                 <app-auth-input
+                    [svgConfig]="nameIcon"
                     [inputType]="'text'"
-                    [imageSource]="'/images/user.svg'"
                     [inputPlaceholder]="'Type your name'"
                     formControlName="name"></app-auth-input>
                 @if (formControlInvalid('name')) {
                     @if (formControlContainsError('name', 'required')) {
                         <p class="error-message">Name is required</p>
                     }
-                    @if (formControlContainsError('name', 'minlength')) {
+                    @else if (formControlContainsError('name', 'minlength')) {
                         <p class="error-message">Name must be at least 1 characters long</p>
                     }
-                    @if (formControlContainsError('name', 'maxlength')) {
+                    @else if (formControlContainsError('name', 'maxlength')) {
                         <p class="error-message">Name must be at most 30 characters long</p>
                     }
                 }
                 <app-auth-input
+                    [svgConfig]="emailIcon"
                     [inputType]="'email'" 
-                    [imageSource]="'/images/envelope.svg'" 
                     [inputPlaceholder]="'Type your email'"
                     formControlName="email"></app-auth-input>
                 @if (formControlInvalid('email')) {
                     @if (formControlContainsError('email', 'required')) {
                         <p class="error-message">Email is required</p>
-                    }
-                    @if (formControlContainsError('email', 'email')) {
+                    } @else if (formControlContainsError('email', 'email')) {
                         <p class="error-message">Email must be a valid email address</p>
-                    }
-                    @if (formControlContainsError('email', 'maxlength')) {
+                    } @else if (formControlContainsError('email', 'maxlength')) {
                         <p class="error-message">Email must be at most 50 characters long</p>
                     }
                 }
                 <app-auth-input
+                    [svgConfig]="passwordIcon"
                     [inputType]="'password'"
-                    [imageSource]="'/images/password.svg'"
                     [inputPlaceholder]="'Type your password'"
                     formControlName="password"></app-auth-input>
                 @if (formControlInvalid('password')) {
                     @if (formControlContainsError('password', 'required')) {
                         <p class="error-message">Password is required</p>
-                    }
-                    @if (formControlContainsError('password', 'minlength')) {
+                    } @else if (formControlContainsError('password', 'minlength')) {
                         <p class="error-message">Password must be at least 8 characters long</p>
-                    }
-                    @if (formControlContainsError('password', 'maxlength')) {
+                    } @else if (formControlContainsError('password', 'maxlength')) {
                         <p class="error-message">Password must be at most 30 characters long</p>
-                    }
-                    @if (formControlContainsError('password', 'pattern')) {
+                    } @else if (formControlContainsError('password', 'pattern')) {
                         <p class="error-message">{{ registerForm.controls.password.errors?.["pattern"] }}</p>
                     }
                 }
                 <app-auth-input
+                    [svgConfig]="passwordIcon"
                     [inputType]="'password'"
-                    [imageSource]="'/images/password.svg'"
                     [inputPlaceholder]="'Repeat your password'"
                     formControlName="repeatPassword"></app-auth-input>
                 @if (formControlInvalid('repeatPassword')) {
                     @if (formControlContainsError('repeatPassword', 'required')) {
                         <p class="error-message">Repeat password is required</p>
-                    }
-                    @if (formControlContainsError('repeatPassword', 'repeat')) {
+                    }@else if (formControlContainsError('repeatPassword', 'repeat')) {
                         <p class="error-message">Passwords must match</p>
                     }
                 }
@@ -92,6 +83,8 @@
             <app-auth-button
                 class="register-button"
                 [buttonText]="'Sign up'"></app-auth-button>
+
+            <p class="login-message">Back to <a [routerLink]="['/login']">Login</a> page</p>
         </form>
     </div>
 </div>

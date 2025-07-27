@@ -1,5 +1,7 @@
-import { Component, forwardRef, input } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { Component, forwardRef, input, TemplateRef, ViewEncapsulation } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { SvgConfiguration } from '../../../models/configurations/UI/svg-configuration';
 
 @Component({
   selector: 'app-auth-input',
@@ -17,7 +19,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class AuthInputComponent {
   inputType = input.required<string>();
-  imageSource = input.required<string>();
+  svgConfig = input.required<SvgConfiguration>();
   inputPlaceholder = input.required<string>();
 
   value: string = '';

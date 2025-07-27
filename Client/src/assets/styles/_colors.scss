@@ -1,3 +1,5 @@
+// Note: remove these styles
+
 $default-background-color: #EBEBEB;
 $default-form-background-color: #F7F7F7;
 $default-message-box-background-color: #F1F1F1;
@@ -8,3 +10,37 @@ $default-message-input-button-color: #6799EF;
 $default-loading-color: #929292;
 $selected-chat-background-color: #F0F0F0;
 $chat-hover-background-color: #F7F7F7;
+//
+
+
+@mixin auth-light-theme-colors {
+    --auth-bg-color: #FBFBFB;
+    --auth-logo-text-color: #000000;
+    --auth-logo-text-shadow-color: rgba(0, 0, 0, 0.25);
+    --auth-logo-image-shadow-color: rgba(0, 0, 0, 0.25);
+    --auth-text-color: #000000;
+    --auth-form-bg-color: #F3F3F3;
+    --auth-form-shadow-color: rgba(125, 125, 125, 0.25);
+    --auth-form-border-color: #E0E0E0;
+    --auth-input-bg-color: #F8F8F8;
+    --auth-input-border-color: #B0B0B0;
+    --auth-icon-color: #4B4B4B;
+    --auth-input-color: #000000;
+    --auth-input-placeholder-color: #6C6C6C;
+}
+
+@mixin auth-dark-theme-colors {
+    --auth-bg-color: #111111;
+    --auth-logo-text-color: #FFFFFF;
+    --auth-logo-text-shadow-color: rgba(255, 255, 255, 0.25);
+    --auth-logo-image-shadow-color: rgba(255, 255, 255, 0.25);
+    --auth-text-color: #FFFFFF;
+    --auth-form-bg-color: #424242;
+    --auth-form-shadow-color: rgba(255, 255, 255, 0.25);
+    --auth-form-border-color: #575757;
+    --auth-input-bg-color: #323232;
+    --auth-input-border-color: #686868;
+    --auth-icon-color: #D3D3D3;
+    --auth-input-color: #FFFFFF;
+    --auth-placeholder-color: #DCDCDC;
+}

@@ -4,7 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { AuthButtonComponent } from '../../shared/components/auth/auth-button/auth-button.component';
 import { AuthInputComponent } from '../../shared/components/auth/auth-input/auth-input.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../shared/services/api/api.service';
 import { RegisterRequest } from './models/RegisterRequest';
 import { passwordPatternValidator } from './validators/PasswordPatternValidator';
@@ -12,15 +12,24 @@ import { repeatPasswordValidator } from './validators/RepeatPasswordValidator';
 import { ErrorHandlerService } from '../../shared/services/error-handler/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormHelperService } from '../../shared/services/form-helper/form-helper.service';
+import { emailIcon, nameIcon, passwordIcon, usernameIcon } from './register-icons';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [AuthInputComponent, AuthButtonComponent, ReactiveFormsModule, CommonModule],
+  imports: [
+    RouterLink, AuthInputComponent,
+    AuthButtonComponent, ReactiveFormsModule,
+    CommonModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
+  usernameIcon = usernameIcon;
+  nameIcon = nameIcon;
+  emailIcon = emailIcon;
+  passwordIcon = passwordIcon;
+
   fb = inject(NonNullableFormBuilder);
   registerForm = this.fb.group({
     username: this.fb.control('', { validators: [
