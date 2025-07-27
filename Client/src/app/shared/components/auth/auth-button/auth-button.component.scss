@@ -1,6 +1,6 @@
 button {
-    background: rgb(254,172,94);
-    background: linear-gradient(90deg, rgba(254,172,94,1) 0%, rgba(199,121,208,1) 50%, rgba(75,192,200,1) 100%);
+    background: rgb(199,121,208);
+    background: linear-gradient(90deg, rgba(199,121,208,1) 0%, rgba(75,192,200,1) 100%);
     border: none;
     border-radius: 20px;
     color: #ffffff;
@@ -9,4 +9,10 @@ button {
     height: inherit;
     font-size: inherit;
     text-align: center;
+
+    &.disabled {
+        background: rgb(199,121,208);
+        background: linear-gradient(90deg, rgba(199,121,208,0.7) 0%, rgba(75,192,200,0.7) 100%);
+        cursor: not-allowed;
+    }
 }
