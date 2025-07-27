@@ -1,0 +1,25 @@
+.error-box-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 30px;
+    overflow-y: hidden;
+
+    p {
+        display: none;
+        color: #FF4E1D;
+        font-size: 14px;
+        padding-left: 3px;
+        padding-right: 10px;
+    }
+
+    img {
+        display: none;
+        width: 20px;
+        height: 20px;
+    }
+
+    &.input-touched p, &.input-touched img {
+        display: block;
+    }
+}

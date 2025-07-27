@@ -1,0 +1,8 @@
+<div
+    [class.input-touched]="inputTouchedOrDirty()"
+    class="error-box-container">
+    @if (firstError()) {
+        <p class="error-message">{{ firstError().message }}</p>
+    }
+    <img [src]="success ? '/images/check.svg' : '/images/x.svg'" />
+</div>
