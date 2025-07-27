@@ -1,48 +1,40 @@
 <div class="container">
-    <div class="form-background">
-        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <h2>Messenger</h2>
-            
-            <div>
-                <app-auth-input
-                    [inputType]="'email'" 
-                    [imageSource]="'/images/envelope.svg'" 
-                    [inputPlaceholder]="'Type your email'"
-                    formControlName="email"></app-auth-input>
-                @if (formControlInvalid('email')) {
-                    @if (formControlContainsError('email', 'required')) {
-                        <p class="error-message">Email is required</p>
-                    }
-                    @if (formControlContainsError('email', 'email')) {
-                        <p class="error-message">Email must be a valid email address</p>
-                    }
-                    @if (formControlContainsError('email', 'maxlength')) {
-                        <p class="error-message">Email must be at most 50 characters long</p>
-                    }
-                }
-                <app-auth-input
-                    [inputType]="'password'"
-                    [imageSource]="'/images/password.svg'"
-                    [inputPlaceholder]="'Type your password'"
-                    formControlName="password"></app-auth-input>
-                @if (formControlInvalid('password')) {
-                    @if (formControlContainsError('password', 'required')) {
-                        <p class="error-message">Password is required</p>
-                    }
-                    @if (formControlContainsError('password', 'minlength')) {
-                        <p class="error-message">Password must be at least 8 characters long</p>
-                    }
-                    @if (formControlContainsError('password', 'maxlength')) {
-                        <p class="error-message">Password must be at most 30 characters long</p>
-                    }
-                }
-            </div>
+    <div class="logo">
+        <img src="/images/logo.png" alt="Logo">
+        <h1>MessengerM</h1>
+    </div>
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-input">
+            <app-auth-input
+                [inputType]="'email'"
+                [svgConfig]="emailIcon"
+                [inputPlaceholder]="'Type your email'"
+                formControlName="email"></app-auth-input>
+            <app-auth-error-box
+                [errors]="formConfiguration['email'].controlErrors()"
+                [errorMessagesConfig]="formConfiguration['email'].errorMessagesConfig()"
+                [inputTouchedOrDirty]="formConfiguration['email'].controlTouchedOrDirty()"></app-auth-error-box>
+        </div>
+        <div class="form-input">
+            <app-auth-input
+                [inputType]="'password'"
+                [svgConfig]="passwordIcon"
+                [inputPlaceholder]="'Type your password'"
+                formControlName="password"></app-auth-input>
+            <app-auth-error-box
+                [errors]="formConfiguration['password'].controlErrors()"
+                [errorMessagesConfig]="formConfiguration['password'].errorMessagesConfig()"
+                [inputTouchedOrDirty]="formConfiguration['password'].controlTouchedOrDirty()"></app-auth-error-box>
+        </div>
 
-            <app-auth-button 
-                class="login-button"
-                [buttonText]="'Sign in'"></app-auth-button>
-
-            <p class="signup-message">Don't have an account? <a [routerLink]="['/signup']">Sign up</a></p>
-        </form>
+        <app-auth-button 
+            class="login-button"
+            [disabled]="submitButtonDisabled()"
+            [buttonText]="'Sign in'"></app-auth-button>
+    </form>
+    
+    <div class="footer">
+        <p>Don't have an account? <a class="link-message" [routerLink]="['/signup']">Sign up</a></p>
+        <a class="link-message" [routerLink]="['/forgot-password']">Forgot password?</a>
     </div>
 </div>

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../shared/services/api/api.service';
@@ -12,19 +12,29 @@ import { ErrorHandlerService } from '../../shared/services/error-handler/error-h
 import { ToastrService } from 'ngx-toastr';
 import { LoginRequest } from './models/LoginRequest';
 import { FormHelperService } from '../../shared/services/form-helper/form-helper.service';
+import { emailIcon, passwordIcon } from './login-icons';
+import { AuthErrorBoxComponent } from "../../shared/components/auth/auth-error-box/auth-error-box.component";
+import { Subscription } from 'rxjs';
+import { FormWithErrors } from '../../shared/components/form-with-errors/form-with-errors';
+import { FormControlConfiguration } from '../../shared/models/forms/form-control-configuration';
+import { loginFormConfiguration } from './login-form-configuration';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [AuthInputComponent, AuthButtonComponent, RouterLink, ReactiveFormsModule, CommonModule],
+  imports: [AuthInputComponent, AuthButtonComponent, RouterLink, ReactiveFormsModule, CommonModule, AuthErrorBoxComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent extends FormWithErrors {
+  emailIcon = emailIcon;
+  passwordIcon = passwordIcon;
+
   fb = inject(NonNullableFormBuilder);
   loginForm = this.fb.group({
     email: this.fb.control('', { validators: [
       Validators.required,
+      Validators.minLength(3),
       Validators.email,
       Validators.maxLength(50)
     ] }),
@@ -34,6 +44,11 @@ export class LoginComponent {
       Validators.maxLength(30)
     ] }),
   });
+  override formConfiguration: Record<string, FormControlConfiguration> = loginFormConfiguration;
+  override form: FormGroup<any> = this.loginForm;
+
+  formStatusSubscription?: Subscription;
+  submitButtonDisabled: WritableSignal<boolean> = signal(true);
 
   httpClient = inject(HttpClient);
   apiService = inject(ApiService);
@@ -42,6 +57,18 @@ export class LoginComponent {
   errorHandler = inject(ErrorHandlerService);
   toastr = inject(ToastrService);
   formHelper = inject(FormHelperService);
+
+  override onInit(): void {
+    this.formStatusSubscription = this.loginForm.statusChanges.subscribe(() => {
+      this.submitButtonDisabled.set(this.loginForm.invalid);
+    });
+  }
+
+  override onDestroy(): void {
+    if (this.formStatusSubscription) {
+      this.formStatusSubscription.unsubscribe();
+    }
+  }
 
   onSubmit() {
     if (this.loginForm.invalid) {
@@ -64,13 +91,5 @@ export class LoginComponent {
         this.errorHandler.handleHttpError(httpError);
       }
     });
-  }
-
-  formControlInvalid(controlName: keyof typeof this.loginForm.controls): boolean {
-    return this.formHelper.formControlInvalid(this.loginForm, controlName);
-  }
-
-  formControlContainsError(controlName: keyof typeof this.loginForm.controls, errorName: string): boolean {
-    return this.formHelper.formControlContainsError(this.loginForm, controlName, errorName);
   }
 }
