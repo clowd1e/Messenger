@@ -1,40 +1,43 @@
 .input-wrapper {
     position: relative;
-}
-
-.input-wrapper input {
     width: 100%;
-    padding: 5px 5px 5px 30px;
-    margin: 10px 0;
-    background-color: transparent;
-    border-width: 0 0 1px 0;
-    font-size: 16px;
-    box-sizing: border-box;
-    outline: none;
-    cursor: pointer;
-}
 
-.input-wrapper input:focus {
-    border-color: #FFA07A;
-}
+    svg {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
 
-.input-wrapper input::placeholder {
-    color: #8B8B8B;
-}
+        path {
+            fill: var(--auth-icon-color);
+        }
+    }
 
-.input-wrapper input:-webkit-autofill,
-.input-wrapper input:-webkit-autofill:hover,
-.input-wrapper input:-webkit-autofill:focus,
-.input-wrapper input:-webkit-autofill:active {
-    transition: background-color 5000s ease-in-out 0s;
-    -webkit-text-fill-color: black !important;
-}
+    input {
+        width: inherit;
+        padding: 12px 8px 12px 40px;
+        background-color: var(--auth-input-bg-color);
+        border: 1px solid var(--auth-input-border-color);
+        color: var(--auth-input-color);
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+        outline: none;
+        cursor: pointer;
 
-.input-wrapper img {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
+        &::placeholder {
+            color: var(--auth-input-placeholder-color);
+        }
+
+        &:-webkit-autofill,
+        &:-webkit-autofill:hover,
+        &:-webkit-autofill:focus,
+        &:-webkit-autofill:active {
+            transition: background-color 5000s ease-in-out 0s;
+            -webkit-text-fill-color: var(--auth-text-color) !important;
+            -webkit-box-shadow: 0 0 0px 1000px var(--auth-input-bg-color) inset !important;
+        }
+    }
 }
