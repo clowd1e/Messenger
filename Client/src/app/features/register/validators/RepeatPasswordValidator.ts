@@ -6,5 +6,5 @@ export const repeatPasswordValidator = (control: AbstractControl): ValidationErr
     
     return password === repeatPassword 
         ? null 
-        : { repeat: 'Passwords do not match.' };
+        : { repeatPassword: 'Passwords do not match.' };
 }
