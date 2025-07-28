@@ -11,7 +11,6 @@ import { AuthButtonComponent } from '../../shared/components/auth/auth-button/au
 import { ErrorHandlerService } from '../../shared/services/error-handler/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoginRequest } from './models/LoginRequest';
-import { FormHelperService } from '../../shared/services/form-helper/form-helper.service';
 import { emailIcon, passwordIcon } from './login-icons';
 import { AuthErrorBoxComponent } from "../../shared/components/auth/auth-error-box/auth-error-box.component";
 import { Subscription } from 'rxjs';
@@ -56,7 +55,6 @@ export class LoginComponent extends FormWithErrors {
   router = inject(Router);
   errorHandler = inject(ErrorHandlerService);
   toastr = inject(ToastrService);
-  formHelper = inject(FormHelperService);
 
   override onInit(): void {
     this.formStatusSubscription = this.loginForm.statusChanges.subscribe(() => {

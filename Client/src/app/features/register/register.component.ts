@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthButtonComponent } from '../../shared/components/auth/auth-button/auth-button.component';
 import { AuthInputComponent } from '../../shared/components/auth/auth-input/auth-input.component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -11,8 +11,13 @@ import { passwordPatternValidator } from './validators/PasswordPatternValidator'
 import { repeatPasswordValidator } from './validators/RepeatPasswordValidator';
 import { ErrorHandlerService } from '../../shared/services/error-handler/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
-import { FormHelperService } from '../../shared/services/form-helper/form-helper.service';
 import { emailIcon, nameIcon, passwordIcon, usernameIcon } from './register-icons';
+import { usernamePatternValidator } from './validators/username-pattern.validator';
+import { FormWithErrors } from '../../shared/components/form-with-errors/form-with-errors';
+import { FormControlConfiguration } from '../../shared/models/forms/form-control-configuration';
+import { Subscription } from 'rxjs';
+import { registerFormConfiguration } from './register-form-configuration';
+import { AuthErrorBoxComponent } from "../../shared/components/auth/auth-error-box/auth-error-box.component";
 
 @Component({
   selector: 'app-register',
@@ -20,11 +25,13 @@ import { emailIcon, nameIcon, passwordIcon, usernameIcon } from './register-icon
   imports: [
     RouterLink, AuthInputComponent,
     AuthButtonComponent, ReactiveFormsModule,
-    CommonModule],
+    CommonModule,
+    AuthErrorBoxComponent
+],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
-export class RegisterComponent {
+export class RegisterComponent extends FormWithErrors {
   usernameIcon = usernameIcon;
   nameIcon = nameIcon;
   emailIcon = emailIcon;
@@ -36,7 +43,7 @@ export class RegisterComponent {
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(30),
-      Validators.pattern('^[a-zA-Z0-9]+$')
+      usernamePatternValidator
     ] }),
     name: this.fb.control('', { validators: [
       Validators.required,
@@ -45,6 +52,7 @@ export class RegisterComponent {
     ] }),
     email: this.fb.control('', { validators: [
       Validators.required,
+      Validators.minLength(3),
       Validators.email,
       Validators.maxLength(50)
     ] }),
@@ -59,12 +67,28 @@ export class RegisterComponent {
       repeatPasswordValidator
     ] })
   });
+  override formConfiguration: Record<string, FormControlConfiguration> = registerFormConfiguration;
+  override form: FormGroup<any> = this.registerForm;
+
+  formStatusSubscription?: Subscription;
+  submitButtonDisabled: WritableSignal<boolean> = signal(true);
 
   router = inject(Router);
   apiService = inject(ApiService);
   errorHandler = inject(ErrorHandlerService);
   toastr = inject(ToastrService);
-  formHelper = inject(FormHelperService);
+
+  override onInit(): void {
+    this.formStatusSubscription = this.registerForm.statusChanges.subscribe(() => {
+      this.submitButtonDisabled.set(this.registerForm.invalid);
+    });
+  }
+
+  override onDestroy(): void {
+    if (this.formStatusSubscription) {
+      this.formStatusSubscription.unsubscribe();
+    }
+  }
 
   onSubmit() {
     if (this.registerForm.invalid) {
@@ -87,13 +111,5 @@ export class RegisterComponent {
         this.errorHandler.handleHttpError(httpError);
       }
     });
-  }
-
-  formControlInvalid(controlName: keyof typeof this.registerForm.controls): boolean {
-    return this.formHelper.formControlInvalid(this.registerForm, controlName);
-  }
-
-  formControlContainsError(controlName: keyof typeof this.registerForm.controls, errorName: string): boolean {
-    return this.formHelper.formControlContainsError(this.registerForm, controlName, errorName);
   }
 }

@@ -4,19 +4,19 @@ export const passwordPatternValidator = (control: AbstractControl): ValidationEr
     const password: string = control.value ?? '';
 
     if (!/[A-Z]/.test(password)) {
-        return { pattern: 'Password must contain at least one uppercase letter.' };
+        return { uppercasePattern: 'Password must contain at least one uppercase letter.' };
     }
 
     if (!/[a-z]/.test(password)) {
-        return { pattern: 'Password must contain at least one lowercase letter.' };
+        return { lowercasePattern: 'Password must contain at least one lowercase letter.' };
     }
 
     if (!/[0-9]/.test(password)) {
-        return { pattern: 'Password must contain at least one digit.' };
+        return { digitPattern: 'Password must contain at least one digit.' };
     }
 
     if (!/[^a-zA-Z0-9]/.test(password)) {
-        return { pattern: 'Password must contain at least one special character.' };
+        return { specialCharacterPattern: 'Password must contain at least one special character.' };
     }
 
     return null;
