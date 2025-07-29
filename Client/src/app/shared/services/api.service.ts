@@ -6,12 +6,12 @@ import { Observable } from 'rxjs';
 import { LoginResponse } from '../../features/login/models/login-response';
 import { UserItem } from '../../features/chats-page/components/add-chat/models/user-item';
 import { RegisterRequest } from '../../features/register/models/register-request';
-import { Chat } from '../../features/chats-page/models/chat';
 import { PaginatedMessagesResponse } from '../../features/chats-page/models/paginated-messages-response';
 import { PaginatedChatsResponse } from '../../features/chats-page/models/paginated-chats-response';
 import { ConfirmEmailCommand } from '../../features/email-confirm/models/confirm-email-command';
 import { ValidateEmailConfirmationResponse } from '../../features/email-confirm/models/validate-email-confirmation-response';
 import { environment } from '../../../environments/environment';
+import { Chat } from '../../features/chats-page/models/chat';
 
 @Injectable({
   providedIn: 'root'
