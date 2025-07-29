@@ -20,8 +20,10 @@ html, body {
 
 :root {
     @include colors.auth-light-theme-colors;
+    @include colors.theme-switch-light-theme-colors;
 }
 
 .dark-theme {
     @include colors.auth-dark-theme-colors;
+    @include colors.theme-switch-dark-theme-colors;
 }

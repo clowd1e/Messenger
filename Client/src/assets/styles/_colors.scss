@@ -44,3 +44,17 @@ $chat-hover-background-color: #F7F7F7;
     --auth-input-color: #FFFFFF;
     --auth-placeholder-color: #DCDCDC;
 }
+
+@mixin theme-switch-light-theme-colors {
+    --theme-switch-bg-color: #F3F3F3;
+    --theme-switch-border-color: #E0E0E0;
+    --theme-switch-sun-color: #FFFFFF;
+    --theme-switch-moon-color: #ADADAD;
+}
+
+@mixin theme-switch-dark-theme-colors {
+    --theme-switch-bg-color: #424242;
+    --theme-switch-border-color: #575757;
+    --theme-switch-sun-color: #ADADAD;
+    --theme-switch-moon-color: #FFFFFF;
+}

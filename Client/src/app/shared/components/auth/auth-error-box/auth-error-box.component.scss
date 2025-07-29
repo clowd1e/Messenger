@@ -1,8 +1,10 @@
+@use '../../../../../assets/styles/devices-size' as devices;
+
 .error-box-container {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    height: 30px;
+    height: 32px;
     overflow-y: hidden;
 
     p {
@@ -21,5 +23,18 @@
 
     &.input-touched p, &.input-touched img {
         display: block;
+    }
+}
+
+@media (max-width: devices.$mobileL-width) {
+    .error-box-container {
+        p {
+            font-size: 12px;
+        }
+
+        img {
+            width: 16px;
+            height: 16px;
+        }
     }
 }
