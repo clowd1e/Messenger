@@ -1,13 +1,13 @@
 import { Component, inject, input } from '@angular/core';
-import { ChatItem } from '../../models/ChatItem';
-import { UuidHelperService } from '../../../../shared/services/uuid-helper/uuid-helper.service';
+import { ChatItem } from '../../models/chat-item';
+import { UuidHelperService } from '../../../../shared/services/uuid-helper.service';
 import { ChatItemComponent } from './chat-item/chat-item.component';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
-import { ApiService } from '../../../../shared/services/api/api.service';
-import { ErrorHandlerService } from '../../../../shared/services/error-handler/error-handler.service';
+import { ErrorHandlerService } from '../../../../shared/services/error-handler.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MapChatToChatItem } from '../../mappers/ChatToChatItemMapper';
-import { PaginatedChatsResponse } from '../../models/PaginatedChatsResponse';
+import { MapChatToChatItem } from '../../mappers/chat-to-chat-item.mapper';
+import { PaginatedChatsResponse } from '../../models/paginated-chats-response';
+import { ApiService } from '../../../../shared/services/api.service';
 
 @Component({
   selector: 'app-chat-list',

@@ -1,22 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
-import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ApiService } from '../../shared/services/api/api.service';
-import { StorageService } from '../../shared/services/storage/storage.service';
-import { LoginResponse } from './models/LoginResponse';
+import { StorageService } from '../../shared/services/storage.service';
+import { LoginResponse } from './models/login-response';
 import { AuthInputComponent } from '../../shared/components/auth/auth-input/auth-input.component';
 import { AuthButtonComponent } from '../../shared/components/auth/auth-button/auth-button.component';
-import { ErrorHandlerService } from '../../shared/services/error-handler/error-handler.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
-import { LoginRequest } from './models/LoginRequest';
+import { LoginRequest } from './models/login-request';
 import { emailIcon, passwordIcon } from './login-icons';
 import { AuthErrorBoxComponent } from "../../shared/components/auth/auth-error-box/auth-error-box.component";
 import { Subscription } from 'rxjs';
 import { FormWithErrors } from '../../shared/components/form-with-errors/form-with-errors';
-import { FormControlConfiguration } from '../../shared/models/forms/form-control-configuration';
+import { FormControlConfiguration } from '../../shared/models/configurations/forms/form-control-configuration';
 import { loginFormConfiguration } from './login-form-configuration';
+import { ApiService } from '../../shared/services/api.service';
 
 @Component({
   selector: 'app-login',

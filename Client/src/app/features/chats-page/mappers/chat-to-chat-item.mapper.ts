@@ -1,5 +1,5 @@
-import { Chat } from "../models/Chat";
-import { ChatItem } from "../models/ChatItem";
+import { Chat } from "../models/chat";
+import { ChatItem } from "../models/chat-item";
 
 export function MapChatToChatItem(chat: Chat): ChatItem {
     return {

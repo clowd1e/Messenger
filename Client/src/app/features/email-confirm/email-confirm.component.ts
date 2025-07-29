@@ -1,11 +1,11 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from '../../shared/services/api/api.service';
 import { CommonButtonComponent } from "../../shared/components/common-button/common-button.component";
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import { StorageService } from '../../shared/services/storage/storage.service';
+import { StorageService } from '../../shared/services/storage.service';
 import { firstValueFrom } from 'rxjs';
+import { ApiService } from '../../shared/services/api.service';
 
 @Component({
   selector: 'app-email-confirm',

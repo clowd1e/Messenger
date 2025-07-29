@@ -1,5 +1,5 @@
-import { Message } from "./Message";
-import { User } from "../components/add-chat/models/User";
+import { Message } from "./message";
+import { User } from "../components/add-chat/models/user";
 
 export type ChatItem = {
     id: string;

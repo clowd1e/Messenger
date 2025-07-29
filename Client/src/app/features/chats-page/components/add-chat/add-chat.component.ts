@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { ApiService } from '../../../../shared/services/api/api.service';
 import { Router } from '@angular/router';
-import { UserItem } from './models/UserItem';
+import { UserItem } from './models/user-item';
 import { InputComponent } from '../input/input.component';
 import { UserListComponent } from './user-list/user-list.component';
+import { ApiService } from '../../../../shared/services/api.service';
 
 @Component({
   selector: 'app-add-chat',

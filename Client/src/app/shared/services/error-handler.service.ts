@@ -1,9 +1,8 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { HttpError } from '../../models/errors/HttpError';
-import { HttpValidationError } from '../../models/errors/HttpValidationError';
-import { Error } from '../../models/errors/Error';
+import { HttpError } from '../models/errors/http-error';
+import { HttpValidationError } from '../models/errors/http-validation-error';
 
 @Injectable({
   providedIn: 'root'

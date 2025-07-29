@@ -1,24 +1,24 @@
 import { Component, inject, signal } from '@angular/core';
-import { ApiService } from '../../shared/services/api/api.service';
-import { SignalrService } from './services/signalr/signalr.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserContextService } from '../../shared/services/user-context/user-context.service';
-import { UuidHelperService } from '../../shared/services/uuid-helper/uuid-helper.service';
+import { UuidHelperService } from '../../shared/services/uuid-helper.service';
 import { map } from 'rxjs';
-import { Chat } from './models/Chat';
-import { ChatItem } from './models/ChatItem';
-import { CreateChatCommand } from './models/CreateChatCommand';
-import { SendMessageCommand } from './models/SendMessageCommand';
+import { Chat } from './models/chat';
+import { ChatItem } from './models/chat-item';
+import { CreateChatCommand } from './models/create-chat-command';
+import { SendMessageCommand } from './models/send-message-command';
 import { CommonModule } from '@angular/common';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { AddChatComponent } from './components/add-chat/add-chat.component';
-import { ErrorHandlerService } from '../../shared/services/error-handler/error-handler.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MapChatToChatItem } from './mappers/ChatToChatItemMapper';
-import { Message } from './models/Message';
-import { PaginatedChatsResponse } from './models/PaginatedChatsResponse';
+import { MapChatToChatItem } from './mappers/chat-to-chat-item.mapper';
+import { Message } from './models/message';
+import { PaginatedChatsResponse } from './models/paginated-chats-response';
 import { CommonButtonComponent } from "../../shared/components/common-button/common-button.component";
+import { UserContextService } from '../../shared/services/user-context.service';
+import { ApiService } from '../../shared/services/api.service';
+import { SignalrService } from './services/signalr.service';
 
 @Component({
   selector: 'app-chats-page',

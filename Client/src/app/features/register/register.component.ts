@@ -5,19 +5,19 @@ import { AuthButtonComponent } from '../../shared/components/auth/auth-button/au
 import { AuthInputComponent } from '../../shared/components/auth/auth-input/auth-input.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
-import { ApiService } from '../../shared/services/api/api.service';
-import { RegisterRequest } from './models/RegisterRequest';
-import { passwordPatternValidator } from './validators/PasswordPatternValidator';
-import { repeatPasswordValidator } from './validators/RepeatPasswordValidator';
-import { ErrorHandlerService } from '../../shared/services/error-handler/error-handler.service';
+import { RegisterRequest } from './models/register-request';
+import { passwordPatternValidator } from './validators/password-pattern.validator';
+import { repeatPasswordValidator } from './validators/repeat-password.validator';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
 import { emailIcon, nameIcon, passwordIcon, usernameIcon } from './register-icons';
 import { usernamePatternValidator } from './validators/username-pattern.validator';
 import { FormWithErrors } from '../../shared/components/form-with-errors/form-with-errors';
-import { FormControlConfiguration } from '../../shared/models/forms/form-control-configuration';
+import { FormControlConfiguration } from '../../shared/models/configurations/forms/form-control-configuration';
 import { Subscription } from 'rxjs';
 import { registerFormConfiguration } from './register-form-configuration';
 import { AuthErrorBoxComponent } from "../../shared/components/auth/auth-error-box/auth-error-box.component";
+import { ApiService } from '../../shared/services/api.service';
 
 @Component({
   selector: 'app-register',
