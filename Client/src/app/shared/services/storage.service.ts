@@ -54,4 +54,13 @@ export class StorageService {
   getEmailConfirmErrorFromLocalStorage(userId: string): string | null {
     return localStorage.getItem(`EmailConfirmError:${userId}`);
   }
+
+  setThemePreference(theme: 'light' | 'dark'): void {
+    localStorage.setItem('theme', theme);
+  }
+
+  getThemePreference(): 'light' | 'dark' {
+    const theme = localStorage.getItem('theme');
+    return theme === 'light' || theme === 'dark' ? (theme as 'light' | 'dark') : 'light';
+  }
 }
