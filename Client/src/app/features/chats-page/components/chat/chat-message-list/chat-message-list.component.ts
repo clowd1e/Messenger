@@ -1,13 +1,13 @@
 import { Component, ElementRef, inject, input, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { ChatMessageComponent } from './chat-message/chat-message.component';
-import { UserContextService } from '../../../../../shared/services/user-context/user-context.service';
-import { MessageDto } from '../models/MessageDto';
+import { MessageDto } from '../models/message-dto';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
-import { ApiService } from '../../../../../shared/services/api/api.service';
-import { PaginatedMessagesResponse } from '../../../models/PaginatedMessagesResponse';
-import { ErrorHandlerService } from '../../../../../shared/services/error-handler/error-handler.service';
+import { PaginatedMessagesResponse } from '../../../models/paginated-messages-response';
+import { ErrorHandlerService } from '../../../../../shared/services/error-handler.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChatItem } from '../../../models/ChatItem';
+import { ChatItem } from '../../../models/chat-item';
+import { UserContextService } from '../../../../../shared/services/user-context.service';
+import { ApiService } from '../../../../../shared/services/api.service';
 
 @Component({
   selector: 'app-chat-message-list',

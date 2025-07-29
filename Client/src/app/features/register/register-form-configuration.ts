@@ -1,4 +1,4 @@
-import { createFormControlConfiguration, FormControlConfiguration } from "../../shared/models/forms/form-control-configuration";
+import { createFormControlConfiguration, FormControlConfiguration } from "../../shared/models/configurations/forms/form-control-configuration";
 
 export const registerFormConfiguration: Record<string, FormControlConfiguration> = {
     username: createFormControlConfiguration({

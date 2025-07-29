@@ -1,5 +1,5 @@
 import { Directive, OnDestroy, OnInit } from '@angular/core';
-import { FormControlConfiguration } from '../../models/forms/form-control-configuration';
+import { FormControlConfiguration } from '../../models/configurations/forms/form-control-configuration';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 

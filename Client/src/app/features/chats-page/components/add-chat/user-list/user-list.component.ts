@@ -1,6 +1,6 @@
 import { Component, inject, input } from '@angular/core';
-import { UserItem } from '../models/UserItem';
-import { UuidHelperService } from '../../../../../shared/services/uuid-helper/uuid-helper.service';
+import { UserItem } from '../models/user-item';
+import { UuidHelperService } from '../../../../../shared/services/uuid-helper.service';
 import { UserItemComponent } from './user-item/user-item.component';
 
 @Component({

@@ -1,17 +1,17 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { LoginRequest } from '../../../features/login/models/LoginRequest';
-import { CreateChatCommand } from '../../../features/chats-page/models/CreateChatCommand';
+import { LoginRequest } from '../../features/login/models/login-request';
+import { CreateChatCommand } from '../../features/chats-page/models/create-chat-command';
 import { Observable } from 'rxjs';
-import { LoginResponse } from '../../../features/login/models/LoginResponse';
-import { UserItem } from '../../../features/chats-page/components/add-chat/models/UserItem';
-import { RegisterRequest } from '../../../features/register/models/RegisterRequest';
-import { Chat } from '../../../features/chats-page/models/Chat';
-import { PaginatedMessagesResponse } from '../../../features/chats-page/models/PaginatedMessagesResponse';
-import { PaginatedChatsResponse } from '../../../features/chats-page/models/PaginatedChatsResponse';
-import { ConfirmEmailCommand } from '../../../features/email-confirm/models/ConfirmEmailCommand';
-import { ValidateEmailConfirmationResponse } from '../../../features/email-confirm/models/ValidateEmailConfirmationResponse';
-import { environment } from '../../../../environments/environment';
+import { LoginResponse } from '../../features/login/models/login-response';
+import { UserItem } from '../../features/chats-page/components/add-chat/models/user-item';
+import { RegisterRequest } from '../../features/register/models/register-request';
+import { Chat } from '../../features/chats-page/models/chat';
+import { PaginatedMessagesResponse } from '../../features/chats-page/models/paginated-messages-response';
+import { PaginatedChatsResponse } from '../../features/chats-page/models/paginated-chats-response';
+import { ConfirmEmailCommand } from '../../features/email-confirm/models/confirm-email-command';
+import { ValidateEmailConfirmationResponse } from '../../features/email-confirm/models/validate-email-confirmation-response';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

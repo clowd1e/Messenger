@@ -1,4 +1,4 @@
-import { Error } from "./Error";
+import { Error } from "./error";
 
 export type HttpError = {
     errors: Error;

@@ -1,4 +1,4 @@
-import { Chat } from "./Chat"
+import { Chat } from "./chat"
 
 export type PaginatedChatsResponse = {
     chats: Chat[],

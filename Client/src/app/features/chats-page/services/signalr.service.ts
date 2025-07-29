@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpTransportType, HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
-import { StorageService } from '../../../../shared/services/storage/storage.service';
-import { SendMessageCommand } from '../../models/SendMessageCommand';
-import { Message } from '../../models/Message';
-import { environment } from '../../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
+import { StorageService } from '../../../shared/services/storage.service';
+import { SendMessageCommand } from '../models/send-message-command';
+import { Message } from '../models/message';
 
 @Injectable({
   providedIn: 'root'

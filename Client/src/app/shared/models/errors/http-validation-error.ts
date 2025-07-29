@@ -1,4 +1,4 @@
-import { Error } from "./Error";
+import { Error } from "./error";
 
 export type HttpValidationError = {
     errors: Error[];

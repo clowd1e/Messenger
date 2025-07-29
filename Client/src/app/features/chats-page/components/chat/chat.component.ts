@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
-import { ChatItem } from '../../models/ChatItem';
+import { ChatItem } from '../../models/chat-item';
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import { ChatMessageListComponent } from './chat-message-list/chat-message-list.component';
 
