@@ -1,5 +1,5 @@
 import { User } from "../components/add-chat/models/user";
-import { Message } from "./Message";
+import { Message } from "./message";
 
 export type Chat = {
     id: string;
