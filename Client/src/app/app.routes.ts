@@ -27,12 +27,12 @@ export const routes: Routes = [
                 component: RegisterComponent,
                 pathMatch: 'full'
             },
+            {
+                path: 'confirm-email',
+                component: EmailConfirmComponent,
+                pathMatch: 'full'
+            },
         ]
-    },
-    {
-        path: 'confirm-email',
-        component: EmailConfirmComponent,
-        pathMatch: 'full'
     },
     {
         path: '',
