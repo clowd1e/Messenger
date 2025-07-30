@@ -58,3 +58,13 @@ $chat-hover-background-color: #F7F7F7;
     --theme-switch-sun-color: #ADADAD;
     --theme-switch-moon-color: #FFFFFF;
 }
+
+@mixin email-confirmation-light-theme-colors {
+    --email-confirmation-bg-color: #FBFBFB;
+    --email-confirmation-text-color: #000000;
+}
+
+@mixin email-confirmation-dark-theme-colors {
+    --email-confirmation-bg-color: #111111;
+    --email-confirmation-text-color: #FFFFFF;
+}
