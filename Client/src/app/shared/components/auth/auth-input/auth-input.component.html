@@ -1,11 +1,25 @@
 <div class="input-wrapper">
-    <svg [style.margin-top]="svgConfig().marginTop" [attr.viewBox]="svgConfig().viewBox" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <svg class="icon" [style.margin-top]="svgConfig().marginTop" [attr.viewBox]="svgConfig().viewBox" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path [attr.d]="svgConfig().path" fill="currentColor"/>
     </svg>
     <input
-        [type]="inputType()"
+        [class.password-input]="isPasswordInput"
+        [name]="name()"
+        [type]="getInputType"
         [placeholder]="inputPlaceholder()"
         [value]="value"
         (input)="onInputChange($event)"
         (blur)="onTouched()" />
+    @if (isPasswordInput) {
+        <span class="password-visibility-toggle" (click)="togglePasswordVisibility()">
+            <svg width="26" 
+                [attr.height]="isPasswordVisible ? '18' : '20'"
+                [attr.viewBox]="isPasswordVisible ? '0 0 26 18' : '0 0 26 20'"
+                xmlns="http://www.w3.org/2000/svg">
+                <path 
+                    [attr.d]="passwordIcon"
+                    fill="currentColor"/>
+            </svg>
+        </span>
+    }
 </div>

@@ -2,7 +2,7 @@
     position: relative;
     width: 100%;
 
-    svg {
+    .icon {
         position: absolute;
         top: 50%;
         left: 10px;
@@ -27,6 +27,10 @@
         outline: none;
         cursor: pointer;
 
+        &.password-input {
+            padding-right: 36px;
+        }
+        
         &::placeholder {
             color: var(--auth-input-placeholder-color);
         }
@@ -38,6 +42,25 @@
             transition: background-color 5000s ease-in-out 0s;
             -webkit-text-fill-color: var(--auth-text-color) !important;
             -webkit-box-shadow: 0 0 0px 1000px var(--auth-input-bg-color) inset !important;
+        }
+    }
+
+    .password-visibility-toggle {
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+
+        svg {
+            width: 100%;
+            height: 100%;
+
+            path {
+                fill: var(--auth-icon-color);
+            }
         }
     }
 }
