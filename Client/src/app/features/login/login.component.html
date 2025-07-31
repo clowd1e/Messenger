@@ -6,6 +6,7 @@
     <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-input">
             <app-auth-input
+                [name]="'email'"
                 [inputType]="'email'"
                 [svgConfig]="emailIcon"
                 [inputPlaceholder]="'Type your email'"
@@ -17,6 +18,7 @@
         </div>
         <div class="form-input">
             <app-auth-input
+                [name]="'password'"
                 [inputType]="'password'"
                 [svgConfig]="passwordIcon"
                 [inputPlaceholder]="'Type your password'"
