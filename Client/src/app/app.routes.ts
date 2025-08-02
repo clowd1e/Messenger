@@ -6,6 +6,7 @@ import { RegisterComponent } from './features/register/register.component';
 import { EmailConfirmComponent } from './features/email-confirm/email-confirm.component';
 import { DefaultLayoutComponent } from './layouts/default-layout/default-layout.component';
 import { LayoutWithThemeSwitchComponent } from './layouts/layout-with-theme-switch/layout-with-theme-switch.component';
+import { RegistrationSuccessComponent } from './features/registration-success/registration-success.component';
 
 export const routes: Routes = [
     {
@@ -32,6 +33,11 @@ export const routes: Routes = [
                 component: EmailConfirmComponent,
                 pathMatch: 'full'
             },
+            {
+                path: 'signup/success',
+                component: RegistrationSuccessComponent,
+                pathMatch: 'full'
+            }
         ]
     },
     {

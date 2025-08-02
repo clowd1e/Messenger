@@ -104,8 +104,9 @@ export class RegisterComponent extends FormWithErrors {
 
     this.apiService.register(registerRequest).subscribe({
       next: () => {
-        this.router.navigateByUrl('login');
-        this.toastr.success('Registration successful! Please confirm your email.');
+        this.router.navigateByUrl('signup/success', {
+          state: { fromRegistration: true }
+        });
       },
       error: (httpError: HttpErrorResponse) => {
         this.errorHandler.handleHttpError(httpError);
