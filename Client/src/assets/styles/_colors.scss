@@ -68,3 +68,13 @@ $chat-hover-background-color: #F7F7F7;
     --email-confirmation-bg-color: #111111;
     --email-confirmation-text-color: #FFFFFF;
 }
+
+@mixin registration-success-light-theme-colors {
+    --registration-success-bg-color: #FBFBFB;
+    --registration-success-text-color: #000000;
+}
+
+@mixin registration-success-dark-theme-colors {
+    --registration-success-bg-color: #111111;
+    --registration-success-text-color: #FFFFFF;
+}

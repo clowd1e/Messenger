@@ -29,6 +29,12 @@ export abstract class FormWithErrors implements OnInit, OnDestroy {
       this.subscriptions[key]?.unsubscribe();
     }
 
+    for (const key in this.formConfiguration) {
+      this.formConfiguration[key].controlInvalid.set(false);
+      this.formConfiguration[key].controlTouchedOrDirty.set(false);
+      this.formConfiguration[key].controlErrors.set(null);
+    }
+
     this.onDestroy();
   }
 

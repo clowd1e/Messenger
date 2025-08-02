@@ -1,0 +1,16 @@
+<div class="registration-success-container">
+    <img [src]="'/images/success.png'" />
+    <div class="info">
+        <h1>Successfully registered!</h1>
+        <p>Please confirm your email address using the link sent in the email content.</p>
+    </div>
+    <app-common-button
+        class="back-to-main-button"
+        [text]="'Back to main page'"
+        [textColor]="'#FFFFFF'"
+        [padding]="isMobileM ? '16px 30px' : '20px 50px'"
+        [fontSize]="isMobileM ? 12 : 20"
+        [borderRadius]="isMobileM ? 15 : 20"
+        [fontWeight]="600"
+        (click)="toMainPage()"></app-common-button>
+</div>
