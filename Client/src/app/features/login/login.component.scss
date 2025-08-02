@@ -3,76 +3,161 @@
 
 .container {
     @include flex-center;
-    height: 100%;
-    background-color: #EBEBEB;
+    flex-direction: column;
+    min-height: 100dvh;
+    background-color: var(--auth-bg-color);
+    gap: 50px;
+    padding: 50px;
+    transition: background-color 0.3s ease;
+}
 
-    .form-background {
-        @include flex-center;
-        width: 80vw;
-        height: 80vh;
-        background-color: #F7F7F7;
-        border-radius: 25px;
-        box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50px;
+        box-shadow: 0 0 40px var(--auth-logo-image-shadow-color);
     }
 
-    .login-form {
+    h1 {
+        font-size: 58px;
+        text-shadow: 0 0 40px var(--auth-logo-text-shadow-color);
+        text-align: center;
+        font-weight: 700;
+        color: var(--auth-logo-text-color);
+    }
+}
+
+.login-form {
+    min-width: 200px;
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 54px;
+
+    background-color: var(--auth-form-bg-color);
+    border: 3px solid var(--auth-form-border-color);
+    border-radius: 16px;
+    box-shadow: 0 0 30px var(--auth-form-shadow-color);
+
+    .form-input {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        height: 50%;
+        gap: 5px;
+        width: 100%;
+    }
 
-        h2 {
-            margin: 0;
-            padding: 0;
-            font-weight: 700;
-            font-size: 50px;
+    p.error-message {
+        @include error-message;
+        font-size: 12px;
+    }
+
+    > p.error-message {
+        margin: -10px 0 10px;
+    }
+
+    .login-button {
+        width: 120px;
+        height: 40px;
+        font-size: 14px;
+    }
+}
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    p {
+        color: var(--auth-text-color);
+        text-align: center;
+    }
+
+    a.link-message {
+        text-align: center;
+        color: #6799EF;
+        text-decoration: none;
+        font-weight: 700;
+    }
+}
+
+@media (max-width: 600px) {
+    .logo {
+        img {
+            width: 70px;
+            height: 70px;
         }
 
-        p.error-message {
-            @include error-message;
-            font-size: 12px;
+        h1 {
+            font-size: 40px;
         }
+    }
 
-        div {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-
-            p.error-message {
-                align-self: start;
-            }
-        }
-
-        > p.error-message {
-            margin: -10px 0 10px;
-        }
-
-        p.signup-message {
-            a {
-                color: #6799EF;
-                text-decoration: none;
-                font-weight: 700;
-            }
-        }
-
-        .login-button {
-            width: 120px;
-            height: 40px;
-            font-size: 14px;
-        }
+    .footer {
+        font-size: 14px;
     }
 }
 
 @media (max-width: $mobileL-width) {
     .container {
-        .form-background {
-            width: 100vw;
-            height: 100vh;
-            border-radius: 0;
+        padding: 50px 40px 40px;
+    }
+
+    .logo {
+        img {
+            width: 65px;
+            height: 65px;
             box-shadow: none;
         }
+
+        h1 {
+            font-size: 37.5px;
+            text-shadow: none;
+        }
+    }
+
+    .login-form {
+        padding: 20px 0px;
+        background: none;
+        border: none;
+        box-shadow: none;
+    }
+}
+
+@media (max-width: $mobileM-width) {
+    .logo {
+        img {
+            width: 55px;
+            height: 55px;
+        }
+
+        h1 {
+            font-size: 32.5px;
+        }
+    }
+}
+
+@media (max-width: $mobileS-width) {
+    .logo {
+        img {
+            width: 50px;
+            height: 50px;
+        }
+
+        h1 {
+            font-size: 30px;
+        }
+    }
+
+    .footer {
+        font-size: 12px;
     }
 }

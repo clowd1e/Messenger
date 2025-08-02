@@ -1,97 +1,78 @@
 <div class="container">
-    <div class="form-background">
-        <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-            <h2>Messenger</h2>
-            
-            <div>
-                <app-auth-input
-                    [inputType]="'text'" 
-                    [imageSource]="'/images/at.svg'" 
-                    [inputPlaceholder]="'Type your username'"
-                    formControlName="username"></app-auth-input>
-                @if (formControlInvalid('username')) {
-                    @if (formControlContainsError('username', 'required')) {
-                        <p class="error-message">Username is required</p>
-                    }
-                    @if (formControlContainsError('username', 'minlength')) {
-                        <p class="error-message">Username must be at least 3 characters long</p>
-                    }
-                    @if (formControlContainsError('username', 'maxlength')) {
-                        <p class="error-message">Username must be at most 30 characters long</p>
-                    }
-                    @if (formControlContainsError('username', 'pattern')) {
-                        <p class="error-message">Username can only contain letters or digits</p>
-                    }
-                }
-                <app-auth-input
-                    [inputType]="'text'"
-                    [imageSource]="'/images/user.svg'"
-                    [inputPlaceholder]="'Type your name'"
-                    formControlName="name"></app-auth-input>
-                @if (formControlInvalid('name')) {
-                    @if (formControlContainsError('name', 'required')) {
-                        <p class="error-message">Name is required</p>
-                    }
-                    @if (formControlContainsError('name', 'minlength')) {
-                        <p class="error-message">Name must be at least 1 characters long</p>
-                    }
-                    @if (formControlContainsError('name', 'maxlength')) {
-                        <p class="error-message">Name must be at most 30 characters long</p>
-                    }
-                }
-                <app-auth-input
-                    [inputType]="'email'" 
-                    [imageSource]="'/images/envelope.svg'" 
-                    [inputPlaceholder]="'Type your email'"
-                    formControlName="email"></app-auth-input>
-                @if (formControlInvalid('email')) {
-                    @if (formControlContainsError('email', 'required')) {
-                        <p class="error-message">Email is required</p>
-                    }
-                    @if (formControlContainsError('email', 'email')) {
-                        <p class="error-message">Email must be a valid email address</p>
-                    }
-                    @if (formControlContainsError('email', 'maxlength')) {
-                        <p class="error-message">Email must be at most 50 characters long</p>
-                    }
-                }
-                <app-auth-input
-                    [inputType]="'password'"
-                    [imageSource]="'/images/password.svg'"
-                    [inputPlaceholder]="'Type your password'"
-                    formControlName="password"></app-auth-input>
-                @if (formControlInvalid('password')) {
-                    @if (formControlContainsError('password', 'required')) {
-                        <p class="error-message">Password is required</p>
-                    }
-                    @if (formControlContainsError('password', 'minlength')) {
-                        <p class="error-message">Password must be at least 8 characters long</p>
-                    }
-                    @if (formControlContainsError('password', 'maxlength')) {
-                        <p class="error-message">Password must be at most 30 characters long</p>
-                    }
-                    @if (formControlContainsError('password', 'pattern')) {
-                        <p class="error-message">{{ registerForm.controls.password.errors?.["pattern"] }}</p>
-                    }
-                }
-                <app-auth-input
-                    [inputType]="'password'"
-                    [imageSource]="'/images/password.svg'"
-                    [inputPlaceholder]="'Repeat your password'"
-                    formControlName="repeatPassword"></app-auth-input>
-                @if (formControlInvalid('repeatPassword')) {
-                    @if (formControlContainsError('repeatPassword', 'required')) {
-                        <p class="error-message">Repeat password is required</p>
-                    }
-                    @if (formControlContainsError('repeatPassword', 'repeat')) {
-                        <p class="error-message">Passwords must match</p>
-                    }
-                }
-            </div>
+    <div class="logo">
+        <img src="/images/logo.png" alt="Logo">
+        <h1>MessengerM</h1>
+    </div>
+    <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="form-input">
+            <app-auth-input
+                [name]="'fakeusernameremembered'"
+                [svgConfig]="usernameIcon"
+                [inputType]="'text'"
+                [inputPlaceholder]="'Type your username'"
+                formControlName="username"></app-auth-input>
+            <app-auth-error-box
+                [errors]="formConfiguration['username'].controlErrors()"
+                [errorMessagesConfig]="formConfiguration['username'].errorMessagesConfig()"
+                [inputTouchedOrDirty]="formConfiguration['username'].controlTouchedOrDirty()"></app-auth-error-box>
+        </div>
+        <div class="form-input">
+            <app-auth-input
+                [name]="'name'"
+                [svgConfig]="nameIcon"
+                [inputType]="'text'"
+                [inputPlaceholder]="'Type your name'"
+                formControlName="name"></app-auth-input>
+            <app-auth-error-box
+                [errors]="formConfiguration['name'].controlErrors()"
+                [errorMessagesConfig]="formConfiguration['name'].errorMessagesConfig()"
+                [inputTouchedOrDirty]="formConfiguration['name'].controlTouchedOrDirty()"></app-auth-error-box>
+        </div>
+        <div class="form-input">            
+            <app-auth-input
+                [name]="'email'"
+                [svgConfig]="emailIcon"
+                [inputType]="'email'" 
+                [inputPlaceholder]="'Type your email'"
+                formControlName="email"></app-auth-input>
+            <app-auth-error-box
+                [errors]="formConfiguration['email'].controlErrors()"
+                [errorMessagesConfig]="formConfiguration['email'].errorMessagesConfig()"
+                [inputTouchedOrDirty]="formConfiguration['email'].controlTouchedOrDirty()"></app-auth-error-box>
+        </div>
+        <div class="form-input">
+            <app-auth-input
+                [name]="'password'"
+                [svgConfig]="passwordIcon"
+                [inputType]="'password'"
+                [inputPlaceholder]="'Type your password'"
+                formControlName="password"></app-auth-input>
+            <app-auth-error-box
+                [errors]="formConfiguration['password'].controlErrors()"
+                [errorMessagesConfig]="formConfiguration['password'].errorMessagesConfig()"
+                [inputTouchedOrDirty]="formConfiguration['password'].controlTouchedOrDirty()"></app-auth-error-box>
+        </div>
+        <div class="form-input">
+            <app-auth-input
+                [name]="'repeatPassword'"
+                [svgConfig]="passwordIcon"
+                [inputType]="'password'"
+                [inputPlaceholder]="'Repeat your password'"
+                formControlName="repeatPassword"></app-auth-input>
+            <app-auth-error-box
+                [errors]="formConfiguration['repeatPassword'].controlErrors()"
+                [errorMessagesConfig]="formConfiguration['repeatPassword'].errorMessagesConfig()"
+                [inputTouchedOrDirty]="formConfiguration['repeatPassword'].controlTouchedOrDirty()"></app-auth-error-box>
+        </div>
 
-            <app-auth-button
-                class="register-button"
-                [buttonText]="'Sign up'"></app-auth-button>
-        </form>
+        <app-auth-button
+            class="register-button"
+            [disabled]="submitButtonDisabled()"
+            [buttonText]="'Sign up'"></app-auth-button>
+    </form>
+
+    <div class="footer">
+        <p>Back to <a class="link-message" [routerLink]="['/login']">Sign in</a> page</p>
+        <p>Didn't get confirmation email? <a class="link-message" [routerLink]="['/resend-confirm-email']">Request new</a></p>
     </div>
 </div>

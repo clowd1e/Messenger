@@ -1,3 +1,5 @@
+name: messenger-client-docker-compose
+
 services:
   messenger-client:
     image: ${DOCKER_REGISTRY-}messengerclient

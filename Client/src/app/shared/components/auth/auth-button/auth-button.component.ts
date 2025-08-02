@@ -8,5 +8,6 @@ import { Component, input } from '@angular/core';
   styleUrl: './auth-button.component.scss'
 })
 export class AuthButtonComponent {
+  disabled = input<boolean>(false);
   buttonText = input.required<string>();
 }

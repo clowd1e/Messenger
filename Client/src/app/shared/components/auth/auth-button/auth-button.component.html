@@ -1,1 +1,4 @@
-<button type="submit">{{ buttonText() }}</button>
+<button
+    [disabled]="disabled()"
+    [class.disabled]="disabled()"
+    type="submit">{{ buttonText() }}</button>

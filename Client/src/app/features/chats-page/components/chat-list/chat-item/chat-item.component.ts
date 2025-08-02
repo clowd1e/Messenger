@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ChatItem } from '../../../models/ChatItem';
+import { ChatItem } from '../../../models/chat-item';
 import { DatePipe } from '@angular/common';
 
 @Component({

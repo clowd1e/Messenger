@@ -1,11 +1,11 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from '../../shared/services/api/api.service';
 import { CommonButtonComponent } from "../../shared/components/common-button/common-button.component";
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import { StorageService } from '../../shared/services/storage/storage.service';
-import { firstValueFrom } from 'rxjs';
+import { StorageService } from '../../shared/services/storage.service';
+import { firstValueFrom, Subscription } from 'rxjs';
+import { ApiService } from '../../shared/services/api.service';
 
 @Component({
   selector: 'app-email-confirm',
@@ -15,7 +15,9 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './email-confirm.component.html',
   styleUrl: './email-confirm.component.scss'
 })
-export class EmailConfirmComponent {
+export class EmailConfirmComponent implements OnInit, OnDestroy {
+  private breakpointObserverSub: Subscription | null = null;
+
   isLoading: boolean = false;
   isSuccess: boolean = false;
   isMobileM: boolean = false;
@@ -81,6 +83,10 @@ export class EmailConfirmComponent {
         });
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.breakpointObserverSub?.unsubscribe();
   }
 
   toMainPage() {
@@ -152,7 +158,7 @@ export class EmailConfirmComponent {
   }
 
   private checkIsMobileM(): void {
-    this.observer
+    this.breakpointObserverSub = this.observer
       .observe(['(max-width: 375px)'])
       .subscribe(result => {
         this.isMobileM = result.matches;

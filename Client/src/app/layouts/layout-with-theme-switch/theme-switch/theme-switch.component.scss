@@ -1,0 +1,105 @@
+@use '../../../../assets/styles/devices-size' as devices;
+
+:host {
+    position: fixed;
+    top: 26px;
+    right: 26px;
+}
+
+.theme-switch-container {
+    background-color: var(--theme-switch-bg-color);
+    border: 1px solid var(--theme-switch-border-color);
+    border-radius: 20px;
+    padding: 10px;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    will-change: transform;
+
+    label {
+        -webkit-tap-highlight-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        cursor: pointer;
+
+        .selected-icon-bg {
+            pointer-events: none;
+            width: 30px;
+            height: 30px;
+            left: 6px;
+            border-radius: 50%;
+            position: absolute;
+            background-color: #6799EF;
+            transition: left 0.3s ease-in-out;
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            z-index: 1;
+        }
+        
+        .sun-icon {
+            color: var(--theme-switch-sun-color);
+        }
+
+        .moon-icon {
+            color: var(--theme-switch-moon-color);
+        }
+    }
+
+    &.dark-mode {
+        label {
+            .selected-icon-bg {
+                left: 45px;
+            }
+        }
+    }
+
+    &.hidden {
+        transform: translateX(150%);
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+@media (max-width: 800px) {
+    :host {
+        top: 16px;
+        right: 16px;
+    }
+
+    .theme-switch-container {
+        padding: 8px;
+
+        label {
+            gap: 12px;
+
+            .selected-icon-bg {
+                width: 24px;
+                height: 24px;
+                left: 5px;
+            }
+
+            .icon {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        &.dark-mode {
+            label {
+                .selected-icon-bg {
+                    left: 32px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: devices.$mobileL-width) {
+    :host {
+        top: 10px;
+        right: 10px;
+    }
+}

@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { UserItem } from '../../models/UserItem';
+import { UserItem } from '../../models/user-item';
 
 @Component({
   selector: 'app-user-item',
