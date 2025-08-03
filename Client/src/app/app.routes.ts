@@ -64,6 +64,12 @@ export const routes: Routes = [
     },
     {
         path: "**",
-        component: NotFoundComponent
+        component: LayoutWithThemeSwitchComponent,
+        children: [
+            {
+                path: "**",
+                component: NotFoundComponent
+            }
+        ]
     }
 ];

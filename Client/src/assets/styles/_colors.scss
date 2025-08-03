@@ -78,3 +78,13 @@ $chat-hover-background-color: #F7F7F7;
     --registration-success-bg-color: #111111;
     --registration-success-text-color: #FFFFFF;
 }
+
+@mixin not-found-light-theme-colors {
+    --not-found-bg-color: #FBFBFB;
+    --not-found-text-color: #000000;
+}
+
+@mixin not-found-dark-theme-colors {
+    --not-found-bg-color: #111111;
+    --not-found-text-color: #FFFFFF;
+}
