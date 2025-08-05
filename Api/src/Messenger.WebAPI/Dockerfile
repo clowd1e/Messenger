@@ -6,10 +6,10 @@ EXPOSE 5000
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Messenger.WebAPI/Messenger.WebAPI.csproj", "Messenger.WebAPI/"]
-COPY ["Messenger.Application/Messenger.Application.csproj", "Messenger.Application/"]
-COPY ["Messenger.Domain/Messenger.Domain.csproj", "Messenger.Domain/"]
-COPY ["Messenger.Infrastructure/Messenger.Infrastructure.csproj", "Messenger.Infrastructure/"]
+COPY ["src/Messenger.WebAPI/Messenger.WebAPI.csproj", "Messenger.WebAPI/"]
+COPY ["src/Messenger.Application/Messenger.Application.csproj", "Messenger.Application/"]
+COPY ["src/Messenger.Domain/Messenger.Domain.csproj", "Messenger.Domain/"]
+COPY ["src/Messenger.Infrastructure/Messenger.Infrastructure.csproj", "Messenger.Infrastructure/"]
 RUN dotnet restore "./Messenger.WebAPI/Messenger.WebAPI.csproj"
 COPY . .
 WORKDIR "/src/Messenger.WebAPI"
