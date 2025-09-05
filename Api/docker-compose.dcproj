@@ -8,7 +8,7 @@
     <DockerComposeProjectName>messenger-api-docker-compose</DockerComposeProjectName>
     <DockerLaunchAction>None</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>messenger.webapi</DockerServiceName>
+    <DockerServiceName>messenger-webapi</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
