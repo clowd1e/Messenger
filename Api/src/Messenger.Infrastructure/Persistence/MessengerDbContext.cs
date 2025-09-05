@@ -1,6 +1,7 @@
 ﻿using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.ConfirmEmailTokens;
+using Messenger.Domain.Aggregates.GroupChats;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.Users;
@@ -16,6 +17,12 @@ namespace Messenger.Infrastructure.Persistence
             : base(options) { }
 
         public DbSet<Chat> Chats { get; set; }
+
+        public DbSet<PrivateChat> PrivateChats { get; set; }
+
+        public DbSet<GroupChat> GroupChats { get; set; }
+
+        public DbSet<GroupMember> GroupMembers { get; set; }
 
         public DbSet<Message> Messages { get; set; }
 

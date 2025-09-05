@@ -33,12 +33,12 @@ namespace Messenger.Infrastructure.Persistence.Configurations
                 .WithOne(message => message.Chat);
 
             builder
-                .HasMany(chat => chat.Users)
-                .WithMany(user => user.Chats)
+                .HasMany(chat => chat.Participants)
+                .WithMany(participant => participant.Chats)
                 .UsingEntity(
                     ManyToManyTables.UserChat,
-                    l => l.HasOne(typeof(Chat)).WithMany().HasForeignKey("chats_id"),
-                    r => r.HasOne(typeof(User)).WithMany().HasForeignKey("users_id"));
+                    l => l.HasOne(typeof(Chat)).WithMany().HasForeignKey("chat_id"),
+                    r => r.HasOne(typeof(User)).WithMany().HasForeignKey("user_id"));
         }
     }
 }
