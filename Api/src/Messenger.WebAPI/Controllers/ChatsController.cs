@@ -1,7 +1,8 @@
 ﻿using Messenger.Application.Abstractions.Messaging;
-using Messenger.Application.Features.Chats.Commands.Create;
+using Messenger.Application.Features.Chats.Commands.CreateGroupChat;
+using Messenger.Application.Features.Chats.Commands.CreatePrivateChat;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChats;
@@ -88,13 +89,32 @@ namespace Messenger.WebAPI.Controllers
         {
             var commandResult = await commandHandler.Handle(command, cancellationToken);
 
-            return commandResult.IsSuccess ? Ok() : problemDetailsFactory.GetProblemDetails(commandResult);
+            return commandResult.IsSuccess ? Ok(commandResult.Value) : problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateChat(
-            [FromServices] ICommandHandler<CreateChatCommand, Guid> commandHandler,
-            [FromBody] CreateChatCommand command,
+        [HttpPost("/api/private-chat")]
+        public async Task<IActionResult> CreatePrivateChat(
+            [FromServices] ICommandHandler<CreatePrivateChatCommand, Guid> commandHandler,
+            [FromBody] CreatePrivateChatCommand command,
+            CancellationToken cancellationToken)
+        {
+            var commandResult = await commandHandler.Handle(command, cancellationToken);
+
+            if (commandResult.IsSuccess)
+            {
+                return CreatedAtAction(
+                    actionName: nameof(GetChatById),
+                    routeValues: new { chatId = commandResult.Value },
+                    value: commandResult.Value);
+            }
+
+            return problemDetailsFactory.GetProblemDetails(commandResult);
+        }
+
+        [HttpPost("/api/group-chat")]
+        public async Task<IActionResult> CreateGroupChat(
+            [FromServices] ICommandHandler<CreateGroupChatCommand, Guid> commandHandler,
+            [FromBody] CreateGroupChatCommand command,
             CancellationToken cancellationToken)
         {
             var commandResult = await commandHandler.Handle(command, cancellationToken);
