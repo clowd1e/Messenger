@@ -2,7 +2,8 @@
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Exceptions;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.RequestModels;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
@@ -41,8 +42,11 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<MessageResponse>> Handle(SendMessageCommand request, CancellationToken cancellationToken)
+        public async Task<Result<MessageResponse>> Handle(
+            SendMessageCommand command,
+            CancellationToken cancellationToken)
         {
+            // Retrieve user
             var userId = new UserId(_userContextService.GetAuthenticatedUserId());
 
             var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
@@ -52,9 +56,10 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
                 throw new AuthenticatedUserNotFoundException();
             }
 
-            var chatId = new ChatId(request.ChatId);
+            // Retrieve chat
+            var chatId = new ChatId(command.ChatId);
 
-            var chat = await _chatRepository.GetByIdWithUsersAsync(
+            var chat = await _chatRepository.GetByIdWithUsersAndLastMessageAsync(
                 chatId,
                 cancellationToken);
 
@@ -63,18 +68,17 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
                 return Result.Failure<MessageResponse>(ChatErrors.NotFound);
             }
 
-            var isUserInChat = await _chatRepository.IsUserInChatAsync(
-                userId,
-                chatId,
-                cancellationToken);
+            // Check if user is in chat
+            var isUserInChat = chat.Participants.Any(p => p.Id == userId);
 
             if (!isUserInChat)
             {
                 return Result.Failure<MessageResponse>(ChatErrors.UserNotInChat);
             }
 
+            // Map command to message
             var messageRequestModel = new CreateMessageRequestModel(
-                request.Message);
+                command.Message);
 
             var mappingResult = _commandMapper.Map(messageRequestModel);
 
@@ -88,13 +92,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
             message.SetUser(user);
             message.SetChat(chat);
 
-            var addMessageToChatResult = chat.AddMessage(message);
-
-            if (addMessageToChatResult.IsFailure)
-            {
-                return Result.Failure<MessageResponse>(addMessageToChatResult.Error);
-            }
-
+            // Add message to user
             var addMessageToUserResult = user.AddMessage(message);
 
             if (addMessageToUserResult.IsFailure)
@@ -102,12 +100,22 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
                 return Result.Failure<MessageResponse>(addMessageToUserResult.Error);
             }
 
+            // Add message to chat
+            var addMessageToChatResult = chat.AddMessage(message);
+
+            if (addMessageToChatResult.IsFailure)
+            {
+                return Result.Failure<MessageResponse>(addMessageToChatResult.Error);
+            }
+
             await _messageRepository.InsertAsync(message, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             var messageResponse = _messageMapper.Map(message);
 
-            return Result.Success(messageResponse);
+            // Save changes to database
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return messageResponse;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Messenger.Application.Features.Chats.DTO
+﻿namespace Messenger.Application.Features.Chats.DTO.Responses
 {
     public sealed record PaginatedMessagesResponse(
         IEnumerable<MessageResponse> Messages,
