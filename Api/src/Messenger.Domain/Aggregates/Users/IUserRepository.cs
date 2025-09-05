@@ -8,7 +8,7 @@ namespace Messenger.Domain.Aggregates.Users
             UserId userId,
             CancellationToken cancellationToken = default);
 
-        Task<User?> GetByIdWithChatsAsync(
+        Task<User?> GetByIdWithPrivateChatsAsync(
             UserId userId,
             CancellationToken cancellationToken = default);
 
@@ -25,6 +25,10 @@ namespace Messenger.Domain.Aggregates.Users
 
         Task<IEnumerable<User>> GetAllExceptCurrentAsync(
             UserId currentUserId,
+            CancellationToken cancellationToken = default);
+
+        Task<User[]> GetAllByIdsAsync(
+            IEnumerable<UserId> userIds,
             CancellationToken cancellationToken = default);
 
         Task InsertAsync(

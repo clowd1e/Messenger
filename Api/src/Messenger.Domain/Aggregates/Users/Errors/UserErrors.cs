@@ -14,10 +14,10 @@ namespace Messenger.Domain.Aggregates.User.Errors
                 code: "User.UserWithSameCredentialsAlreadyExists",
                 description: "User with the same username or email already exists.");
 
-        public static readonly Error UserAlreadyHasChat =
+        public static readonly Error InviterCannotBeInvitee =
             Error.Validation(
-                code: "User.UserAlreadyHasChat",
-                description: "User already has this chat.");
+                code: "User.InviterCannotBeInvitee",
+                description: "The inviter cannot be the same as the invitee.");
 
         public static readonly Error InvalidAccessToken =
             Error.Validation(
