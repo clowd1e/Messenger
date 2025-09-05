@@ -57,19 +57,27 @@ namespace Messenger.Infrastructure.Persistence.Configurations
                 .HasColumnName("registration_date");
 
             builder.Property(user => user.IconUri)
+                .IsRequired(false)
                 .HasMaxLength(ImageUri.MaxLength)
                 .HasConversion(
-                    iconUri => iconUri.Value,
+                    iconUri => iconUri!.Value,
                     value => ImageUri.Create(value).Value)
                 .HasColumnName("icon_uri");
 
+            builder.Property(user => user.EmailConfirmed)
+                .HasColumnName("email_confirmed");
+
             builder
                 .HasMany(user => user.Chats)
-                .WithMany(chat => chat.Users)
+                .WithMany(chat => chat.Participants)
                 .UsingEntity(
                     ManyToManyTables.UserChat,
-                    l => l.HasOne(typeof(Chat)).WithMany().HasForeignKey("chats_id"),
-                    r => r.HasOne(typeof(User)).WithMany().HasForeignKey("users_id"));
+                    l => l.HasOne(typeof(Chat)).WithMany().HasForeignKey("chat_id"),
+                    r => r.HasOne(typeof(User)).WithMany().HasForeignKey("user_id"));
+
+            builder
+                .HasMany(user => user.GroupMembers)
+                .WithOne(groupMember => groupMember.User);
 
             builder
                 .HasMany(user => user.Messages)

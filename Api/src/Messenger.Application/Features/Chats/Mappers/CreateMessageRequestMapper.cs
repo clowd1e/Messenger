@@ -1,5 +1,5 @@
 ﻿using Messenger.Application.Abstractions.Data;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.RequestModels;
 using Messenger.Domain.Aggregates.Chats.Messages.ValueObjects;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Messages.ValueObjects;

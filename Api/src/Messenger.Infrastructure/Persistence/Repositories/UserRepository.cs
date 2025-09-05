@@ -51,7 +51,16 @@ namespace Messenger.Infrastructure.Persistence.Repositories
         public async Task<IEnumerable<User>> GetAllAsync(
             CancellationToken cancellationToken = default)
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.ToListAsync(cancellationToken);
+        }
+
+        public async Task<User[]> GetAllByIdsAsync(
+            IEnumerable<UserId> userIds,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Users
+                .Where(u => userIds.Contains(u.Id))
+                .ToArrayAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<User>> GetAllExceptCurrentAsync(
@@ -81,7 +90,7 @@ namespace Messenger.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         }
 
-        public async Task<User?> GetByIdWithChatsAsync(
+        public async Task<User?> GetByIdWithPrivateChatsAsync(
             UserId userId,
             CancellationToken cancellationToken = default)
         {

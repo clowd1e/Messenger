@@ -5,7 +5,7 @@ namespace Messenger.Domain.Aggregates.Chats
 {
     public interface IChatRepository
     {
-        Task<Chat?> GetByIdWithUsersAsync(
+        Task<Chat?> GetByIdWithUsersAndLastMessageAsync(
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
@@ -28,11 +28,11 @@ namespace Messenger.Domain.Aggregates.Chats
             DateTime retrievalCutoff,
             CancellationToken cancellationToken = default);
 
-        Task<bool> ExistsAsync(
+        Task<bool> ChatExistsAsync(
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
-        Task<bool> ExistsAsync(
+        Task<bool> PrivateChatExistsAsync(
             UserId inviterId,
             UserId inviteeId,
             CancellationToken cancellationToken = default);
@@ -42,8 +42,12 @@ namespace Messenger.Domain.Aggregates.Chats
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
-        Task InsertAsync(
-            Chat chat,
+        Task InsertPrivateChatAsync(
+            PrivateChat privateChat,
+            CancellationToken cancellationToken = default);
+
+        Task InsertGroupChatAsync(
+            GroupChat groupChat,
             CancellationToken cancellationToken = default);
     }
 }

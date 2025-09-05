@@ -10,6 +10,7 @@ COPY ["src/Messenger.WebAPI/Messenger.WebAPI.csproj", "Messenger.WebAPI/"]
 COPY ["src/Messenger.Application/Messenger.Application.csproj", "Messenger.Application/"]
 COPY ["src/Messenger.Domain/Messenger.Domain.csproj", "Messenger.Domain/"]
 COPY ["src/Messenger.Infrastructure/Messenger.Infrastructure.csproj", "Messenger.Infrastructure/"]
+COPY ["src/Messenger.Emails/Messenger.Emails.csproj", "Messenger.Emails/"]
 RUN dotnet restore "./Messenger.WebAPI/Messenger.WebAPI.csproj"
 COPY . .
 WORKDIR "/src/Messenger.WebAPI"

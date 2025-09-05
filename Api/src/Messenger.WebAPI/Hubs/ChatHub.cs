@@ -1,8 +1,6 @@
 ﻿using Messenger.Application.Abstractions.Messaging;
-using Messenger.Application.Features.Chats.Commands.Create;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
-using Messenger.Application.Features.Chats.DTO;
-using Messenger.Application.Features.Chats.Queries.GetById;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.WebAPI.Extensions;
 using Messenger.WebAPI.Factories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,37 +16,6 @@ namespace Messenger.WebAPI.Hubs
     {
         public override async Task OnConnectedAsync()
         {
-        }
-
-        public async Task CreateChat(
-            [FromServices] ICommandHandler<CreateChatCommand, Guid> commandHandler,
-            [FromServices] IQueryHandler<GetChatByIdQuery, ChatResponse> queryHandler,
-            CreateChatCommand command)
-        {
-            var commandResult = await commandHandler.Handle(command, default);
-
-            if (commandResult.IsFailure)
-            {
-                await Clients.Caller.ReceiveError(commandResult.ToProblemDetails());
-                return;
-            }
-
-            var chatId = commandResult.Value;
-
-            var query = new GetChatByIdQuery(chatId);
-
-            var queryResult = await queryHandler.Handle(query, default);
-
-            if (queryResult.IsFailure)
-            {
-                await Clients.Caller.ReceiveError(queryResult.ToProblemDetails());
-                return;
-            }
-
-            var chat = queryResult.Value;
-
-            await Clients.User(Context.ConnectionId).ReceiveChat(chat);
-            await Clients.User(command.InviteeId.ToString()).ReceiveChat(chat);
         }
 
         public async Task SendMessage(

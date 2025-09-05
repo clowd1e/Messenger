@@ -3,7 +3,8 @@ using Messenger.Application.Features.Auth.Commands.Register;
 using Messenger.Application.Features.Auth.Commands.RequestPasswordRecovery;
 using Messenger.Application.Features.Auth.DTO.RequestModel;
 using Messenger.Application.Features.Auth.Mappers;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.RequestModels;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Application.Features.Chats.Mappers;
 using Messenger.Application.Features.Users.DTO;
 using Messenger.Application.Features.Users.Mappers;
@@ -32,7 +33,8 @@ namespace Messenger.Application.Extensions.DI
             #region Chats
             services.AddMapper<Chat, ChatResponse, ChatToChatResponseMapper>();
             services.AddMapper<Message, MessageResponse, MessageToMessageResponseMapper>();
-            services.AddMapper<CreateChatRequestModel, Result<Chat>, CreateChatCommandMapper>();
+            services.AddMapper<CreatePrivateChatRequestModel, Result<PrivateChat>, CreatePrivateChatCommandMapper>();
+            services.AddMapper<CreateGroupChatRequestModel, Result<GroupChat>, CreateGroupChatCommandMapper>();
             #endregion
 
             #region Messages

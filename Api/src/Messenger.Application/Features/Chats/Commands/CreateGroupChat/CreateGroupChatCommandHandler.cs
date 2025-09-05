@@ -1,93 +1,96 @@
 ﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Abstractions.Messaging;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.RequestModels;
 using Messenger.Domain.Aggregates.Chats;
-using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 
-namespace Messenger.Application.Features.Chats.Commands.Create
+namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
 {
-    internal sealed class CreateChatCommandHandler
-        : ICommandHandler<CreateChatCommand, Guid>
+    internal sealed class CreateGroupChatCommandHandler
+        : ICommandHandler<CreateGroupChatCommand, Guid>
     {
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;
         private readonly IMessageRepository _messageRepository;
-        private readonly IUserContextService<Guid> _userContextService;
-        private readonly Mapper<CreateChatRequestModel, Result<Chat>> _chatMapper;
+        private readonly Mapper<CreateGroupChatRequestModel, Result<GroupChat>> _groupChatMapper;
         private readonly Mapper<CreateMessageRequestModel, Result<Message>> _messageMapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateChatCommandHandler(
+        public CreateGroupChatCommandHandler(
+            IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
             IChatRepository chatRepository,
             IMessageRepository messageRepository,
-            IUserContextService<Guid> userContextService,
-            Mapper<CreateChatRequestModel, Result<Chat>> chatMapper,
+            Mapper<CreateGroupChatRequestModel, Result<GroupChat>> groupChatMapper,
             Mapper<CreateMessageRequestModel, Result<Message>> messageMapper,
             IUnitOfWork unitOfWork)
         {
+            _userContextService = userContextService;
             _userRepository = userRepository;
             _chatRepository = chatRepository;
             _messageRepository = messageRepository;
-            _userContextService = userContextService;
-            _chatMapper = chatMapper;
+            _groupChatMapper = groupChatMapper;
             _messageMapper = messageMapper;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<Guid>> Handle(
-            CreateChatCommand request,
+            CreateGroupChatCommand command,
             CancellationToken cancellationToken)
         {
+            // Retrieve the authenticated user
             var inviterId = new UserId(_userContextService.GetAuthenticatedUserId());
 
-            var inviter = await _userRepository.GetByIdWithChatsAsync(
-                inviterId, cancellationToken);
+            var inviter = await _userRepository.GetByIdAsync(inviterId, cancellationToken);
 
             if (inviter is null)
             {
                 return Result.Failure<Guid>(UserErrors.NotFound);
             }
 
-            var inviteeId = new UserId(request.InviteeId);
+            // Retrieve the invitees
+            var inviteesIds = command.Invitees
+                .Select(id => new UserId(id))
+                .ToList();
 
-            var invitee = await _userRepository.GetByIdAsync(inviteeId, cancellationToken);
+            var invitees = await _userRepository.GetAllByIdsAsync(
+                inviteesIds,
+                cancellationToken);
 
-            if (invitee is null)
+            if (invitees.Length != inviteesIds.Count)
             {
                 return Result.Failure<Guid>(UserErrors.NotFound);
             }
 
-            if (inviter.Id == invitee.Id)
+            // Check if inviter is in the invitees list
+            if (invitees.Any(invitee => invitee.Id == inviterId))
             {
-                return Result.Failure<Guid>(ChatErrors.ChatWithSameUser);
+                return Result.Failure<Guid>(UserErrors.InviterCannotBeInvitee);
             }
 
-            var chatExists = await _chatRepository.ExistsAsync(inviterId, inviteeId, cancellationToken);
+            // Map the request to a GroupChat
+            var requestModel = new CreateGroupChatRequestModel(
+                command.Name,
+                command.Description,
+                inviter,
+                invitees);
 
-            if (chatExists)
+            var groupChatMappingResult = _groupChatMapper.Map(requestModel);
+
+            if (groupChatMappingResult.IsFailure)
             {
-                return Result.Failure<Guid>(ChatErrors.ChatAlreadyExists);
+                return Result.Failure<Guid>(groupChatMappingResult.Error);
             }
 
-            var requestModel = new CreateChatRequestModel(inviter, invitee);
+            var groupChat = groupChatMappingResult.Value;
 
-            var mappingResult = _chatMapper.Map(requestModel);
-
-            if (mappingResult.IsFailure)
-            {
-                return Result.Failure<Guid>(mappingResult.Error);
-            }
-
-            var chat = mappingResult.Value;
-
-            var messageRequestModel = new CreateMessageRequestModel(
-                request.Message);
+            // Map the first message
+            var messageRequestModel = new CreateMessageRequestModel(command.Message);
 
             var messageMappingResult = _messageMapper.Map(messageRequestModel);
 
@@ -98,10 +101,13 @@ namespace Messenger.Application.Features.Chats.Commands.Create
 
             var message = messageMappingResult.Value;
 
-            message.SetUser(inviter);
-            message.SetChat(chat);
+            // Add the first message to the group chat
 
-            var addMessageToChatResult = chat.AddMessage(message);
+            message.SetUser(inviter);
+            message.SetChat(groupChat);
+
+            // Add message to chat and user
+            var addMessageToChatResult = groupChat.AddMessage(message);
 
             if (addMessageToChatResult.IsFailure)
             {
@@ -115,11 +121,12 @@ namespace Messenger.Application.Features.Chats.Commands.Create
                 return Result.Failure<Guid>(addMessageToUserResult.Error);
             }
 
-            await _chatRepository.InsertAsync(chat, cancellationToken);
+            // Insert chat and message
+            await _chatRepository.InsertGroupChatAsync(groupChat, cancellationToken);
             await _messageRepository.InsertAsync(message, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Success(chat.Id.Value);
+            return Result.Success(groupChat.Id.Value);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Messenger.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "9.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -109,6 +109,8 @@ namespace Messenger.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("chat", (string)null);
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Messenger.Domain.Aggregates.ConfirmEmailTokens.ConfirmEmailToken", b =>
@@ -142,6 +144,25 @@ namespace Messenger.Infrastructure.Migrations
                     b.HasIndex("user_id");
 
                     b.ToTable("confirm_email_token", (string)null);
+                });
+
+            modelBuilder.Entity("Messenger.Domain.Aggregates.GroupChats.GroupMember", b =>
+                {
+                    b.Property<Guid>("user_id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("chat_id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int")
+                        .HasColumnName("role");
+
+                    b.HasKey("user_id", "chat_id");
+
+                    b.HasIndex("chat_id");
+
+                    b.ToTable("group_member", (string)null);
                 });
 
             modelBuilder.Entity("Messenger.Domain.Aggregates.Messages.Message", b =>
@@ -224,7 +245,8 @@ namespace Messenger.Infrastructure.Migrations
                         .HasColumnName("email");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("email_confirmed");
 
                     b.Property<string>("IconUri")
                         .HasMaxLength(300)
@@ -396,17 +418,42 @@ namespace Messenger.Infrastructure.Migrations
 
             modelBuilder.Entity("user_chat", b =>
                 {
-                    b.Property<Guid>("chats_id")
+                    b.Property<Guid>("chat_id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("users_id")
+                    b.Property<Guid>("user_id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("chats_id", "users_id");
+                    b.HasKey("chat_id", "user_id");
 
-                    b.HasIndex("users_id");
+                    b.HasIndex("user_id");
 
                     b.ToTable("user_chat");
+                });
+
+            modelBuilder.Entity("Messenger.Domain.Aggregates.Chats.GroupChat", b =>
+                {
+                    b.HasBaseType("Messenger.Domain.Aggregates.Chats.Chat");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.ToTable("group_chat", (string)null);
+                });
+
+            modelBuilder.Entity("Messenger.Domain.Aggregates.Chats.PrivateChat", b =>
+                {
+                    b.HasBaseType("Messenger.Domain.Aggregates.Chats.Chat");
+
+                    b.ToTable("private_chat", (string)null);
                 });
 
             modelBuilder.Entity("Messenger.Domain.Aggregates.ConfirmEmailTokens.ConfirmEmailToken", b =>
@@ -416,6 +463,25 @@ namespace Messenger.Infrastructure.Migrations
                         .HasForeignKey("user_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Messenger.Domain.Aggregates.GroupChats.GroupMember", b =>
+                {
+                    b.HasOne("Messenger.Domain.Aggregates.Chats.GroupChat", "GroupChat")
+                        .WithMany("GroupMembers")
+                        .HasForeignKey("chat_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Messenger.Domain.Aggregates.Users.User", "User")
+                        .WithMany("GroupMembers")
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupChat");
 
                     b.Navigation("User");
                 });
@@ -505,13 +571,31 @@ namespace Messenger.Infrastructure.Migrations
                 {
                     b.HasOne("Messenger.Domain.Aggregates.Chats.Chat", null)
                         .WithMany()
-                        .HasForeignKey("chats_id")
+                        .HasForeignKey("chat_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Messenger.Domain.Aggregates.Users.User", null)
                         .WithMany()
-                        .HasForeignKey("users_id")
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Messenger.Domain.Aggregates.Chats.GroupChat", b =>
+                {
+                    b.HasOne("Messenger.Domain.Aggregates.Chats.Chat", null)
+                        .WithOne()
+                        .HasForeignKey("Messenger.Domain.Aggregates.Chats.GroupChat", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Messenger.Domain.Aggregates.Chats.PrivateChat", b =>
+                {
+                    b.HasOne("Messenger.Domain.Aggregates.Chats.Chat", null)
+                        .WithOne()
+                        .HasForeignKey("Messenger.Domain.Aggregates.Chats.PrivateChat", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -525,9 +609,16 @@ namespace Messenger.Infrastructure.Migrations
                 {
                     b.Navigation("ConfirmEmailTokens");
 
+                    b.Navigation("GroupMembers");
+
                     b.Navigation("Messages");
 
                     b.Navigation("ResetPasswordTokens");
+                });
+
+            modelBuilder.Entity("Messenger.Domain.Aggregates.Chats.GroupChat", b =>
+                {
+                    b.Navigation("GroupMembers");
                 });
 #pragma warning restore 612, 618
         }
