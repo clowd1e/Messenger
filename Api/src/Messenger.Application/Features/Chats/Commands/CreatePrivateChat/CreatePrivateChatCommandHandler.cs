@@ -1,7 +1,7 @@
 ﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Abstractions.Messaging;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.RequestModels;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Messages;
@@ -9,25 +9,25 @@ using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 
-namespace Messenger.Application.Features.Chats.Commands.Create
+namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
 {
-    internal sealed class CreateChatCommandHandler
-        : ICommandHandler<CreateChatCommand, Guid>
+    internal sealed class CreatePrivateChatCommandHandler
+        : ICommandHandler<CreatePrivateChatCommand, Guid>
     {
         private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;
         private readonly IMessageRepository _messageRepository;
         private readonly IUserContextService<Guid> _userContextService;
-        private readonly Mapper<CreateChatRequestModel, Result<Chat>> _chatMapper;
+        private readonly Mapper<CreatePrivateChatRequestModel, Result<PrivateChat>> _privateChatMapper;
         private readonly Mapper<CreateMessageRequestModel, Result<Message>> _messageMapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateChatCommandHandler(
+        public CreatePrivateChatCommandHandler(
             IUserRepository userRepository,
             IChatRepository chatRepository,
             IMessageRepository messageRepository,
             IUserContextService<Guid> userContextService,
-            Mapper<CreateChatRequestModel, Result<Chat>> chatMapper,
+            Mapper<CreatePrivateChatRequestModel, Result<PrivateChat>> privateChatMapper,
             Mapper<CreateMessageRequestModel, Result<Message>> messageMapper,
             IUnitOfWork unitOfWork)
         {
@@ -35,18 +35,19 @@ namespace Messenger.Application.Features.Chats.Commands.Create
             _chatRepository = chatRepository;
             _messageRepository = messageRepository;
             _userContextService = userContextService;
-            _chatMapper = chatMapper;
+            _privateChatMapper = privateChatMapper;
             _messageMapper = messageMapper;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<Guid>> Handle(
-            CreateChatCommand request,
+            CreatePrivateChatCommand command,
             CancellationToken cancellationToken)
         {
+            // Retrieve inviter
             var inviterId = new UserId(_userContextService.GetAuthenticatedUserId());
 
-            var inviter = await _userRepository.GetByIdWithChatsAsync(
+            var inviter = await _userRepository.GetByIdWithPrivateChatsAsync(
                 inviterId, cancellationToken);
 
             if (inviter is null)
@@ -54,7 +55,8 @@ namespace Messenger.Application.Features.Chats.Commands.Create
                 return Result.Failure<Guid>(UserErrors.NotFound);
             }
 
-            var inviteeId = new UserId(request.InviteeId);
+            // Retrieve invitee
+            var inviteeId = new UserId(command.InviteeId);
 
             var invitee = await _userRepository.GetByIdAsync(inviteeId, cancellationToken);
 
@@ -63,31 +65,34 @@ namespace Messenger.Application.Features.Chats.Commands.Create
                 return Result.Failure<Guid>(UserErrors.NotFound);
             }
 
+            // Check if the invitee is inviter
             if (inviter.Id == invitee.Id)
             {
                 return Result.Failure<Guid>(ChatErrors.ChatWithSameUser);
             }
 
-            var chatExists = await _chatRepository.ExistsAsync(inviterId, inviteeId, cancellationToken);
+            // Check if the chat already exists
+            var chatExists = await _chatRepository.PrivateChatExistsAsync(inviterId, inviteeId, cancellationToken);
 
             if (chatExists)
             {
                 return Result.Failure<Guid>(ChatErrors.ChatAlreadyExists);
             }
 
-            var requestModel = new CreateChatRequestModel(inviter, invitee);
+            // Map to PrivateChat
+            var requestModel = new CreatePrivateChatRequestModel(inviter, invitee);
 
-            var mappingResult = _chatMapper.Map(requestModel);
+            var mappingResult = _privateChatMapper.Map(requestModel);
 
             if (mappingResult.IsFailure)
             {
                 return Result.Failure<Guid>(mappingResult.Error);
             }
 
-            var chat = mappingResult.Value;
+            var privateChat = mappingResult.Value;
 
-            var messageRequestModel = new CreateMessageRequestModel(
-                request.Message);
+            // Map first message
+            var messageRequestModel = new CreateMessageRequestModel(command.Message);
 
             var messageMappingResult = _messageMapper.Map(messageRequestModel);
 
@@ -99,9 +104,10 @@ namespace Messenger.Application.Features.Chats.Commands.Create
             var message = messageMappingResult.Value;
 
             message.SetUser(inviter);
-            message.SetChat(chat);
+            message.SetChat(privateChat);
 
-            var addMessageToChatResult = chat.AddMessage(message);
+            // Add message to chat and user
+            var addMessageToChatResult = privateChat.AddMessage(message);
 
             if (addMessageToChatResult.IsFailure)
             {
@@ -115,11 +121,12 @@ namespace Messenger.Application.Features.Chats.Commands.Create
                 return Result.Failure<Guid>(addMessageToUserResult.Error);
             }
 
-            await _chatRepository.InsertAsync(chat, cancellationToken);
+            // Insert chat and message
+            await _chatRepository.InsertPrivateChatAsync(privateChat, cancellationToken);
             await _messageRepository.InsertAsync(message, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Success(chat.Id.Value);
+            return Result.Success(privateChat.Id.Value);
         }
     }
 }
