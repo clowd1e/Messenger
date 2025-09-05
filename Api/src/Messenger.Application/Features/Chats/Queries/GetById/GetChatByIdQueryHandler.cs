@@ -1,6 +1,6 @@
 ﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Messaging;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.Errors;
 
@@ -24,7 +24,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetById
             GetChatByIdQuery request,
             CancellationToken cancellationToken)
         {
-            var chat = await _chatRepository.GetByIdWithUsersAsync(
+            var chat = await _chatRepository.GetByIdWithUsersAndLastMessageAsync(
                 chatId: new(request.ChatId), cancellationToken);
 
             if (chat is null)
