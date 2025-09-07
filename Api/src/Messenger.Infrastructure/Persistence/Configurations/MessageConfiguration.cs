@@ -1,4 +1,4 @@
-﻿using Messenger.Domain.Aggregates.Chats.Messages.ValueObjects;
+﻿using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Messages.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +31,7 @@ namespace Messenger.Infrastructure.Persistence.Configurations
             builder.Property(message => message.Timestamp)
                 .HasConversion(
                     timestamp => timestamp.Value,
-                    value => MessageTimestamp.Create(value.ToUniversalTime()).Value)
+                    value => Timestamp.Create(value.ToUniversalTime()).Value)
                 .HasColumnName("timestamp");
 
             builder

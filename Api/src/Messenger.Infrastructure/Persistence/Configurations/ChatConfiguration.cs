@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Infrastructure.Persistence.Configurations.Common;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ namespace Messenger.Infrastructure.Persistence.Configurations
             builder.Property(chat => chat.CreationDate)
                 .HasConversion(
                     date => date.Value,
-                    value => ChatCreationDate.Create(value.ToUniversalTime()).Value)
+                    value => Timestamp.Create(value.ToUniversalTime()).Value)
                 .HasColumnName("creation_date");
 
             builder

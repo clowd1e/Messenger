@@ -1,5 +1,5 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
-using Messenger.Domain.Aggregates.Chats.Messages.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Messages.ValueObjects;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
@@ -8,22 +8,22 @@ namespace Messenger.Domain.Aggregates.Messages
 {
     public sealed class Message : AggregateRoot<MessageId>
     {
-        private MessageTimestamp _timestamp;
+        private Timestamp _timestamp;
         private MessageContent _content;
 
-        private Message() 
+        private Message()
             : base(new(Guid.NewGuid())) { }
 
         private Message(
             MessageId messageId,
-            MessageTimestamp timestamp,
+            Timestamp timestamp,
             MessageContent content) : base(messageId)
         {
             Timestamp = timestamp;
             Content = content;
         }
 
-        public MessageTimestamp Timestamp
+        public Timestamp Timestamp
         {
             get => _timestamp;
             private set
@@ -68,7 +68,7 @@ namespace Messenger.Domain.Aggregates.Messages
 
         public static Result<Message> Create(
             MessageId messageId,
-            MessageTimestamp timestamp,
+            Timestamp timestamp,
             MessageContent content)
         {
             return new Message(
