@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
@@ -10,19 +11,19 @@ namespace Messenger.Domain.Aggregates.Chats
     {
         protected readonly HashSet<Message> _messages = [];
         protected readonly HashSet<Users.User> _participants = [];
-        protected ChatCreationDate _creationDate;
+        protected Timestamp _creationDate;
 
         protected Chat()
             : base(new(Guid.NewGuid())) { }
 
         protected Chat(
             ChatId chatId,
-            ChatCreationDate creationDate) : base(chatId)
+            Timestamp creationDate) : base(chatId)
         {
             CreationDate = creationDate;
         }
 
-        public ChatCreationDate CreationDate
+        public Timestamp CreationDate
         {
             get => _creationDate;
             private set

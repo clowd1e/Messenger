@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.GroupChats;
 using Messenger.Domain.Aggregates.GroupChats.ValueObjects;
 using Messenger.Domain.Shared;
@@ -20,7 +21,7 @@ namespace Messenger.Domain.Aggregates.Chats
         private GroupChat(
             ChatId chatId,
             GroupChatName name,
-            ChatCreationDate creationDate,
+            Timestamp creationDate,
             GroupChatDescription? description)
             : base(chatId, creationDate)
         {
@@ -91,7 +92,7 @@ namespace Messenger.Domain.Aggregates.Chats
         public static Result<GroupChat> Create(
             ChatId chatId,
             GroupChatName name,
-            ChatCreationDate creationDate,
+            Timestamp creationDate,
             GroupChatDescription? description,
             List<GroupMember> groupMembers)
         {

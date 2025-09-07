@@ -1,4 +1,5 @@
 ﻿using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 
 namespace Messenger.Domain.Aggregates.Chats
@@ -20,12 +21,12 @@ namespace Messenger.Domain.Aggregates.Chats
             UserId userId,
             int page,
             int pageSize,
-            DateTime retrievalCutoff,
+            Timestamp retrievalCutoff,
             CancellationToken cancellationToken = default);
 
         Task<int> CountUserChatsAsync(
             UserId userId,
-            DateTime retrievalCutoff,
+            Timestamp retrievalCutoff,
             CancellationToken cancellationToken = default);
 
         Task<bool> ChatExistsAsync(

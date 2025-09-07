@@ -2,6 +2,7 @@
 using Messenger.Application.Features.Chats.DTO.RequestModels;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 
 namespace Messenger.Application.Features.Chats.Mappers
 {
@@ -12,7 +13,7 @@ namespace Messenger.Application.Features.Chats.Mappers
         {
             return PrivateChat.Create(
                 chatId: new ChatId(Guid.NewGuid()),
-                creationDate: ChatCreationDate.UtcNow().Value,
+                creationDate: Timestamp.UtcNow().Value,
                 participants: [source.Inviter, source.Invitee]);
         }
     }

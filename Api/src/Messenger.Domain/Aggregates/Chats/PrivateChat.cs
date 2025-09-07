@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Shared;
 
 namespace Messenger.Domain.Aggregates.Chats
@@ -13,13 +14,13 @@ namespace Messenger.Domain.Aggregates.Chats
 
         private PrivateChat(
             ChatId chatId,
-            ChatCreationDate creationDate)
+            Timestamp creationDate)
             : base(chatId, creationDate)
         { }
 
         public static Result<PrivateChat> Create(
             ChatId chatId,
-            ChatCreationDate creationDate,
+            Timestamp creationDate,
             List<Users.User> participants)
         {
             if (participants.Count != UsersCount)
