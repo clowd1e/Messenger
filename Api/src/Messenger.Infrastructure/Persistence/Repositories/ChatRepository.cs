@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -82,54 +83,61 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             return chats;
         }
 
-        // Refactor: This method currently retrieves all user chats.
-        // Create a query that retrieves only one page of chats without loading all chats into memory.
         public async Task<IEnumerable<Chat>> GetUserChatsPaginatedWithLastMessage(
             UserId userId,
             int page,
             int pageSize,
-            DateTime retrievalCutoff,
+            Timestamp retrievalCutoff,
             CancellationToken cancellationToken = default)
         {
-            var privateChats = await _context.PrivateChats
-                .Where(chat => chat.Participants.Any(user => user.Id == userId))
+            var chats = await _context.Chats
+                // Filter chats where the user is a participant and the chat was created before or on the retrieval cutoff date
+                .Where(chat => 
+                    chat.Participants.Any(participant => participant.Id == userId) &&
+                    chat.CreationDate <= retrievalCutoff)
+                // Include participants for each chat
                 .Include(chat => chat.Participants)
+                // Include last message for each chat
                 .Include(IncludeLastMessage())
-                .ToListAsync(cancellationToken);
-
-            var groupChats = await _context.GroupChats
-                .Where(chat => chat.Participants.Any(participant => participant.Id == userId))
-                .Include(chat => chat.Participants)
-                .Include(chat => chat.GroupMembers)
-                .Include(IncludeLastMessage())
-                .ToListAsync(cancellationToken);
-
-            List<Chat> chats = [.. privateChats, .. groupChats];
-
-            var result = chats
-                .Where(chat => chat.CreationDate.Value <= retrievalCutoff)
+                // Order by the timestamp of the last message in descending order
+                .OrderByDescending(chat => chat.Messages.First().Timestamp)
+                // Filter chats where the last message was sent before or on the retrieval cutoff date
+                .Where(chat => chat.Messages.First().Timestamp <= retrievalCutoff)
+                // Apply pagination
                 .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
 
-            return result;
+            chats = chats.OrderByDescending(chat => chat.Messages.First().Timestamp.Value).ToList();
+
+            var groupChatIds = chats.OfType<GroupChat>()
+                .Select(gc => gc.Id)
+                .ToList();
+
+            // Load group members info for group chats
+            if (groupChatIds.Count > 0)
+            {
+                await _context.GroupChats
+                    .Where(gc => groupChatIds.Contains(gc.Id))
+                    .Include(gc => gc.GroupMembers)
+                    .LoadAsync(cancellationToken);
+            }
+
+            return chats;
         }
 
         public async Task<int> CountUserChatsAsync(
             UserId userId,
-            DateTime retrievalCutoff,
+            Timestamp retrievalCutoff,
             CancellationToken cancellationToken = default)
         {
-            var privateChatsCount = await _context.PrivateChats
-                .Where(chat => chat.Participants.Any(user => user.Id == userId))
+            var chatsCount = await _context.Chats
+                .Where(chat => 
+                    chat.Participants.Any(participant => participant.Id == userId) &&
+                    chat.CreationDate <= retrievalCutoff)
                 .CountAsync(cancellationToken);
 
-            var groupChatsCount = await _context.GroupChats
-                .Where(chat => chat.Participants.Any(participant => participant.Id == userId))
-                .CountAsync(cancellationToken);
-
-            var totalCount = privateChatsCount + groupChatsCount;
-
-            return totalCount;
+            return chatsCount;
         }
 
         public async Task<bool> IsUserInChatAsync(
