@@ -49,11 +49,6 @@ namespace Messenger.Domain.Aggregates.User.Errors
                 code: "User.EmailNotConfirmed",
                 description: "User's email is not confirmed.");
 
-        public static readonly Error InvalidIconDimensions =
-            Error.Validation(
-                code: "User.InvalidIconDimensions",
-                description: "The icon dimensions are invalid.");
-
         public static readonly Error IconNotSet =
             Error.Validation(
                 code: "User.IconNotSet",
