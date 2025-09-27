@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.ImageUri;
 using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.GroupChats;
 using Messenger.Domain.Aggregates.GroupChats.ValueObjects;
@@ -22,11 +23,13 @@ namespace Messenger.Domain.Aggregates.Chats
             ChatId chatId,
             GroupChatName name,
             Timestamp creationDate,
-            GroupChatDescription? description)
+            GroupChatDescription? description,
+            ImageUri? iconUri)
             : base(chatId, creationDate)
         {
             Name = name;
             Description = description;
+            IconUri = iconUri;
         }
 
         public GroupChatName Name
@@ -40,6 +43,8 @@ namespace Messenger.Domain.Aggregates.Chats
         }
 
         public GroupChatDescription? Description { get; private set; }
+
+        public ImageUri? IconUri { get; private set; }
 
         public IReadOnlyCollection<GroupMember> GroupMembers => _groupMembers;
 
@@ -94,6 +99,7 @@ namespace Messenger.Domain.Aggregates.Chats
             GroupChatName name,
             Timestamp creationDate,
             GroupChatDescription? description,
+            ImageUri? iconUri,
             List<GroupMember> groupMembers)
         {
             if (groupMembers.Count < MinParticipantsCount)
@@ -112,11 +118,11 @@ namespace Messenger.Domain.Aggregates.Chats
                 chatId,
                 name,
                 creationDate,
-                description);
+                description,
+                iconUri);
 
-            List<Users.User> participants = groupMembers
-                .Select(member => member.User ?? throw new InvalidOperationException("Group member must have a user."))
-                .ToList();
+            List<Users.User> participants = [.. groupMembers
+                .Select(member => member.User ?? throw new InvalidOperationException("Group member must have a user."))];
 
             groupChat.SetParticipants(participants);
             groupChat.SetGroupMembers(groupMembers);

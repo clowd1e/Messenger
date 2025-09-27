@@ -2,6 +2,7 @@
 using Messenger.Application.Features.Chats.DTO.RequestModels;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.ImageUri;
 using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.GroupChats;
 using Messenger.Domain.Aggregates.GroupChats.ValueObjects;
@@ -70,6 +71,7 @@ namespace Messenger.Application.Features.Chats.Mappers
                 name: name,
                 creationDate: creationDate,
                 description: description,
+                iconUri: source.IconUri,
                 groupMembers: participants);
         }
     }

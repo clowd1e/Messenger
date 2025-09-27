@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Messenger.WebAPI.MultipartJsonSupport;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -10,8 +11,11 @@ namespace Messenger.WebAPI.Extensions.DI
         public static IServiceCollection ConfigureSwaggerGen(
             this IServiceCollection services)
         {
-            services.AddSwaggerGen(
-                ConfigureSwaggerAuthorization);
+            services.AddSwaggerGen(options =>
+            {
+                options.OperationFilter<MultipartJsonOperationFilter>();
+                ConfigureSwaggerAuthorization(options);
+            });
 
             return services;
         }

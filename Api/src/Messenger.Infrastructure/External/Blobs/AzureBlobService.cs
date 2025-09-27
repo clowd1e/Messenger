@@ -62,9 +62,12 @@ namespace Messenger.Infrastructure.External.Blobs
         public async Task<UploadBlobResponse> UploadAsync(
             Stream stream,
             string contentType,
+            string? subDirectory = null,
             CancellationToken cancellationToken = default)
         {
-            var blobName = Guid.NewGuid().ToString();
+            var blobName = subDirectory is null ?
+                Guid.NewGuid().ToString() :
+                $"{subDirectory}/{Guid.NewGuid()}";
 
             BlobClient blobClient = _containerClient.GetBlobClient(blobName);
 

@@ -31,6 +31,8 @@ namespace Messenger.Application.Features.Chats.Mappers
             return new GroupChatResponse(
                 Id: groupChat.Id.Value,
                 CreationDate: groupChat.CreationDate.Value,
+                Name: groupChat.Name.Value,
+                Description: groupChat.Description?.Value,
                 LastMessage: lastMessage,
                 Participants: MapGroupMembers(groupChat.GroupMembers));
         }
