@@ -2,11 +2,12 @@
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Abstractions.Storage;
+using Messenger.Application.Helpers;
+using Messenger.Application.Images;
+using Messenger.Domain.Aggregates.Common.ImageUri;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
-using Microsoft.AspNetCore.Http;
-using SixLabors.ImageSharp;
 
 namespace Messenger.Application.Features.Users.Commands.SetIcon
 {
@@ -31,7 +32,7 @@ namespace Messenger.Application.Features.Users.Commands.SetIcon
         }
 
         public async Task<Result> Handle(
-            SetUserIconCommand request,
+            SetUserIconCommand command,
             CancellationToken cancellationToken)
         {
             var userId = new UserId(_userContextService.GetAuthenticatedUserId());
@@ -43,11 +44,11 @@ namespace Messenger.Application.Features.Users.Commands.SetIcon
                 return UserErrors.NotFound;
             }
 
-            var iconDimensionsValid = IconDimensionsValid(request.Icon!);
+            var iconDimensionsValid = ImageDimensionsHelper.IconDimensionsAreEqual(command.Icon!);
 
             if (!iconDimensionsValid)
             {
-                return UserErrors.InvalidIconDimensions;
+                return ImageUriErrors.InvalidIconDimensions;
             }
 
             if (user.IconUri is not null)
@@ -57,29 +58,13 @@ namespace Messenger.Application.Features.Users.Commands.SetIcon
             }
 
             var iconUri = await _imageService.UploadImageAsync(
-                request.Icon, cancellationToken);
+                command.Icon, ImageSubDirectories.UserIcons, cancellationToken);
 
             user.SetIconUri(iconUri);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
-        }
-
-        private bool IconDimensionsValid(IFormFile icon)
-        {
-            (int width, int height) = GetImageDimensions(icon);
-
-            return width == height;
-        }
-
-        private (int Width, int Height) GetImageDimensions(IFormFile file)
-        {
-            using var stream = file.OpenReadStream();
-
-            using var image = Image.Load(stream);
-
-            return (image.Width, image.Height);
         }
     }
 }

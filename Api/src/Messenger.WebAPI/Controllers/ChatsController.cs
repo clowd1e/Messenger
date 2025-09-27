@@ -7,9 +7,11 @@ using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChats;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated;
+using Messenger.WebAPI.CommandWrappers.CreateGroupChat;
 using Messenger.WebAPI.Factories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Messenger.WebAPI.Controllers
 {
@@ -112,12 +114,13 @@ namespace Messenger.WebAPI.Controllers
         }
 
         [HttpPost("/api/group-chat")]
+        [Consumes(Multipart.FormData)]
         public async Task<IActionResult> CreateGroupChat(
             [FromServices] ICommandHandler<CreateGroupChatCommand, Guid> commandHandler,
-            [FromBody] CreateGroupChatCommand command,
+            [FromForm] CreateGroupChatCommandWrapper wrapper,
             CancellationToken cancellationToken)
         {
-            var commandResult = await commandHandler.Handle(command, cancellationToken);
+            var commandResult = await commandHandler.Handle(wrapper.ToCommand(), cancellationToken);
 
             if (commandResult.IsSuccess)
             {

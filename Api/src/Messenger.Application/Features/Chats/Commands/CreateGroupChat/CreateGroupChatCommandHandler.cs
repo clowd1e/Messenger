@@ -1,8 +1,12 @@
 ﻿using Messenger.Application.Abstractions.Data;
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Abstractions.Messaging;
+using Messenger.Application.Abstractions.Storage;
 using Messenger.Application.Features.Chats.DTO.RequestModels;
+using Messenger.Application.Helpers;
+using Messenger.Application.Images;
 using Messenger.Domain.Aggregates.Chats;
+using Messenger.Domain.Aggregates.Common.ImageUri;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;
@@ -17,6 +21,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
         private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;
         private readonly IMessageRepository _messageRepository;
+        private readonly IImageService _imageService;
         private readonly Mapper<CreateGroupChatRequestModel, Result<GroupChat>> _groupChatMapper;
         private readonly Mapper<CreateMessageRequestModel, Result<Message>> _messageMapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -26,6 +31,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
             IUserRepository userRepository,
             IChatRepository chatRepository,
             IMessageRepository messageRepository,
+            IImageService imageService,
             Mapper<CreateGroupChatRequestModel, Result<GroupChat>> groupChatMapper,
             Mapper<CreateMessageRequestModel, Result<Message>> messageMapper,
             IUnitOfWork unitOfWork)
@@ -34,6 +40,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
             _userRepository = userRepository;
             _chatRepository = chatRepository;
             _messageRepository = messageRepository;
+            _imageService = imageService;
             _groupChatMapper = groupChatMapper;
             _messageMapper = messageMapper;
             _unitOfWork = unitOfWork;
@@ -73,10 +80,28 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
                 return Result.Failure<Guid>(UserErrors.InviterCannotBeInvitee);
             }
 
+            // Upload group icon if provided
+
+            ImageUri? iconUri = null;
+
+            if (command.Icon is not null)
+            {
+                var iconDimensionsValid = ImageDimensionsHelper.IconDimensionsAreEqual(command.Icon);
+
+                if (!iconDimensionsValid)
+                {
+                    return Result.Failure<Guid>(ImageUriErrors.InvalidIconDimensions);
+                }
+
+                iconUri = await _imageService.UploadImageAsync(
+                    command.Icon, ImageSubDirectories.GroupChatIcons, cancellationToken);
+            }
+
             // Map the request to a GroupChat
             var requestModel = new CreateGroupChatRequestModel(
                 command.Name,
                 command.Description,
+                iconUri,
                 inviter,
                 invitees);
 

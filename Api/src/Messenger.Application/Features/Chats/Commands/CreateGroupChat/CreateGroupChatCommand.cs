@@ -1,4 +1,5 @@
 ﻿using Messenger.Application.Abstractions.Messaging;
+using Microsoft.AspNetCore.Http;
 
 namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
 {
@@ -6,5 +7,6 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
         List<Guid> Invitees,
         string Name,
         string? Description,
-        string Message) : ICommand<Guid>;
+        string Message,
+        IFormFile? Icon) : ICommand<Guid>;
 }
