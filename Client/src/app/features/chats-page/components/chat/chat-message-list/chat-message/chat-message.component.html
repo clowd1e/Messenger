@@ -3,6 +3,9 @@
         <img [class.none]="!userIconVisible()" [src]="userIcon()" alt="UserImage" />
     </div>
     <div class="message-box">
+        @if (isGroupChat() && !isCurrentUser() && userNameVisible()) {
+            <p class="username">{{ messageSender() }}</p>
+        }
         <p>{{ messageContent() }}</p>
         <p class="timestamp">{{ messageTimestamp() | date:'HH:mm' }}</p>
     </div>

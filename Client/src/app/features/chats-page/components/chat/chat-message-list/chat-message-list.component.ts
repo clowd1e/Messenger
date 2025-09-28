@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, input, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { ChatMessageComponent } from './chat-message/chat-message.component';
 import { MessageDto } from '../models/message-dto';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
@@ -39,14 +39,17 @@ export class ChatMessageListComponent {
     this.loadNextChats();
   }
 
+  isGroupChat = computed(() => this.chat()!.type === 'group');
+
   messageDtos(): MessageDto[] {
     const msgs = this.chat()!.messages;
     if (!msgs) return [];
     
     return msgs.map((message, i) => ({
       message,
+      userNameVisible: i === 0 || msgs[i - 1]?.sender.id !== message.sender.id,
       userIconVisible: i === msgs.length - 1 || msgs[i + 1]?.sender.id !== message.sender.id,
-      iconUri: this.chat()!.users.find(user => user.id === message.sender.id)?.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+      iconUri: message.sender.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
     }));
   }
 

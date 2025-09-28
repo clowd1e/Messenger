@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { ChatItem } from '../../models/chat-item';
 import { UuidHelperService } from '../../../../shared/services/uuid-helper.service';
 import { ChatItemComponent } from './chat-item/chat-item.component';
@@ -8,6 +8,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MapChatToChatItem } from '../../mappers/chat-to-chat-item.mapper';
 import { PaginatedChatsResponse } from '../../models/paginated-chats-response';
 import { ApiService } from '../../../../shared/services/api.service';
+import { PrivateChatItem } from '../../models/private-chat-item';
+import { GroupChatItem } from '../../models/group-chat-item';
 
 @Component({
   selector: 'app-chat-list',
@@ -30,14 +32,32 @@ export class ChatListComponent {
   apiService = inject(ApiService);
   errorHandler = inject(ErrorHandlerService);
 
-  mappedChatList = () => this.chatList()?.map(chatItem => {
-    return {
-      id: this.uuidHelper.toShortUuid(chatItem.id),
-      creationDate: chatItem.creationDate,
-      users: chatItem.users,
-      messages: chatItem.messages,
+  mappedChatList = computed(() => this.chatList()?.map(chatItem => {
+    if (chatItem.type == 'private') {
+      let privateChat = chatItem as PrivateChatItem;
+      return {
+        id: this.uuidHelper.toShortUuid(privateChat.id),
+        creationDate: privateChat.creationDate,
+        participants: privateChat.participants,
+        messages: privateChat.messages,
+        type: 'private'
+      } as PrivateChatItem;
+    } else if (chatItem.type == 'group') {
+      let groupChat = chatItem as GroupChatItem;
+      return {
+        id: this.uuidHelper.toShortUuid(groupChat.id),
+        creationDate: groupChat.creationDate,
+        name: groupChat.name,
+        description: groupChat.description,
+        iconUri: groupChat.iconUri,
+        participants: groupChat.participants,
+        messages: groupChat.messages,
+        type: 'group'
+      } as GroupChatItem;
+    } else {
+      throw new Error('Unknown chat type');
     }
-  })
+  }));
 
   onScroll() {
     this.currentPage++;

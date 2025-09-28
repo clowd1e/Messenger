@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 })
 export class ChatMessageComponent {
   messageDto = input.required<MessageDto>();
+  isGroupChat = input.required<boolean>();
   currentUserId = input.required<string>();
 
   isCurrentUser() {
@@ -19,6 +20,14 @@ export class ChatMessageComponent {
 
   userIconVisible() {
     return this.messageDto().userIconVisible;
+  }
+
+  userNameVisible() {
+    return this.messageDto().userNameVisible;
+  }
+
+  messageSender() {
+    return this.messageDto().message.sender.name;
   }
 
   messageContent() {

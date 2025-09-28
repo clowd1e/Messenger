@@ -109,18 +109,19 @@ export class ChatsPageComponent {
   }
 
 
+  // TODO: fix chat creation
   private handleAddRoute() {
     const userId = this.uuidHelper.toUuid(this.route.snapshot.paramMap.get('userId'));
     if (userId) {
-      let chatItem: ChatItem = {
-        id: '',
-        creationDate: '',
-        messages: [],
-        users: [this.currentUserId, userId]
-      };
+      // let chatItem: ChatItem = {
+      //   id: '',
+      //   creationDate: '',
+      //   messages: [],
+      //   users: [this.currentUserId, userId]
+      // };
 
       this.addChatVisible.set(false);
-      this.selectedChat.set(chatItem);
+      // this.selectedChat.set(chatItem);
     } else {
       this.addChatVisible.set(true);
       this.selectedChat.set(undefined);
