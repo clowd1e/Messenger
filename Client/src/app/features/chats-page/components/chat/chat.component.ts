@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, input, Output } from '@angular/core';
+import { Component, computed, EventEmitter, input, Output } from '@angular/core';
 import { ChatItem } from '../../models/chat-item';
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import { ChatMessageListComponent } from './chat-message-list/chat-message-list.component';
@@ -20,9 +20,7 @@ export class ChatComponent {
     this.messageSubmitted.emit(message);
   }
 
-  getUsers() {
-    return this.chat()?.users || [];
-  }
+  chatType = computed(() => this.chat()?.type);
 
   getMessages() {
     return this.chat()?.messages || [];

@@ -33,6 +33,7 @@ namespace Messenger.Application.Features.Chats.Mappers
                 CreationDate: groupChat.CreationDate.Value,
                 Name: groupChat.Name.Value,
                 Description: groupChat.Description?.Value,
+                IconUri: groupChat.IconUri?.Value,
                 LastMessage: lastMessage,
                 Participants: MapGroupMembers(groupChat.GroupMembers));
         }

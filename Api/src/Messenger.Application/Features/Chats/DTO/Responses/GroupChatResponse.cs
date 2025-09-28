@@ -7,6 +7,7 @@ namespace Messenger.Application.Features.Chats.DTO.Responses
         DateTime CreationDate,
         string Name,
         string? Description,
+        string? IconUri,
         MessageResponse LastMessage,
         List<GroupMemberResponse> Participants) : ChatResponse(Id, CreationDate, LastMessage);
 }
