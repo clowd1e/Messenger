@@ -7,7 +7,7 @@ import { StorageService } from './storage.service';
 export class UserContextService {
   storageService = inject(StorageService);
 
-  private accessToken = this.storageService.getAccessTokenFromSessionStorage();
+  private accessToken = this.storageService.getAccessTokenFromLocalStorage();
 
   private decodedToken = JSON.parse(window.atob(this.accessToken.split('.')[1]));
 
