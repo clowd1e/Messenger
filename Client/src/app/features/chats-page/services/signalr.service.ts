@@ -5,6 +5,7 @@ import { environment } from '../../../../environments/environment';
 import { StorageService } from '../../../shared/services/storage.service';
 import { SendMessageCommand } from '../models/send-message-command';
 import { Message } from '../models/message';
+import { SignalrAccessTokenFactoryService } from '../../../shared/services/signalr-access-token-factory.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +16,23 @@ export class SignalrService {
   private readonly hubConnection: HubConnection;
 
   storageService = inject(StorageService);
+  accessTokenFactory = inject(SignalrAccessTokenFactoryService);
 
   constructor() {
-    const accessToken = this.storageService.getAccessTokenFromSessionStorage();
-
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(`${this.hubUrl}/chat`, {
         skipNegotiation: true,
         transport: HttpTransportType.WebSockets,
-        accessTokenFactory: () => `${accessToken}` })
+        accessTokenFactory: async () => `${await this.accessTokenFactory.getAccessToken()}`
+      })
       .withAutomaticReconnect()
       .configureLogging(this.production ? signalR.LogLevel.None : signalR.LogLevel.Information)
       .build();
+
+    this.hubConnection.onclose(async (error) => {
+      // console.warn('SignalR disconnected:', error);
+      await this.connect();
+    });
   }
 
   getHubConnection(): HubConnection {
@@ -40,11 +46,11 @@ export class SignalrService {
     }
 
     try {
-      //console.log(`Connecting to SignalR hub: ${this.hubConnection.baseUrl}`);
+      // console.log(`Connecting to SignalR hub: ${this.hubConnection.baseUrl}`);
       await this.hubConnection.start();
-      //console.log('SignalR connection started');
+      // console.log('SignalR connection started');
     } catch (err) {
-      //console.error('Error while establishing connection.', err);
+      // console.error('Error while establishing connection.', err);
     }
   }
 
