@@ -80,7 +80,7 @@ export class LoginComponent extends FormWithErrors {
 
     this.apiService.login(loginRequest).subscribe({
       next: (response: LoginResponse) => {
-        this.storageService.setAccessTokenToSessionStorage(response.accessToken);
+        this.storageService.setAccessTokenToLocalStorage(response.accessToken);
         this.storageService.setRefreshTokenToLocalStorage(response.refreshToken);
         
         this.router.navigateByUrl('chats/');

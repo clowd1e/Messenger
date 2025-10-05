@@ -12,6 +12,8 @@ import { ConfirmEmailCommand } from '../../features/email-confirm/models/confirm
 import { ValidateEmailConfirmationResponse } from '../../features/email-confirm/models/validate-email-confirmation-response';
 import { environment } from '../../../environments/environment';
 import { Chat } from '../../features/chats-page/models/chat';
+import { RefreshTokenRequest } from '../models/requests/refresh-token-request';
+import { RefreshTokenResponse } from '../models/responses/refresh-token-response';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +29,10 @@ export class ApiService {
 
   register(registerRequest: RegisterRequest): Observable<void> {
     return this.httpClient.post<void>(`${this.apiUrl}/register`, registerRequest);
+  }
+
+  refresh(refreshTokenRequest: RefreshTokenRequest): Observable<RefreshTokenResponse> {
+    return this.httpClient.post<RefreshTokenResponse>(`${this.apiUrl}/refresh`, refreshTokenRequest);
   }
 
   getAllUsersExceptCurrent(): Observable<UserItem[]> {

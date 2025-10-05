@@ -1,4 +1,5 @@
 ﻿using Messenger.Application.Abstractions.Identity;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Shared;
@@ -110,7 +111,8 @@ namespace Messenger.Infrastructure.Services
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _jwtSettings.Issuer,
                 ValidAudience = _jwtSettings.Audience,
-                IssuerSigningKey = _symmetricSecurityKey
+                IssuerSigningKey = _symmetricSecurityKey,
+                ClockSkew = TimeSpan.Zero
             };
         }
 
