@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UuidHelperService } from '../../shared/services/uuid-helper.service';
 import { map } from 'rxjs';
@@ -28,7 +28,7 @@ import { SignalrService } from './services/signalr.service';
   templateUrl: './chats-page.component.html',
   styleUrl: './chats-page.component.scss'
 })
-export class ChatsPageComponent {
+export class ChatsPageComponent implements OnInit {
   chats: ChatItem[] = [];
   selectedChat = signal<ChatItem | undefined>(undefined);
 
@@ -153,7 +153,7 @@ export class ChatsPageComponent {
               let chatItem: ChatItem = MapChatToChatItem(chat);
               this.selectedChat = signal(chatItem);
               
-              this.router.navigateByUrl(`/chats/${chat.id}`);
+              this.router.navigateByUrl(`/chats/${chat.id}`, { replaceUrl: true });
             }
           });
         },

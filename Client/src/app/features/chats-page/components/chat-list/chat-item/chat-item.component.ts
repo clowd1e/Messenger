@@ -1,5 +1,5 @@
-import { Component, computed, input } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, computed, inject, input } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { ChatItem } from '../../../models/chat-item';
 import { DatePipe } from '@angular/common';
 import { PrivateChatItem } from '../../../models/private-chat-item';
@@ -16,6 +16,8 @@ export class ChatItemComponent {
   chatItem = input.required<ChatItem>();
   selected = input<boolean>(false);
   currentUserId = input.required<string>();
+
+  router = inject(Router);
 
   chatName = computed(() => {
     if (this.chatItem().type === 'private') {
@@ -45,6 +47,10 @@ export class ChatItemComponent {
 
   chatLastMessage = () => {
     return this.chatItem().messages[this.chatItem().messages.length - 1];
+  }
+
+  openChat(chatId: string) {
+    this.router.navigateByUrl(`/chats/${chatId}`, { replaceUrl: true });
   }
 
   private truncateMessageContent(message: string) {

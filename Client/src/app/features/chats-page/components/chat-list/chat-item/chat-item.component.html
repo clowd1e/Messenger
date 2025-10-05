@@ -1,5 +1,6 @@
 <a class="chat-item-container" 
     [class.selected]="selected()" 
+    (click)="openChat(chatItem().id)"
     [routerLink]="['/chats/', chatItem().id]">
     <div class="image-box">
         <img [src]="chatIcon()" alt="UserImage">
