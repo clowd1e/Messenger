@@ -19,9 +19,17 @@ export class SignalrAccessTokenFactoryService {
     }
 
     let refreshToken = this.storageService.getRefreshTokenFromLocalStorage();
+    let sessionId = this.storageService.getSessionIdFromLocalStorage();
+    if (!sessionId) {
+      console.log("No session ID found, redirecting to login");
+      this.router.navigate(['/login']);
+      return Promise.resolve('');
+    }
+
     let request: RefreshTokenRequest = {
       accessToken: accessToken,
-      refreshToken: refreshToken
+      refreshToken: refreshToken,
+      sessionId: sessionId!
     }
 
     this.apiService.refresh(request).subscribe({
@@ -34,7 +42,7 @@ export class SignalrAccessTokenFactoryService {
         this.storageService.removeAccessTokenFromLocalStorage();
         this.storageService.removeRefreshTokenFromLocalStorage();
         this.router.navigate(['/login']);
-        return '';
+        return Promise.resolve('');
       }
     });
 

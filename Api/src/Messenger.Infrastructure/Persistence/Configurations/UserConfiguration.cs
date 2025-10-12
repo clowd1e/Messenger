@@ -90,6 +90,11 @@ namespace Messenger.Infrastructure.Persistence.Configurations
             builder
                 .HasMany(user => user.ResetPasswordTokens)
                 .WithOne(resetPasswordToken => resetPasswordToken.User);
+
+            builder
+                .HasMany(user => user.RefreshTokens)
+                .WithOne(refreshToken => refreshToken.User)
+                .HasForeignKey(refreshToken => refreshToken.UserId);
         }
     }
 }

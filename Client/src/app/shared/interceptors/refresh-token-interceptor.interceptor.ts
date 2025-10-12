@@ -18,9 +18,17 @@ export const refreshTokenInterceptorInterceptor: HttpInterceptorFn = (req, next)
         console.log("Fired refresh token interceptor");
         let accessToken = storageService.getAccessTokenFromLocalStorage();
         let refreshToken = storageService.getRefreshTokenFromLocalStorage();
+        let sessionId = storageService.getSessionIdFromLocalStorage();
+        if (!sessionId) {
+          console.log("No session ID found, redirecting to login");
+          router.navigate(['/login']);
+          return throwError(() => error);
+        }
+
         let request: RefreshTokenRequest = {
           accessToken: accessToken,
-          refreshToken: refreshToken
+          refreshToken: refreshToken,
+          sessionId: sessionId!
         }
         console.log("Refresh token request:", request);
 
@@ -36,6 +44,7 @@ export const refreshTokenInterceptorInterceptor: HttpInterceptorFn = (req, next)
           catchError((refreshError) => {
             storageService.removeAccessTokenFromLocalStorage();
             storageService.removeRefreshTokenFromLocalStorage();
+            storageService.removeSessionIdFromLocalStorage();
             router.navigate(['/login']);
 
             return throwError(() => refreshError);

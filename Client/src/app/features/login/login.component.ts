@@ -73,15 +73,22 @@ export class LoginComponent extends FormWithErrors {
       this.toastr.error('Invalid form.');
     }
 
+    let sessionId = this.storageService.getSessionIdFromLocalStorage();
+    if (!sessionId) {
+      sessionId = `web-${crypto.randomUUID()}`;
+    }
+
     let loginRequest: LoginRequest = {
       email: this.loginForm.value.email || '',
-      password: this.loginForm.value.password || ''
+      password: this.loginForm.value.password || '',
+      sessionId: sessionId
     }
 
     this.apiService.login(loginRequest).subscribe({
       next: (response: LoginResponse) => {
         this.storageService.setAccessTokenToLocalStorage(response.accessToken);
         this.storageService.setRefreshTokenToLocalStorage(response.refreshToken);
+        this.storageService.setSessionIdToLocalStorage(sessionId);
         
         this.router.navigateByUrl('chats/');
       },

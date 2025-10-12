@@ -58,13 +58,7 @@ namespace Messenger.Application.Features.Chats.Mappers
                 description = descriptionResult.Value;
             }
 
-            var creationDateResult = Timestamp.UtcNow();
-            if (creationDateResult.IsFailure)
-            {
-                return Result.Failure<GroupChat>(creationDateResult.Error);
-            }
-
-            var creationDate = creationDateResult.Value;
+            var creationDate = Timestamp.UtcNow();
 
             return GroupChat.Create(
                 chatId: chatId,

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Messenger.Infrastructure.Authentication.Options
+namespace Messenger.Application.Identity.Options
 {
     public sealed class LoginSettings
     {
@@ -11,7 +11,7 @@ namespace Messenger.Infrastructure.Authentication.Options
         public bool LockoutOnFailure { get; set; } = true;
 
         [Required]
-        [Range(1, 100)]
-        public int? RefreshTokenExpiryInDays { get; set; }
+        [Range(1, 20)]
+        public int MaxSessionsCount { get; init; }
     }
 }

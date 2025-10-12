@@ -8,6 +8,18 @@ export class StorageService {
     localStorage.setItem('accessToken', accessToken);
   }
 
+  setSessionIdToLocalStorage(sessionId: string) {
+    localStorage.setItem('sessionId', sessionId);
+  }
+
+  getSessionIdFromLocalStorage() : string | null {
+    return localStorage.getItem('sessionId') || null;
+  }
+
+  removeSessionIdFromLocalStorage() {
+    localStorage.removeItem('sessionId');
+  }
+
   getAccessTokenFromLocalStorage() : string {
     return localStorage.getItem('accessToken') || '';
   }

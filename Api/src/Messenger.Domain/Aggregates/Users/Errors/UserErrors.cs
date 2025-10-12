@@ -34,6 +34,11 @@ namespace Messenger.Domain.Aggregates.User.Errors
                 code: "User.RefreshTokenExpired",
                 description: "The provided refresh token has expired.");
 
+        public static readonly Error MaxSessionsExceeded =
+            Error.Validation(
+                code: "User.MaxSessionsExceeded",
+                description: "The user has exceeded the maximum number of sessions allowed.");
+
         public static readonly Error InvalidCredentials =
             Error.Validation(
                 code: "User.InvalidCredentials",

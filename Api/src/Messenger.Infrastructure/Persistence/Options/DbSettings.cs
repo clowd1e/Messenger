@@ -7,6 +7,6 @@ namespace Messenger.Infrastructure.Persistence.Options
         public const string SectionName = nameof(DbSettings);
 
         [Required]
-        public string? ConnectionString { get; set; }
+        public required string ConnectionString { get; set; }
     }
 }

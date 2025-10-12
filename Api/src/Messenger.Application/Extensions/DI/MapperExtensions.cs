@@ -12,6 +12,7 @@ using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.ConfirmEmailTokens;
 using Messenger.Domain.Aggregates.Messages;
+using Messenger.Domain.Aggregates.RefreshTokens;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
@@ -42,16 +43,16 @@ namespace Messenger.Application.Extensions.DI
             #endregion
 
             #region ConfirmEmailTokens
-
             services.AddMapper<CreateConfirmEmailTokenRequestModel, Result<ConfirmEmailToken>, CreateConfirmEmailTokenRequestMapper>();
-
             #endregion
 
             #region ResetPasswordTokens
-
             services.AddMapper<RequestPasswordRecoveryCommand, Result<Email>, RequestPasswordRecoveryCommandMapper>();
             services.AddMapper<CreateResetPasswordTokenRequestModel, Result<ResetPasswordToken>, CreateResetPasswordTokenRequestMapper>();
+            #endregion
 
+            #region RefreshTokens
+            services.AddMapper<CreateRefreshTokenRequestModel, Result<RefreshToken>, CreateRefreshTokenRequestMapper>();
             #endregion
 
             return services;

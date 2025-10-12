@@ -42,7 +42,7 @@ namespace Messenger.Application.Features.Auth.Commands.ResetPassword
 
             var userId = new UserId(request.UserId);
 
-            var user = await _identityService.GetByIdAsync(userId, cancellationToken);
+            var user = await _identityService.GetByIdAsync(userId);
 
             if (user is null)
             {

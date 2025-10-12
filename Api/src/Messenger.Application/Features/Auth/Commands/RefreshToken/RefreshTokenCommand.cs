@@ -5,5 +5,6 @@ namespace Messenger.Application.Features.Auth.Commands.RefreshToken
 {
     public sealed record RefreshTokenCommand(
         string AccessToken,
-        string RefreshToken) : ICommand<RefreshTokenResponse>;
+        string RefreshToken,
+        string SessionId) : ICommand<RefreshTokenResponse>;
 }

@@ -11,14 +11,7 @@ namespace Messenger.Application.Features.Chats.Mappers
     {
         public override Result<Message> Map(CreateMessageRequestModel request)
         {
-            var timestampResult = Timestamp.UtcNow();
-
-            if (timestampResult.IsFailure)
-            {
-                return Result.Failure<Message>(timestampResult.Error);
-            }
-
-            var timestamp = timestampResult.Value;
+            var timestamp = Timestamp.UtcNow();
 
             var contentResult = MessageContent.Create(request.Message);
 
