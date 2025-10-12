@@ -8,6 +8,6 @@ namespace Messenger.Infrastructure.Services.Security.Options
 
         [Required]
         [Range(1, 20)]
-        public int? WorkFactor { get; set; }
+        public int WorkFactor { get; set; }
     }
 }

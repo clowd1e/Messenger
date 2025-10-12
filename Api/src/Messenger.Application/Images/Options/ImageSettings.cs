@@ -7,6 +7,6 @@ namespace Messenger.Application.Images.Options
         public const string SectionName = nameof(ImageSettings);
 
         [Required]
-        public HashSet<string> AllowedContentTypes { get; init; }
+        public required HashSet<string> AllowedContentTypes { get; init; }
     }
 }

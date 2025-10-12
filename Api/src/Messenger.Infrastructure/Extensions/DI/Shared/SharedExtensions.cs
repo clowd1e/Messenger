@@ -8,7 +8,7 @@ namespace Messenger.Infrastructure.Extensions.DI.Shared
         public static IServiceCollection ConfigureValidatableOnStartOptions<TOptions>(
            this IServiceCollection services,
            string configSectionPath)
-           where TOptions : class, new()
+           where TOptions : class
         {
             services.AddOptions<TOptions>()
                 .BindConfiguration(configSectionPath)

@@ -3,25 +3,24 @@ using Messenger.Application.Features.Auth.DTO.RequestModel;
 using Messenger.Application.Identity.Options;
 using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Common.TokenHash;
-using Messenger.Domain.Aggregates.ResetPasswordTokens;
-using Messenger.Domain.Aggregates.ResetPasswordTokens.ValueObjects;
+using Messenger.Domain.Aggregates.RefreshTokens;
+using Messenger.Domain.Aggregates.RefreshTokens.ValueObjects;
 using Microsoft.Extensions.Options;
 
 namespace Messenger.Application.Features.Auth.Mappers
 {
-    internal sealed class CreateResetPasswordTokenRequestMapper
-        : Mapper<CreateResetPasswordTokenRequestModel, Result<ResetPasswordToken>>
+    internal sealed class CreateRefreshTokenRequestMapper
+        : Mapper<CreateRefreshTokenRequestModel, Result<RefreshToken>>
     {
-        private readonly ResetPasswordTokenSettings _settings;
+        private readonly RefreshTokenSettings _settings;
 
-        public CreateResetPasswordTokenRequestMapper(
-            IOptions<ResetPasswordTokenSettings> settings)
+        public CreateRefreshTokenRequestMapper(
+            IOptions<RefreshTokenSettings> settings)
         {
             _settings = settings.Value;
         }
 
-        public override Result<ResetPasswordToken> Map(
-            CreateResetPasswordTokenRequestModel source)
+        public override Result<RefreshToken> Map(CreateRefreshTokenRequestModel source)
         {
             // Generate token hash
 
@@ -29,40 +28,40 @@ namespace Messenger.Application.Features.Auth.Mappers
 
             if (tokenHashResult.IsFailure)
             {
-                return Result.Failure<ResetPasswordToken>(tokenHashResult.Error);
+                return Result.Failure<RefreshToken>(tokenHashResult.Error);
             }
 
             var tokenHash = tokenHashResult.Value;
 
-            // Generate a new ResetPasswordTokenId
+            // Generate a new sessionId
 
-            var tokenId = new ResetPasswordTokenId(Guid.NewGuid());
+            var sessionId = new SessionId(source.SessionId);
 
             // Calculate expiration timestamp
 
             var expiresAtResult = Timestamp.Create(
                 DateTime.UtcNow.Add(
-                    TimeSpan.FromHours(_settings.ExpirationTimeInHours)
+                    TimeSpan.FromDays(_settings.ExpirationTimeInDays)
                     ));
 
             if (expiresAtResult.IsFailure)
             {
-                return Result.Failure<ResetPasswordToken>(expiresAtResult.Error);
+                return Result.Failure<RefreshToken>(expiresAtResult.Error);
             }
 
             var expiresAt = expiresAtResult.Value;
 
-            // Create ResetPasswordToken
+            // Create RefreshToken
 
-            var tokenResult = ResetPasswordToken.Create(
-                resetPasswordTokenId: tokenId,
+            var tokenResult = RefreshToken.Create(
+                sessionId: sessionId,
                 tokenHash: tokenHash,
                 expiresAt: expiresAt,
                 user: source.User);
 
             if (tokenResult.IsFailure)
             {
-                return Result.Failure<ResetPasswordToken>(tokenResult.Error);
+                return Result.Failure<RefreshToken>(tokenResult.Error);
             }
 
             return tokenResult.Value;

@@ -39,6 +39,8 @@ namespace Messenger.Infrastructure.Persistence.Configurations
             builder.Property(token => token.IsUsed)
                 .HasColumnName("is_used");
 
+            builder.Ignore(token => token.IsActive);
+
             builder
                 .HasOne(token => token.User)
                 .WithMany(user => user.ConfirmEmailTokens)

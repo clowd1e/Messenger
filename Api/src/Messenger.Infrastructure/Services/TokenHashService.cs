@@ -16,7 +16,7 @@ namespace Messenger.Infrastructure.Services
         public string Hash(string token)
         {
             var hash = BCrypt.Net.BCrypt.EnhancedHashPassword(
-                token, _hashSettings.WorkFactor.Value);
+                token, _hashSettings.WorkFactor);
 
             return hash;
         }

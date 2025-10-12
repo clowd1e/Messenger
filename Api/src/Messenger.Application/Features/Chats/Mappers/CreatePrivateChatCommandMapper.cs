@@ -13,7 +13,7 @@ namespace Messenger.Application.Features.Chats.Mappers
         {
             return PrivateChat.Create(
                 chatId: new ChatId(Guid.NewGuid()),
-                creationDate: Timestamp.UtcNow().Value,
+                creationDate: Timestamp.UtcNow(),
                 participants: [source.Inviter, source.Invitee]);
         }
     }

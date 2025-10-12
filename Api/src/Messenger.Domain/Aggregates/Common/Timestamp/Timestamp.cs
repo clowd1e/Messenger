@@ -3,7 +3,7 @@ using Messenger.Domain.Shared;
 
 namespace Messenger.Domain.Aggregates.Common.Timestamp
 {
-    public sealed class Timestamp : ValueObject
+    public sealed class Timestamp : ValueObject, IComparable<Timestamp>
     {
         private Timestamp(DateTime value)
         {
@@ -12,22 +12,12 @@ namespace Messenger.Domain.Aggregates.Common.Timestamp
 
         public DateTime Value { get; }
 
-        public static Result<Timestamp> CreateLessThanOrEqualUtcNow(DateTime value)
-        {
-            if (value > DateTime.UtcNow)
-            {
-                return Result.Failure<Timestamp>(TimestampErrors.FutureDate);
-            }
-
-            return new Timestamp(value);
-        }
-
         public static Result<Timestamp> Create(DateTime value)
         {
             return new Timestamp(value);
         }
 
-        public static Result<Timestamp> UtcNow()
+        public static Timestamp UtcNow()
         {
             return new Timestamp(DateTime.UtcNow);
         }
@@ -37,17 +27,17 @@ namespace Messenger.Domain.Aggregates.Common.Timestamp
             yield return Value;
         }
 
-        public static bool operator >(Timestamp left, Timestamp right) => left.Value > right.Value;
-        public static bool operator <(Timestamp left, Timestamp right) => left.Value < right.Value;
-        public static bool operator >=(Timestamp left, Timestamp right) => left.Value >= right.Value;
-        public static bool operator <=(Timestamp left, Timestamp right) => left.Value <= right.Value;
-    }
+        public int CompareTo(Timestamp? other)
+        {
+            if (other is null)
+                return 1;
 
-    public static class TimestampErrors
-    {
-        public static readonly Error FutureDate =
-            Error.Validation(
-                code: "Timestamp.FutureDate",
-                description: "The timestamp cannot be in the future compared to UTC now.");
+            return Value.CompareTo(other.Value);
+        }
+
+        public static bool operator >(Timestamp left, Timestamp right) => left.CompareTo(right) > 0;
+        public static bool operator <(Timestamp left, Timestamp right) => left.CompareTo(right) < 0;
+        public static bool operator >=(Timestamp left, Timestamp right) => left.CompareTo(right) >= 0;
+        public static bool operator <=(Timestamp left, Timestamp right) => left.CompareTo(right) <= 0;
     }
 }
