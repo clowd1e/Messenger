@@ -211,7 +211,7 @@ namespace Messenger.Infrastructure.Migrations
 
                     b.HasKey("UserId", "SessionId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("refresh_token", (string)null);
                 });
 
             modelBuilder.Entity("Messenger.Domain.Aggregates.ResetPasswordTokens.ResetPasswordToken", b =>
