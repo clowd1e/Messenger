@@ -21,6 +21,8 @@ namespace Messenger.Domain.Aggregates.RefreshTokens
         Task<IEnumerable<RefreshToken>> GetExpiredRefreshTokensAsync(
             CancellationToken cancellationToken = default);
 
-        Task DeleteAsync(RefreshToken refreshToken);
+        Task RemoveAsync(RefreshToken refreshToken);
+
+        Task RemoveAsync(IEnumerable<RefreshToken> refreshTokens);
     }
 }

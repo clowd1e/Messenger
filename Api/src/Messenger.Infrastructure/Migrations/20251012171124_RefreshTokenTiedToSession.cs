@@ -20,7 +20,7 @@ namespace Messenger.Infrastructure.Migrations
                 table: "AspNetUsers");
 
             migrationBuilder.CreateTable(
-                name: "RefreshTokens",
+                name: "refresh_token",
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -30,9 +30,9 @@ namespace Messenger.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshTokens", x => new { x.UserId, x.SessionId });
+                    table.PrimaryKey("PK_refresh_token", x => new { x.UserId, x.SessionId });
                     table.ForeignKey(
-                        name: "FK_RefreshTokens_user_UserId",
+                        name: "FK_refresh_token_user_UserId",
                         column: x => x.UserId,
                         principalTable: "user",
                         principalColumn: "id",
@@ -44,7 +44,7 @@ namespace Messenger.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "RefreshTokens");
+                name: "refresh_token");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "RefreshTokenExpirationTime",

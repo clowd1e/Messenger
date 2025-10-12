@@ -13,6 +13,8 @@ namespace Messenger.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
+            builder.ToTable("refresh_token");
+
             builder.HasKey(token => new { token.UserId, token.SessionId });
 
             builder.Property(token => token.UserId)

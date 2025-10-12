@@ -16,7 +16,7 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public Task DeleteAsync(
+        public Task RemoveAsync(
             RefreshToken refreshToken)
         {
             _context.Remove(refreshToken);
@@ -60,6 +60,12 @@ namespace Messenger.Infrastructure.Persistence.Repositories
         {
             await _context.RefreshTokens
                 .AddAsync(refreshToken, cancellationToken);
+        }
+
+        public Task RemoveAsync(IEnumerable<RefreshToken> refreshTokens)
+        {
+            _context.RemoveRange(refreshTokens);
+            return Task.CompletedTask;
         }
     }
 }
