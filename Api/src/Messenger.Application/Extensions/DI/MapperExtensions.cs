@@ -29,6 +29,7 @@ namespace Messenger.Application.Extensions.DI
             services.AddMapper<User, ShortUserResponse, UserToShortUserResponseMapper>();
             services.AddMapper<RegisterCommand, Result<User>, RegisterCommandMapper>();
             services.AddMapper<User, ApplicationUser, UserToApplicationUserMapper>();
+            services.AddMapper<User, SearchUserResponse, UserToSearchUserResponseMapper>();
             #endregion
 
             #region Chats

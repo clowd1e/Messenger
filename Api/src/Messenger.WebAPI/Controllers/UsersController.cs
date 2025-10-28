@@ -5,6 +5,7 @@ using Messenger.Application.Features.Users.DTO;
 using Messenger.Application.Features.Users.Queries.GetAll;
 using Messenger.Application.Features.Users.Queries.GetAllExceptCurrent;
 using Messenger.Application.Features.Users.Queries.GetById;
+using Messenger.Application.Features.Users.Queries.Search;
 using Messenger.WebAPI.Factories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,19 @@ namespace Messenger.WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var query = new GetAllUsersExceptCurrentQuery();
+
+            var queryResult = await queryHandler.Handle(query, cancellationToken);
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : problemDetailsFactory.GetProblemDetails(queryResult);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsers(
+            [FromServices] IQueryHandler<SearchUsersQuery, IEnumerable<SearchUserResponse>> queryHandler,
+            [FromQuery] string searchTerm,
+            CancellationToken cancellationToken)
+        {
+            var query = new SearchUsersQuery(searchTerm);
 
             var queryResult = await queryHandler.Handle(query, cancellationToken);
 

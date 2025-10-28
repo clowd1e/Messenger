@@ -114,5 +114,22 @@ namespace Messenger.Infrastructure.Persistence.Repositories
         {
             await _context.Users.AddAsync(user, cancellationToken);
         }
+
+        // TODO: refactor search to use full-text search for better performance
+        // and apply algorithms like fuzzy search or phonetic matching
+        public async Task<IEnumerable<User>> SearchUsersByNameOrUsernameAsync(
+            string searchTerm,
+            UserId currentUserId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Users
+                .Where(u => u.Id != currentUserId && 
+                        u.EmailConfirmed &&
+                        (
+                            ((string)u.Name).ToLower().Contains(searchTerm) ||
+                            ((string)u.Username).ToLower().Contains(searchTerm)
+                        ))
+                .ToListAsync(cancellationToken);
+        }
     }
 }

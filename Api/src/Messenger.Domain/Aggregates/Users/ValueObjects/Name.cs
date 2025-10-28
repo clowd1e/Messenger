@@ -40,5 +40,7 @@ namespace Messenger.Domain.Aggregates.Users.ValueObjects
         {
             yield return Value;
         }
+
+        public static explicit operator string(Name name) => name.Value;
     }
 }
