@@ -51,5 +51,10 @@ namespace Messenger.Domain.Aggregates.Users
             Username username,
             Email email,
             CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<User>> SearchUsersByNameOrUsernameAsync(
+            string searchTerm,
+            UserId currentUserId,
+            CancellationToken cancellationToken = default);
     }
 }
