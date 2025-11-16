@@ -28,7 +28,7 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: Restore dependencies
-        run: dotnet restore ./Api/src/Messenger.sln
+        run: dotnet restore ./Api/Messenger.Api.sln
 
       - name: Cache NuGet packages
         uses: actions/cache@v4.2.0
@@ -39,7 +39,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Build
-        run: dotnet build ./Api/src/Messenger.sln --configuration Release --no-restore
+        run: dotnet build ./Api/Messenger.Api.sln --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish ./Api/src/Messenger.sln --configuration Release --no-build
+        run: dotnet publish ./Api/Messenger.Api.sln --configuration Release --no-build
