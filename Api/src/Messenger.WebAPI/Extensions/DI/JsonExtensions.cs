@@ -1,4 +1,5 @@
 ﻿using Messenger.Application.Features.Chats.DTO.Responses;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -16,12 +17,18 @@ namespace Messenger.WebAPI.Extensions.DI
                 options.JsonSerializerOptions.TypeInfoResolver =
                     new DefaultJsonTypeInfoResolver
                     {
-                        Modifiers = { JsonPolymorphicModifier }
+                        Modifiers = { 
+                            JsonPolymorphicModifier,
+                            PrivateChatModifier,
+                            GroupChatModifier
+                        }
                     };
             });
 
             return builder;
         }
+
+        #region chat response polymorphism
 
         private static void JsonPolymorphicModifier(JsonTypeInfo typeInfo)
         {
@@ -41,5 +48,29 @@ namespace Messenger.WebAPI.Extensions.DI
                     new JsonDerivedType(typeof(PrivateChatResponse), "private"));
             }
         }
+
+        private static void PrivateChatModifier(JsonTypeInfo typeInfo)
+        {
+            if (typeInfo.Type == typeof(PrivateChatResponse))
+            {
+                var typeProperty = typeInfo.CreateJsonPropertyInfo(typeof(string), "type");
+                typeProperty.Get = obj => "private";
+                typeProperty.Set = null;
+                typeInfo.Properties.Add(typeProperty);
+            }
+        }
+
+        private static void GroupChatModifier(JsonTypeInfo typeInfo)
+        {
+            if (typeInfo.Type == typeof(GroupChatResponse))
+            {
+                var typeProperty = typeInfo.CreateJsonPropertyInfo(typeof(string), "type");
+                typeProperty.Get = obj => "group";
+                typeProperty.Set = null;
+                typeInfo.Properties.Add(typeProperty);
+            }
+        }
+
+        #endregion
     }
 }
