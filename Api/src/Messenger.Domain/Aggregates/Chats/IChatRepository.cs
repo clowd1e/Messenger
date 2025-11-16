@@ -43,6 +43,11 @@ namespace Messenger.Domain.Aggregates.Chats
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
+        Task<Chat?> GetChatBetweenUsersAsync(
+            UserId firstUserId,
+            UserId secondUserId,
+            CancellationToken cancellationToken = default);
+
         Task InsertPrivateChatAsync(
             PrivateChat privateChat,
             CancellationToken cancellationToken = default);
