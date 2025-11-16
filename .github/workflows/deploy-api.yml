@@ -27,13 +27,13 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore
-        run: dotnet restore ./Api/src/Messenger.sln
+        run: dotnet restore ./Api/Messenger.Api.sln
 
       - name: Build
-        run: dotnet build ./Api/src/Messenger.sln --configuration Release --no-restore
+        run: dotnet build ./Api/Messenger.Api.sln --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish ./Api/src/Messenger.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+        run: dotnet publish ./Api/Messenger.Api.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
       - name: Deploy
         uses: azure/webapps-deploy@v2
