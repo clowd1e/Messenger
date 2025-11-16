@@ -1,0 +1,20 @@
+@if (chatListLoading()) {
+    <p class="chats-loading">Loading...</p>
+} @else {
+    <div class="chat-list-container"
+        infiniteScroll
+        [infiniteScrollDisabled]="chatListEndReached()"
+        [infiniteScrollDistance]="1"
+        [infiniteScrollThrottle]="500"
+        (scrolled)="onScroll()"
+        [scrollWindow]="false">
+        @for (chatItem of mappedChatList(); track chatItem.id) {
+            <app-chat-item 
+                [chatItem]="chatItem" 
+                [currentUserId]="currentUserId()"
+                [selected]="chatItem.selected"></app-chat-item>
+        } @empty {
+            <p class="chats-not-found">No chats found</p>
+        }
+    </div>
+}

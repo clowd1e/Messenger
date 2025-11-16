@@ -3,7 +3,8 @@ using Messenger.Application.Features.Auth.Commands.Register;
 using Messenger.Application.Features.Auth.Commands.RequestPasswordRecovery;
 using Messenger.Application.Features.Auth.DTO.RequestModel;
 using Messenger.Application.Features.Auth.Mappers;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.RequestModels;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Application.Features.Chats.Mappers;
 using Messenger.Application.Features.Users.DTO;
 using Messenger.Application.Features.Users.Mappers;
@@ -11,6 +12,7 @@ using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.ConfirmEmailTokens;
 using Messenger.Domain.Aggregates.Messages;
+using Messenger.Domain.Aggregates.RefreshTokens;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
@@ -27,12 +29,14 @@ namespace Messenger.Application.Extensions.DI
             services.AddMapper<User, ShortUserResponse, UserToShortUserResponseMapper>();
             services.AddMapper<RegisterCommand, Result<User>, RegisterCommandMapper>();
             services.AddMapper<User, ApplicationUser, UserToApplicationUserMapper>();
+            services.AddMapper<User, SearchUserResponse, UserToSearchUserResponseMapper>();
             #endregion
 
             #region Chats
             services.AddMapper<Chat, ChatResponse, ChatToChatResponseMapper>();
             services.AddMapper<Message, MessageResponse, MessageToMessageResponseMapper>();
-            services.AddMapper<CreateChatRequestModel, Result<Chat>, CreateChatCommandMapper>();
+            services.AddMapper<CreatePrivateChatRequestModel, Result<PrivateChat>, CreatePrivateChatCommandMapper>();
+            services.AddMapper<CreateGroupChatRequestModel, Result<GroupChat>, CreateGroupChatCommandMapper>();
             #endregion
 
             #region Messages
@@ -40,16 +44,16 @@ namespace Messenger.Application.Extensions.DI
             #endregion
 
             #region ConfirmEmailTokens
-
             services.AddMapper<CreateConfirmEmailTokenRequestModel, Result<ConfirmEmailToken>, CreateConfirmEmailTokenRequestMapper>();
-
             #endregion
 
             #region ResetPasswordTokens
-
             services.AddMapper<RequestPasswordRecoveryCommand, Result<Email>, RequestPasswordRecoveryCommandMapper>();
             services.AddMapper<CreateResetPasswordTokenRequestModel, Result<ResetPasswordToken>, CreateResetPasswordTokenRequestMapper>();
+            #endregion
 
+            #region RefreshTokens
+            services.AddMapper<CreateRefreshTokenRequestModel, Result<RefreshToken>, CreateRefreshTokenRequestMapper>();
             #endregion
 
             return services;

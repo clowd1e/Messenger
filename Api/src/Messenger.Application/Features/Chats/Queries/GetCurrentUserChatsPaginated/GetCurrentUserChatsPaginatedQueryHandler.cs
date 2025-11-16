@@ -2,9 +2,10 @@
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Exceptions;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Application.Helpers;
 using Messenger.Domain.Aggregates.Chats;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 
@@ -43,18 +44,20 @@ namespace Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPagina
                 throw new AuthenticatedUserNotFoundException();
             }
 
+            var retrievalCutoff = Timestamp.Create(request.RetrievalCutoff).Value;
+
             var chats = await _chatRepository.GetUserChatsPaginatedWithLastMessage(
                 userId,
                 request.Page,
                 request.PageSize,
-                request.RetrievalCutoff,
+                retrievalCutoff,
                 cancellationToken);
 
             var chatResponses = _chatMapper.Map(chats);
 
             var totalUserChats = await _chatRepository.CountUserChatsAsync(
                 userId,
-                request.RetrievalCutoff,
+                retrievalCutoff,
                 cancellationToken);
 
             var isLastPage = PaginationCalculator.IsLastPage(

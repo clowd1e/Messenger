@@ -94,7 +94,8 @@ namespace Messenger.WebAPI.Extensions.DI
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtSettings.Issuer,
                 ValidAudience = jwtSettings.Audience,
-                IssuerSigningKey = signingKey
+                IssuerSigningKey = signingKey,
+                ClockSkew = TimeSpan.Zero
             };
         }
     }

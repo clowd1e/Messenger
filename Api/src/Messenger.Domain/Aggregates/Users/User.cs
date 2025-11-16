@@ -1,7 +1,10 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
+using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Common.ImageUri;
 using Messenger.Domain.Aggregates.ConfirmEmailTokens;
+using Messenger.Domain.Aggregates.GroupChats;
 using Messenger.Domain.Aggregates.Messages;
+using Messenger.Domain.Aggregates.RefreshTokens;
 using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
@@ -13,7 +16,9 @@ namespace Messenger.Domain.Aggregates.Users
     public sealed class User : AggregateRoot<UserId>
     {
         private readonly HashSet<Chat> _chats = [];
+        private readonly HashSet<GroupMember> _groupMembers = [];
         private readonly HashSet<Message> _messages = [];
+        private readonly HashSet<RefreshToken> _refreshTokens = [];
         private readonly HashSet<ConfirmEmailToken> _confirmEmailTokens = [];
         private readonly HashSet<ResetPasswordToken> _resetPasswordTokens = [];
         private Username _username;
@@ -87,20 +92,24 @@ namespace Messenger.Domain.Aggregates.Users
 
         public IReadOnlyCollection<Chat> Chats => _chats;
 
+        public IReadOnlyCollection<GroupMember> GroupMembers => _groupMembers;
+
         public IReadOnlyCollection<Message> Messages => _messages;
+
+        public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens;
 
         public IReadOnlyCollection<ConfirmEmailToken> ConfirmEmailTokens => _confirmEmailTokens;
 
         public IReadOnlyCollection<ResetPasswordToken> ResetPasswordTokens => _resetPasswordTokens;
 
-        public Result AddChat(Chat chat)
+        public Result AddChat(Chat newChat)
         {
-            if (_chats.Contains(chat))
+            if (_chats.Any(c => c.Id == newChat.Id))
             {
-                return Result.Failure(UserErrors.UserAlreadyHasChat);
+                return Result.Failure(ChatErrors.UserAlreadyInChat);
             }
 
-            _chats.Add(chat);
+            _chats.Add(newChat);
 
             return Result.Success();
         }

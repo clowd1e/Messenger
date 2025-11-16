@@ -2,8 +2,16 @@
     border: 0;
     outline: none;
     background: none;
-}
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
 
-.common-button:hover {
-    cursor: pointer;
+    &.disabled {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
 }

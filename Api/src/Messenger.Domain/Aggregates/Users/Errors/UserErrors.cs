@@ -14,10 +14,10 @@ namespace Messenger.Domain.Aggregates.User.Errors
                 code: "User.UserWithSameCredentialsAlreadyExists",
                 description: "User with the same username or email already exists.");
 
-        public static readonly Error UserAlreadyHasChat =
+        public static readonly Error InviterCannotBeInvitee =
             Error.Validation(
-                code: "User.UserAlreadyHasChat",
-                description: "User already has this chat.");
+                code: "User.InviterCannotBeInvitee",
+                description: "The inviter cannot be the same as the invitee.");
 
         public static readonly Error InvalidAccessToken =
             Error.Validation(
@@ -34,6 +34,11 @@ namespace Messenger.Domain.Aggregates.User.Errors
                 code: "User.RefreshTokenExpired",
                 description: "The provided refresh token has expired.");
 
+        public static readonly Error MaxSessionsExceeded =
+            Error.Validation(
+                code: "User.MaxSessionsExceeded",
+                description: "The user has exceeded the maximum number of sessions allowed.");
+
         public static readonly Error InvalidCredentials =
             Error.Validation(
                 code: "User.InvalidCredentials",
@@ -48,11 +53,6 @@ namespace Messenger.Domain.Aggregates.User.Errors
             Error.Validation(
                 code: "User.EmailNotConfirmed",
                 description: "User's email is not confirmed.");
-
-        public static readonly Error InvalidIconDimensions =
-            Error.Validation(
-                code: "User.InvalidIconDimensions",
-                description: "The icon dimensions are invalid.");
 
         public static readonly Error IconNotSet =
             Error.Validation(

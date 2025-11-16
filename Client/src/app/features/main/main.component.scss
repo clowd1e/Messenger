@@ -1,0 +1,27 @@
+@import "../../../assets/styles/devices-size";
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+
+    .chat-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    
+        .chat-box.chat-selected {
+            display: flex;
+            height: 100vh;
+        }
+    
+        .chat-box.chat-not-selected {
+            display: none;
+        }
+    }
+}

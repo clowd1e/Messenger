@@ -1,11 +1,12 @@
 ﻿using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 
 namespace Messenger.Domain.Aggregates.Chats
 {
     public interface IChatRepository
     {
-        Task<Chat?> GetByIdWithUsersAsync(
+        Task<Chat?> GetByIdWithUsersAndLastMessageAsync(
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
@@ -20,19 +21,19 @@ namespace Messenger.Domain.Aggregates.Chats
             UserId userId,
             int page,
             int pageSize,
-            DateTime retrievalCutoff,
+            Timestamp retrievalCutoff,
             CancellationToken cancellationToken = default);
 
         Task<int> CountUserChatsAsync(
             UserId userId,
-            DateTime retrievalCutoff,
+            Timestamp retrievalCutoff,
             CancellationToken cancellationToken = default);
 
-        Task<bool> ExistsAsync(
+        Task<bool> ChatExistsAsync(
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
-        Task<bool> ExistsAsync(
+        Task<bool> PrivateChatExistsAsync(
             UserId inviterId,
             UserId inviteeId,
             CancellationToken cancellationToken = default);
@@ -42,8 +43,17 @@ namespace Messenger.Domain.Aggregates.Chats
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
-        Task InsertAsync(
-            Chat chat,
+        Task<Chat?> GetChatBetweenUsersAsync(
+            UserId firstUserId,
+            UserId secondUserId,
+            CancellationToken cancellationToken = default);
+
+        Task InsertPrivateChatAsync(
+            PrivateChat privateChat,
+            CancellationToken cancellationToken = default);
+
+        Task InsertGroupChatAsync(
+            GroupChat groupChat,
             CancellationToken cancellationToken = default);
     }
 }

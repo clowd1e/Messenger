@@ -13,7 +13,7 @@ export abstract class FormWithErrors implements OnInit, OnDestroy {
     for (const key in this.formConfiguration) {
       const control = this.form.get(key);
       if (control) {
-        this.subscriptions[key] = this.form.get(key)?.valueChanges.subscribe(() => {
+        this.subscriptions[key] = this.form.get(key)?.statusChanges.subscribe(() => {
           this.formConfiguration[key].controlInvalid.set(control.invalid || false);
           this.formConfiguration[key].controlTouchedOrDirty.set(control.touched || control.dirty || false);
           this.formConfiguration[key].controlErrors.set(control.errors || null);

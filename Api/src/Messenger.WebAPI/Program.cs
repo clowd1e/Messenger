@@ -1,6 +1,6 @@
+using Messenger.Application;
 using Messenger.Infrastructure;
 using Messenger.Infrastructure.Extensions;
-using Messenger.Application;
 using Messenger.WebAPI.Extensions.DI;
 using Messenger.WebAPI.Factories;
 
@@ -11,7 +11,7 @@ builder.Services.AddOpenApi();
 builder.Services.ConfigureCors(builder.Configuration
     .GetSection("Cors:AllowedOrigins").Get<string[]>()!);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().ConfigureJsonOptions();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwaggerGen();
 

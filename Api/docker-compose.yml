@@ -1,0 +1,56 @@
+name: messenger-api-docker-compose
+
+services:
+  messenger-webapi:
+    image: messenger.webapi
+    container_name: messenger.webapi
+    build:
+      context: .
+      dockerfile: src/Messenger.WebAPI/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - messenger-database
+
+  messenger-database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: messenger.database
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=S0m3P@ssw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - messenger_db_data:/var/opt/mssql
+
+  messenger-blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: messenger.blob-storage
+    environment:
+      AZURITE_ACCOUNTS: "devstoreaccount1:Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
+    ports:
+      - "10000:10000"
+    command: "azurite-blob --blobHost 0.0.0.0 -l /data"
+    volumes:
+      - messenger_blob_storage_data:/data
+
+  messenger-azure-functions:
+    image: messenger.azure-functions
+    container_name: messenger.azure-functions
+    build:
+      context: .
+      dockerfile: src/Messenger.AzureFunctions/Dockerfile
+    ports:
+      - "7071:7071"
+
+  messenger-mailhog:
+    image: mailhog/mailhog
+    container_name: messenger.mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+
+volumes:
+  messenger_db_data: 
+  messenger_blob_storage_data:

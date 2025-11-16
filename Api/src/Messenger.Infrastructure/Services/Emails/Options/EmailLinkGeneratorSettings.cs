@@ -9,14 +9,14 @@ namespace Messenger.Infrastructure.Services.Emails.Options
         [Required]
         [StringLength(100)]
         [Url]
-        public string ClientAppUrl { get; set; }
+        public required string ClientAppUrl { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string EmailConfirmationPath { get; set; }
+        public required string EmailConfirmationPath { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string PasswordRecoveryPath { get; set; }
+        public required string PasswordRecoveryPath { get; set; }
     }
 }

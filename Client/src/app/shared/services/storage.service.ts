@@ -4,16 +4,28 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class StorageService {
-  setAccessTokenToSessionStorage(accessToken: string) {
-    sessionStorage.setItem('accessToken', accessToken);
+  setAccessTokenToLocalStorage(accessToken: string) {
+    localStorage.setItem('accessToken', accessToken);
   }
 
-  getAccessTokenFromSessionStorage() : string {
-    return sessionStorage.getItem('accessToken') || '';
+  setSessionIdToLocalStorage(sessionId: string) {
+    localStorage.setItem('sessionId', sessionId);
   }
 
-  removeAccessTokenFromSessionStorage() {
-    sessionStorage.removeItem('accessToken');
+  getSessionIdFromLocalStorage() : string | null {
+    return localStorage.getItem('sessionId') || null;
+  }
+
+  removeSessionIdFromLocalStorage() {
+    localStorage.removeItem('sessionId');
+  }
+
+  getAccessTokenFromLocalStorage() : string {
+    return localStorage.getItem('accessToken') || '';
+  }
+
+  removeAccessTokenFromLocalStorage() {
+    localStorage.removeItem('accessToken');
   }
 
   setRefreshTokenToLocalStorage(refreshToken: string) {

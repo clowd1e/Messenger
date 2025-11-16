@@ -23,6 +23,8 @@ namespace Messenger.Infrastructure.Extensions.DI
                 JwtSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<LoginSettings>(
                 LoginSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<RefreshTokenSettings>(
+                RefreshTokenSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<AzureBlobStorageSettings>(
                 AzureBlobStorageSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<ImageSettings>(

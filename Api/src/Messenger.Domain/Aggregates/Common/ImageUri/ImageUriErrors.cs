@@ -14,6 +14,11 @@ namespace Messenger.Domain.Aggregates.Common.ImageUri
                 code: "ImageUri.InvalidUri",
                 description: "Provided image uri is invalid.");
 
+        public static readonly Error InvalidIconDimensions =
+            Error.Validation(
+                code: "ImageUri.InvalidIconDimensions",
+                description: "The icon dimensions are invalid.");
+
         public static Error TooLong(int allowedLength) =>
             Error.Validation(
                 code: "ImageUri.TooLong",

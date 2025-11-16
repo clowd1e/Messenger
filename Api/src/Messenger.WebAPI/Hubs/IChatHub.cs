@@ -1,4 +1,4 @@
-﻿using Messenger.Application.Features.Chats.DTO;
+﻿using Messenger.Application.Features.Chats.DTO.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.WebAPI.Hubs

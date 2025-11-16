@@ -38,21 +38,10 @@ namespace Messenger.Application.Features.Auth.Mappers
 
             var tokenId = new ResetPasswordTokenId(Guid.NewGuid());
 
-            // Generate UTC now timestamp
-
-            var utcNowResult = Timestamp.UtcNow();
-
-            if (utcNowResult.IsFailure)
-            {
-                return Result.Failure<ResetPasswordToken>(utcNowResult.Error);
-            }
-
-            var utcNow = utcNowResult.Value;
-
             // Calculate expiration timestamp
 
             var expiresAtResult = Timestamp.Create(
-                utcNow.Value.Add(
+                DateTime.UtcNow.Add(
                     TimeSpan.FromHours(_settings.ExpirationTimeInHours)
                     ));
 

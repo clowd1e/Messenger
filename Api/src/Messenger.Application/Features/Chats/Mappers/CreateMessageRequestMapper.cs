@@ -1,6 +1,6 @@
 ﻿using Messenger.Application.Abstractions.Data;
-using Messenger.Application.Features.Chats.DTO;
-using Messenger.Domain.Aggregates.Chats.Messages.ValueObjects;
+using Messenger.Application.Features.Chats.DTO.RequestModels;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Messages.ValueObjects;
 
@@ -11,14 +11,7 @@ namespace Messenger.Application.Features.Chats.Mappers
     {
         public override Result<Message> Map(CreateMessageRequestModel request)
         {
-            var timestampResult = MessageTimestamp.UtcNow();
-
-            if (timestampResult.IsFailure)
-            {
-                return Result.Failure<Message>(timestampResult.Error);
-            }
-
-            var timestamp = timestampResult.Value;
+            var timestamp = Timestamp.UtcNow();
 
             var contentResult = MessageContent.Create(request.Message);
 

@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -16,22 +17,22 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<bool> ExistsAsync(
+        public async Task<bool> ChatExistsAsync(
             ChatId chatId,
             CancellationToken cancellationToken = default)
         {
             return await _context.Chats.AnyAsync(
-                x => x.Id == chatId, cancellationToken);
+                chat => chat.Id == chatId, cancellationToken);
         }
 
-        public async Task<bool> ExistsAsync(
+        public async Task<bool> PrivateChatExistsAsync(
             UserId inviterId,
             UserId inviteeId,
             CancellationToken cancellationToken = default)
         {
-            return await _context.Chats.AnyAsync(
-                c => c.Users.Any(u => u.Id == inviterId) &&
-                     c.Users.Any(u => u.Id == inviteeId), cancellationToken);
+            return await _context.PrivateChats.AnyAsync(
+                pc => pc.Participants.Any(u => u.Id == inviterId) &&
+                     pc.Participants.Any(u => u.Id == inviteeId), cancellationToken);
         }
 
         public async Task<IEnumerable<Chat>> GetAllAsync(
@@ -40,60 +41,103 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             return await _context.Chats.ToListAsync(cancellationToken);
         }
 
-        public async Task<Chat?> GetByIdWithUsersAsync(
+        public async Task<Chat?> GetByIdWithUsersAndLastMessageAsync(
             ChatId chatId,
             CancellationToken cancellationToken = default)
         {
-            return await _context.Chats
-                .Include(chat => chat.Users)
+            var chat = await _context.Chats
+                .Include(chat => chat.Participants)
+                .Include(IncludeLastMessage())
                 .FirstOrDefaultAsync(chat => chat.Id == chatId, cancellationToken);
+
+            if (chat is GroupChat groupChat)
+            {
+                await _context.Entry(groupChat)
+                    .Collection(gc => gc.GroupMembers)
+                    .LoadAsync(cancellationToken);
+            }
+
+            return chat;
         }
 
         public async Task<IEnumerable<Chat>> GetUserChatsWithLastMessage(
             UserId userId,
             CancellationToken cancellationToken = default)
         {
-            return await _context.Chats
-                .Where(chat => chat.Users.Any(user => user.Id == userId))
-                .Include(chat => chat.Users)
+            var privateChats = await _context.PrivateChats
+                .Where(chat => chat.Participants.Any(user => user.Id == userId))
+                .Include(chat => chat.Participants)
                 .Include(IncludeLastMessage())
                 .ToListAsync(cancellationToken);
+
+            var groupChats = await _context.GroupChats
+                .Where(chat => chat.Participants.Any(participant => participant.Id == userId))
+                .Include(chat => chat.Participants)
+                .Include(chat => chat.GroupMembers)
+                .Include(IncludeLastMessage())
+                .ToListAsync(cancellationToken);
+
+            var chats = privateChats
+                .Concat(groupChats);
+
+            return chats;
         }
 
         public async Task<IEnumerable<Chat>> GetUserChatsPaginatedWithLastMessage(
             UserId userId,
             int page,
             int pageSize,
-            DateTime retrievalCutoff,
+            Timestamp retrievalCutoff,
             CancellationToken cancellationToken = default)
         {
             var chats = await _context.Chats
-                .Where(chat => chat.Users.Any(user => user.Id == userId))
-                .Include(chat => chat.Users)
+                // Filter chats where the user is a participant and the chat was created before or on the retrieval cutoff date
+                .Where(chat => 
+                    chat.Participants.Any(participant => participant.Id == userId) &&
+                    chat.CreationDate <= retrievalCutoff)
+                // Include participants for each chat
+                .Include(chat => chat.Participants)
+                // Include last message for each chat
                 .Include(IncludeLastMessage())
+                // Order by the timestamp of the last message in descending order
+                .OrderByDescending(chat => chat.Messages.First().Timestamp)
+                // Filter chats where the last message was sent before or on the retrieval cutoff date
+                .Where(chat => chat.Messages.First().Timestamp <= retrievalCutoff)
+                // Apply pagination
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(cancellationToken);
 
-            var result = chats
-                .Where(chat => chat.CreationDate.Value <= retrievalCutoff)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+            chats = chats.OrderByDescending(chat => chat.Messages.First().Timestamp.Value).ToList();
 
-            return result;
+            var groupChatIds = chats.OfType<GroupChat>()
+                .Select(gc => gc.Id)
+                .ToList();
+
+            // Load group members info for group chats
+            if (groupChatIds.Count > 0)
+            {
+                await _context.GroupChats
+                    .Where(gc => groupChatIds.Contains(gc.Id))
+                    .Include(gc => gc.GroupMembers)
+                    .LoadAsync(cancellationToken);
+            }
+
+            return chats;
         }
 
         public async Task<int> CountUserChatsAsync(
             UserId userId,
-            DateTime retrievalCutoff,
+            Timestamp retrievalCutoff,
             CancellationToken cancellationToken = default)
         {
-            var chats = await _context.Chats
-                .Where(chat => chat.Users.Any(user => user.Id == userId))
-                .ToListAsync(cancellationToken);
+            var chatsCount = await _context.Chats
+                .Where(chat => 
+                    chat.Participants.Any(participant => participant.Id == userId) &&
+                    chat.CreationDate <= retrievalCutoff)
+                .CountAsync(cancellationToken);
 
-            var result = chats
-                .Count(chat => chat.CreationDate.Value <= retrievalCutoff);
-
-            return result;
+            return chatsCount;
         }
 
         public async Task<bool> IsUserInChatAsync(
@@ -102,16 +146,36 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _context.Chats
-                .AnyAsync(chat => chat.Id == chatId &&
-                    chat.Users.Any(user => user.Id == userId),
+                .AnyAsync(c => c.Id == chatId &&
+                    c.Participants.Any(participant => participant.Id == userId),
                 cancellationToken);
         }
 
-        public async Task InsertAsync(
-            Chat chat,
+        public async Task InsertPrivateChatAsync(
+            PrivateChat privateChat,
             CancellationToken cancellationToken = default)
         {
-            await _context.Chats.AddAsync(chat, cancellationToken);
+            await _context.PrivateChats.AddAsync(privateChat, cancellationToken);
+        }
+
+        public async Task InsertGroupChatAsync(
+            GroupChat groupChat,
+            CancellationToken cancellationToken = default)
+        {
+            await _context.GroupChats.AddAsync(groupChat, cancellationToken);
+        }
+
+        public async Task<Chat?> GetChatBetweenUsersAsync(
+            UserId firstUserId,
+            UserId secondUserId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.PrivateChats
+                .Include(pc => pc.Participants)
+                .FirstOrDefaultAsync(
+                    chat => chat.Participants.Any(u => u.Id == firstUserId) &&
+                            chat.Participants.Any(u => u.Id == secondUserId),
+                    cancellationToken);
         }
 
         private static Expression<Func<Chat, IEnumerable<Message>>> IncludeLastMessage()

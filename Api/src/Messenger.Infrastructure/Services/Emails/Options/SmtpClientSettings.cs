@@ -9,14 +9,14 @@ namespace Messenger.Infrastructure.Services.Emails.Options
         [Required]
         [EmailAddress]
         [StringLength(100)]
-        public string Username { get; set; }
+        public required string Username { get; set; }
 
         [StringLength(100)]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string Host { get; set; }
+        public required string Host { get; set; }
 
         [Required]
         [Range(1, 65535)]

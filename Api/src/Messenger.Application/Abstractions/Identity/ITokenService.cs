@@ -14,5 +14,7 @@ namespace Messenger.Application.Abstractions.Identity
 
         Task<Result> ValidateAccessTokenAsync(
             string token, bool validateLifetime = true);
+
+        Guid GetUserIdOutOfAccessToken(string accessToken);
     }
 }

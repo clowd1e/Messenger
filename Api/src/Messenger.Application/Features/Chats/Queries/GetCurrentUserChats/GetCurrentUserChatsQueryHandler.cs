@@ -2,7 +2,7 @@
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Exceptions;
-using Messenger.Application.Features.Chats.DTO;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;

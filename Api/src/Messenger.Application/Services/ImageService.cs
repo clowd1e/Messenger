@@ -33,6 +33,7 @@ namespace Messenger.Application.Services
 
         public async Task<ImageUri> UploadImageAsync(
             IFormFile image,
+            string? subDirectory = null,
             CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(image);
@@ -47,6 +48,7 @@ namespace Messenger.Application.Services
             var uploadResponse = await _blobService.UploadAsync(
                 stream,
                 image.ContentType,
+                subDirectory,
                 cancellationToken);
 
             var imageUriResult = ImageUri.Create(uploadResponse.BlobUri);

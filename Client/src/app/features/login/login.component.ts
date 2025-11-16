@@ -17,6 +17,7 @@ import { FormWithErrors } from '../../shared/components/form-with-errors/form-wi
 import { FormControlConfiguration } from '../../shared/models/configurations/forms/form-control-configuration';
 import { loginFormConfiguration } from './login-form-configuration';
 import { ApiService } from '../../shared/services/api.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-login',
@@ -73,15 +74,22 @@ export class LoginComponent extends FormWithErrors {
       this.toastr.error('Invalid form.');
     }
 
+    let sessionId = this.storageService.getSessionIdFromLocalStorage();
+    if (!sessionId) {
+      sessionId = `web-${uuidv4()}`;
+    }
+
     let loginRequest: LoginRequest = {
       email: this.loginForm.value.email || '',
-      password: this.loginForm.value.password || ''
+      password: this.loginForm.value.password || '',
+      sessionId: sessionId
     }
 
     this.apiService.login(loginRequest).subscribe({
       next: (response: LoginResponse) => {
-        this.storageService.setAccessTokenToSessionStorage(response.accessToken);
+        this.storageService.setAccessTokenToLocalStorage(response.accessToken);
         this.storageService.setRefreshTokenToLocalStorage(response.refreshToken);
+        this.storageService.setSessionIdToLocalStorage(sessionId);
         
         this.router.navigateByUrl('chats/');
       },

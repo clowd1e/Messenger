@@ -7,6 +7,7 @@ namespace Messenger.Application.Abstractions.Storage
     {
         Task<ImageUri> UploadImageAsync(
             IFormFile image,
+            string? subDirectory = null,
             CancellationToken cancellationToken = default);
 
         Task DeleteImageAsync(

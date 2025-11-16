@@ -14,6 +14,10 @@ namespace Messenger.Application.Features.Auth.Commands.RefreshToken
             RuleFor(x => x.RefreshToken)
                 .NotEmpty()
                 .WithMessage("Refresh token is required.");
+
+            RuleFor(x => x.SessionId)
+                .NotEmpty()
+                .WithMessage("Session ID is required.");
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Messenger.Application.Abstractions.Identity;
+using Messenger.Application.Exceptions;
+using Messenger.Application.Identity;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Shared;
@@ -16,11 +18,15 @@ namespace Messenger.Infrastructure.Services
     {
         private readonly JwtSettings _jwtSettings;
         private readonly SymmetricSecurityKey _symmetricSecurityKey;
+        private readonly IIdentityService<ApplicationUser> _identityService;
 
-        public JwtTokenService(IOptions<JwtSettings> jwtSettings)
+        public JwtTokenService(
+            IOptions<JwtSettings> jwtSettings,
+            IIdentityService<ApplicationUser> identityService)
         {
             _jwtSettings = jwtSettings.Value;
             _symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
+            _identityService = identityService;
         }
 
         public string GenerateAccessToken(User user)
@@ -35,6 +41,22 @@ namespace Messenger.Infrastructure.Services
 
             return GetJwtTokenString(token);
         }
+
+        public Guid GetUserIdOutOfAccessToken(string accessToken)
+        {
+            var jwtToken = GetStringOutOfJwtToken(accessToken);
+
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(
+                c => c.Type == JwtRegisteredClaimNames.Sub);
+
+            if (userIdClaim is null)
+            {
+                throw new NullTokenClaimException(JwtRegisteredClaimNames.Sub);
+            }
+
+            return new Guid(userIdClaim.Value);
+        }
+
 
         public async Task<Result> ValidateAccessTokenAsync(string token, bool validateLifetime = true)
         {
@@ -90,6 +112,11 @@ namespace Messenger.Infrastructure.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        private JwtSecurityToken GetStringOutOfJwtToken(string token)
+        {
+            return new JwtSecurityTokenHandler().ReadJwtToken(token);
+        }
+
         private Claim[] GenerateClaims(User user)
         {
             return
@@ -110,7 +137,8 @@ namespace Messenger.Infrastructure.Services
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _jwtSettings.Issuer,
                 ValidAudience = _jwtSettings.Audience,
-                IssuerSigningKey = _symmetricSecurityKey
+                IssuerSigningKey = _symmetricSecurityKey,
+                ClockSkew = TimeSpan.Zero
             };
         }
 

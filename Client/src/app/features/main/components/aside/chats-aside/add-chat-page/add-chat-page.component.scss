@@ -1,0 +1,298 @@
+@use '../../../../../../../assets/styles/mixins' as mixins;
+
+:host {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 30%;
+
+    &.group-state {
+        padding: 0px 10%;
+
+        .add-chat-page-container {
+            .private-and-selected-group-box-wrapper {
+                width: 40%;
+            }
+        }
+    }
+}
+
+.add-chat-page-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .private-and-selected-group-box-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        gap: 20px;
+
+        .add-private-chat-box {
+            width: 100%;
+            position: relative;
+            display: flex;
+            padding: 30px 50px;
+            justify-content: center;
+            align-items: center;
+            background-color: #F3F3F3;
+            box-shadow: 0px 4px 4px 2px rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+
+            .close-btn {
+                position: absolute;
+                top: 0.5rem;
+                left: 0.75rem;
+                background: transparent;
+                border: none;
+                outline: none;
+                font-size: 1.5rem;
+                line-height: 12px;
+                cursor: pointer;
+            }
+
+            .user-search-box {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+
+                .search-bar, .users-list {
+                    width: 100%;
+                }
+
+                .users-list {
+                    max-height: 300px;
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+
+            .or {
+                color: #A0A0A0;
+            }
+        }
+
+        .selected-group-users {
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 10px 10px;
+            align-items: center;
+            background-color: #F3F3F3;
+            box-shadow: 0px 4px 4px 2px rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+            gap: 5px;
+
+            .users-list {
+                width: 100%;
+                max-height: 200px;
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+
+    .add-group-chat-box {
+        position: relative;
+        display: flex;
+        padding: 30px 50px;
+        justify-content: center;
+        width: 50%;
+        align-items: center;
+        background-color: #F3F3F3;
+        box-shadow: 0px 4px 4px 2px rgba(0, 0, 0, 0.25);
+        border-radius: 15px;
+
+        .group-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+
+            .form-input {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                width: 100%;
+            }
+
+            .group-description-input {
+                height: 300px;
+            }
+
+            p.error-message {
+                @include mixins.error-message;
+                font-size: 12px;
+            }
+
+            > p.error-message {
+                margin: -10px 0 10px;
+            }
+        }
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1300px) {
+    :host.group-state {
+        padding: 2% 5%;
+
+        .add-chat-page-container {
+            .private-and-selected-group-box-wrapper {
+                width: 40%;
+            }
+        }
+    }
+}
+
+@media (max-width: 1000px) and (min-width: 800px) {
+    :host {
+        padding: 0px 20%;
+
+        &.group-state {
+            padding: 2% 5%;
+
+            .add-chat-page-container {
+                .private-and-selected-group-box-wrapper {
+                    width: 50%;
+                }
+
+                .add-group-chat-box {
+                    width: 45%;
+                }
+            }
+        }
+    }
+}
+
+@media (max-height: 800px) {
+    :host.group-state {
+        height: auto;
+        padding: 2% 5%;
+        align-items: flex-start;
+
+        .add-chat-page-container {
+            align-items: flex-start;
+
+            .add-group-chat-box {
+                align-self: flex-start;
+            }
+        }
+    }
+}
+
+@media (max-width: 800px) {
+    :host.group-state {
+        height: auto;
+        padding: 0px 0px;
+        align-items: flex-start;
+
+        .add-chat-page-container {
+            width: 70%;
+            gap: 20px;
+            flex-direction: column;
+            
+            .private-and-selected-group-box-wrapper {
+                width: 100%;
+            }
+
+            .add-group-chat-box {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@media (max-width: 800px) and (min-width: 600px) {
+    :host {
+        padding: 0px 100px;
+
+        &.group-state {
+            padding: 5% 0px;
+        }
+    }
+}
+
+@media (max-width: 600px) and (min-width: 500px) {
+    :host {
+        padding: 0px 50px;
+
+        &.group-state {
+            padding: 5% 0px;
+
+            .add-chat-page-container {
+                .private-and-selected-group-box-wrapper {
+                    .add-private-chat-box {
+                        padding: 30px 30px;
+                    }
+                }
+
+                .add-group-chat-box {
+                    padding: 30px 30px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 500px) and (min-width: 400px) {
+    :host {
+        padding: 0px 25px;
+
+        &.group-state {
+            padding: 5% 0px;
+
+            .add-chat-page-container {
+                width: 85%;
+
+                .private-and-selected-group-box-wrapper {
+                    .add-private-chat-box {
+                        padding: 30px 30px;
+                    }
+                }
+
+                .add-group-chat-box {
+                    padding: 30px 30px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 400px) {
+    :host {
+        padding: 0px 15px;
+
+        .add-chat-page-container {
+            .private-and-selected-group-box-wrapper {
+                .add-private-chat-box {
+                    padding: 30px 25px;
+                }
+            }
+        }
+
+        &.group-state {
+            padding: 5% 0px;
+
+            .add-chat-page-container {
+                width: 85%;
+
+                .private-and-selected-group-box-wrapper {
+                    .add-private-chat-box {
+                        padding: 30px 30px;
+                    }
+                }
+
+                .add-group-chat-box {
+                    padding: 30px 30px;
+                }
+            }
+        }
+    }    
+}

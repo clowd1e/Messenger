@@ -10,6 +10,7 @@ $default-message-input-button-color: #6799EF;
 $default-loading-color: #929292;
 $selected-chat-background-color: #F0F0F0;
 $chat-hover-background-color: #F7F7F7;
+$default-username-color: #000000;
 //
 
 
@@ -77,4 +78,14 @@ $chat-hover-background-color: #F7F7F7;
 @mixin registration-success-dark-theme-colors {
     --registration-success-bg-color: #111111;
     --registration-success-text-color: #FFFFFF;
+}
+
+@mixin not-found-light-theme-colors {
+    --not-found-bg-color: #FBFBFB;
+    --not-found-text-color: #000000;
+}
+
+@mixin not-found-dark-theme-colors {
+    --not-found-bg-color: #111111;
+    --not-found-text-color: #FFFFFF;
 }

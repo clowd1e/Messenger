@@ -8,13 +8,13 @@ namespace Messenger.Infrastructure.External.Blobs.Options
 
         [Required]
         [StringLength(50)]
-        public string ContainerName { get; init; }
+        public required string ContainerName { get; init; }
 
         [Required]
-        public string ConnectionString { get; init; }
+        public required string ConnectionString { get; init; }
 
         [Required]
         [Url]
-        public string ImagesContainerUri { get; init; }
+        public required string ImagesContainerUri { get; init; }
     }
 }

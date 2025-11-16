@@ -1,32 +1,29 @@
 ﻿using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Chats.ValueObjects;
+using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
 namespace Messenger.Domain.Aggregates.Chats
 {
-    public sealed class Chat : AggregateRoot<ChatId>
+    public abstract class Chat : AggregateRoot<ChatId>
     {
-        public const int UsersCount = 2;
+        protected readonly HashSet<Message> _messages = [];
+        protected readonly HashSet<Users.User> _participants = [];
+        protected Timestamp _creationDate;
 
-        private readonly HashSet<Message> _messages = [];
-        private readonly HashSet<Users.User> _users = [];
-        private ChatCreationDate _creationDate;
-
-        private Chat()
+        protected Chat()
             : base(new(Guid.NewGuid())) { }
 
-        private Chat(
+        protected Chat(
             ChatId chatId,
-            ChatCreationDate creationDate,
-            List<Users.User> users) : base(chatId)
+            Timestamp creationDate) : base(chatId)
         {
             CreationDate = creationDate;
-            _users = [.. users];
         }
 
-        public ChatCreationDate CreationDate
+        public Timestamp CreationDate
         {
             get => _creationDate;
             private set
@@ -38,11 +35,12 @@ namespace Messenger.Domain.Aggregates.Chats
         }
 
         public IReadOnlyCollection<Message> Messages => _messages;
-        public IReadOnlyCollection<Users.User> Users => _users;
 
-        public Result AddMessage(Message message)
+        public IReadOnlyCollection<Users.User> Participants => _participants;
+
+        public virtual Result AddMessage(Message message)
         {
-            if (!Users.Contains(message.User))
+            if (!Participants.Any(participant => message.User?.Id == participant.Id))
             {
                 return ChatErrors.UserNotInChat;
             }
@@ -52,25 +50,12 @@ namespace Messenger.Domain.Aggregates.Chats
             return Result.Success();
         }
 
-        public static Result<Chat> Create(
-            ChatId chatId,
-            ChatCreationDate creationDate,
-            List<Users.User> users)
+        protected void SetParticipants(List<Users.User> participants)
         {
-            if (users.Count != UsersCount)
+            foreach (var participant in participants)
             {
-                return Result.Failure<Chat>(
-                    ChatErrors.ChatWithMoreThanTwoUsers(UsersCount));
+                _participants.Add(participant);
             }
-
-            var chat = new Chat(
-                chatId,
-                creationDate,
-                users);
-
-            users.ForEach(u => u.AddChat(chat));
-
-            return chat;
         }
     }
 }

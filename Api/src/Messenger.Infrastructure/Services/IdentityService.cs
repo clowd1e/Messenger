@@ -1,11 +1,10 @@
 ﻿using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Identity;
+using Messenger.Application.Identity.Options;
 using Messenger.Domain.Aggregates.User.Errors;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Shared;
-using Messenger.Infrastructure.Authentication.Options;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Messenger.Infrastructure.Services
@@ -15,24 +14,18 @@ namespace Messenger.Infrastructure.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly LoginSettings _loginSettings;
-        private readonly ITokenService _tokenService;
-        private readonly ITokenHashService _tokenHashService;
 
         public IdentityService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IOptions<LoginSettings> loginSettings,
-            ITokenService tokenService,
-            ITokenHashService tokenHashService)
+            IOptions<LoginSettings> loginSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _loginSettings = loginSettings.Value;
-            _tokenService = tokenService;
-            _tokenHashService = tokenHashService;
         }
 
-        public async Task<Result> ConfirmEmailAsync(
+        public Result ConfirmEmail(
             ApplicationUser identityUser)
         {
             ArgumentNullException.ThrowIfNull(identityUser);
@@ -73,29 +66,11 @@ namespace Messenger.Infrastructure.Services
         }
 
         public async Task<ApplicationUser?> GetByIdAsync(
-            UserId userId,
-            CancellationToken cancellationToken = default)
+            UserId userId)
         {
             var identityUser = await _userManager.FindByIdAsync(userId.Value.ToString());
 
             return identityUser;
-        }
-
-        public async Task<Result<ApplicationUser>> GetByRefreshTokenAsync(string refreshToken)
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(refreshToken);
-
-            var users = await _userManager.Users.ToListAsync();
-
-            var identityUser = users.FirstOrDefault(
-                u => _tokenHashService.Verify(refreshToken, u.RefreshTokenHash));
-
-            if (identityUser is null)
-            {
-                return Result.Failure<ApplicationUser>(UserErrors.InvalidRefreshToken);
-            }
-
-            return Result.Success(identityUser);
         }
 
         public async Task<Result> LoginAsync(
@@ -119,23 +94,6 @@ namespace Messenger.Infrastructure.Services
             return Result.Success();
         }
 
-        public async Task PopulateRefreshTokenAsync(
-            ApplicationUser identityUser,
-            string refreshToken)
-        {
-            ArgumentNullException.ThrowIfNull(identityUser);
-            ArgumentException.ThrowIfNullOrWhiteSpace(refreshToken);
-
-            var refreshTokenHash = _tokenHashService.Hash(refreshToken);
-
-            identityUser.RefreshTokenHash = refreshTokenHash;
-
-            identityUser.RefreshTokenExpirationTime = DateTime.UtcNow.AddDays(
-                _loginSettings.RefreshTokenExpiryInDays.Value);
-
-            await _userManager.UpdateAsync(identityUser);
-        }
-
         public async Task<Result> ResetPasswordAsync(
             ApplicationUser identityUser,
             string newPassword)
@@ -156,17 +114,7 @@ namespace Messenger.Infrastructure.Services
             return Result.Success();
         }
 
-        public Result ValidateRefreshToken(ApplicationUser user)
-        {
-            if (user.RefreshTokenExpirationTime < DateTime.UtcNow)
-            {
-                return Result.Failure<ApplicationUser>(UserErrors.RefreshTokenExpired);
-            }
-
-            return Result.Success();
-        }
-
-        private void HandleIdentityResult(IdentityResult result, string errorMessage)
+        private static void HandleIdentityResult(IdentityResult result, string errorMessage)
         {
             if (result.Succeeded)
             {

@@ -7,6 +7,7 @@ namespace Messenger.Application.Abstractions.Storage
         Task<UploadBlobResponse> UploadAsync(
             Stream stream,
             string contentType,
+            string? subDirectory = null,
             CancellationToken cancellationToken = default);
 
         Task<DownloadBlobResponse> DownloadAsync(

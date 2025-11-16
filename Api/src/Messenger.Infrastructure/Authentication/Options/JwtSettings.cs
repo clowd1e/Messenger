@@ -9,14 +9,14 @@ namespace Messenger.Infrastructure.Authentication.Options
 
         [Required]
         [StringLength(200)]
-        public string? Issuer { get; set; }
+        public required string Issuer { get; set; }
 
         [Required]
         [StringLength(200)]
-        public string? Audience { get; set; }
+        public required string Audience { get; set; }
 
         [Required]
-        public string? SecretKey { get; set; }
+        public required string SecretKey { get; set; }
 
         [Range(1, 1000)]
         public int ExpirationTimeInMinutes { get; set; } = 30;

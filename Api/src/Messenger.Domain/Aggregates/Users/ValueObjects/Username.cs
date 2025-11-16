@@ -14,7 +14,7 @@ namespace Messenger.Domain.Aggregates.Users.ValueObjects
             Value = value;
         }
 
-        public string Value { get; }
+        public string Value { get; private set; }
 
         public static Result<Username> Create(string? value)
         {
@@ -40,5 +40,7 @@ namespace Messenger.Domain.Aggregates.Users.ValueObjects
         {
             yield return Value;
         }
+
+        public static explicit operator string(Username username) => username.Value;
     }
 }

@@ -1,9 +1,0 @@
-<div class="message-container" [class.current-user-reverse]="isCurrentUser()">
-    <div class="image-box">
-        <img [class.none]="!userIconVisible()" [src]="userIcon()" alt="UserImage" />
-    </div>
-    <div class="message-box">
-        <p>{{ messageContent() }}</p>
-        <p class="timestamp">{{ messageTimestamp() | date:'HH:mm' }}</p>
-    </div>
-</div>
