@@ -17,6 +17,8 @@ export class CommonButtonComponent {
   @Input() fontWeight: number = 400;
   
   text = input.required<string>();
+  disabled = input<boolean>(false);
+  type = input<'button' | 'submit'>('button');
   
   getStyles() {
     return {

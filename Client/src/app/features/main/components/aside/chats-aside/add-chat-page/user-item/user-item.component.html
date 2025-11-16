@@ -1,0 +1,16 @@
+<div class="user-item-container"
+    (click)="onUserItemClicked($event)">
+    <img [src]="user().iconUri ? user().iconUri : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'"
+        alt="User Icon"
+        class="user-icon" />
+    <div>
+        <p class="name">{{ user().name }}</p>
+        <p class="username">&#64;{{ user().username }}</p>
+    </div>
+    @if (isGroupState()) {
+        <input type="checkbox"
+            (click)="onUserItemClicked($event)"
+            [checked]="user().isSelected" 
+            class="select-user-checkbox" />
+    }
+</div>

@@ -17,6 +17,7 @@ import { FormWithErrors } from '../../shared/components/form-with-errors/form-wi
 import { FormControlConfiguration } from '../../shared/models/configurations/forms/form-control-configuration';
 import { loginFormConfiguration } from './login-form-configuration';
 import { ApiService } from '../../shared/services/api.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-login',
@@ -75,7 +76,7 @@ export class LoginComponent extends FormWithErrors {
 
     let sessionId = this.storageService.getSessionIdFromLocalStorage();
     if (!sessionId) {
-      sessionId = `web-${crypto.randomUUID()}`;
+      sessionId = `web-${uuidv4()}`;
     }
 
     let loginRequest: LoginRequest = {

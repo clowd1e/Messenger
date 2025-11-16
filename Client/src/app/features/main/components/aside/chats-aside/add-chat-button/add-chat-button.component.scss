@@ -1,0 +1,15 @@
+.add-chat-button {
+    border: 0;
+    background-color: #6799EF;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+    }
+}

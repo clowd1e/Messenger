@@ -165,6 +165,19 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             await _context.GroupChats.AddAsync(groupChat, cancellationToken);
         }
 
+        public async Task<Chat?> GetChatBetweenUsersAsync(
+            UserId firstUserId,
+            UserId secondUserId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.PrivateChats
+                .Include(pc => pc.Participants)
+                .FirstOrDefaultAsync(
+                    chat => chat.Participants.Any(u => u.Id == firstUserId) &&
+                            chat.Participants.Any(u => u.Id == secondUserId),
+                    cancellationToken);
+        }
+
         private static Expression<Func<Chat, IEnumerable<Message>>> IncludeLastMessage()
         {
             return chat => chat.Messages

@@ -1,0 +1,18 @@
+<div class="chat-list-box" [ngClass]="selectedChat() ? 'chat-selected' : 'chat-not-selected'">
+    <div class="aside-header">
+        <app-hamburger
+            class="hamburger"></app-hamburger>
+        <!-- search bar -->
+        <app-add-chat-button (click)="openModal()"></app-add-chat-button>
+    </div>
+    <app-chat-list
+        class="chat-list"
+        [chatListLoading]="chatsLoading()"
+        [currentUserId]="currentUserId()"
+        [chatList]="chats()"
+        [selectedChatId]="selectedChat()?.id"></app-chat-list>
+</div>
+
+<app-modal [isOpen]="showModal" (closed)="closeModal()">
+    <app-add-chat-page (closed)="closeModal()"></app-add-chat-page>
+</app-modal>

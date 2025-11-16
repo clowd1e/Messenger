@@ -1,0 +1,94 @@
+<div class="add-chat-page-container" 
+    (click)="onClosed()">
+    <div class="private-and-selected-group-box-wrapper">
+        <div class="add-private-chat-box" (click)="$event.stopPropagation();">
+            <button class="close-btn" (click)="onClosed()">×</button>
+            <div class="user-search-box">
+                <app-search-bar
+                    class="search-bar"
+                    [(ngModel)]="searchQuery"
+                    (ngModelChange)="onSearchQueryChange($event)"
+                    [placeholder]="'Search users...'"></app-search-bar>
+                <app-users-list
+                    class="users-list"
+                    [users]="users()"
+                    [isGroupState]="isGroupState()"
+                    [isLoading]="isLoading()"
+                    [usersNotFound]="usersNotFound()"
+                    (userItemSelected)="onUserItemSelected($event)"></app-users-list>
+                <p class="or">or</p>
+                <app-common-button
+                    [backgroundColor]="'#6799EF'"
+                    [borderRadius]="12"
+                    [fontSize]="14"
+                    [fontWeight]="300"
+                    [textColor]="'#FFFFFF'"
+                    [padding]="'10px 35px'"
+                    [text]="isGroupState() ? 'Create private chat' : 'Create group chat'"
+                    (click)="onCreateGroupChat()"></app-common-button>
+            </div>
+        </div>
+
+        @if (isGroupState()) {
+            <div class="selected-group-users" (click)="$event.stopPropagation();">
+                <p>Selected group users</p>
+                <app-selected-users-list
+                    class="users-list"
+                    [users]="selectedGroupUsers()"
+                    (userItemSelected)="onSelectedUserItemSelected($event)"></app-selected-users-list>
+            </div>
+        }
+    </div>
+
+    @if (isGroupState()) {
+        <div class="add-group-chat-box" (click)="$event.stopPropagation()">
+            <form class="group-form" [formGroup]="groupForm" (ngSubmit)="onSubmit()">
+                <div class="form-input">
+                    <app-add-group-input
+                        [name]="'groupName'"
+                        [inputType]="'text'"
+                        [inputPlaceholder]="'Type group name'"
+                        formControlName="groupName"></app-add-group-input>
+                    <app-auth-error-box
+                        [errors]="formConfiguration['groupName'].controlErrors()"
+                        [errorMessagesConfig]="formConfiguration['groupName'].errorMessagesConfig()"
+                        [inputTouchedOrDirty]="formConfiguration['groupName'].controlTouchedOrDirty()"></app-auth-error-box>
+                </div>
+                <div class="form-input">
+                    <app-add-group-input
+                        class="group-description-input"
+                        [name]="'groupDescription'"
+                        [inputType]="'text-area'"
+                        [inputPlaceholder]="'Type group description'"
+                        formControlName="groupDescription"></app-add-group-input>
+                    <app-auth-error-box
+                        [errors]="formConfiguration['groupDescription'].controlErrors()"
+                        [errorMessagesConfig]="formConfiguration['groupDescription'].errorMessagesConfig()"
+                        [inputTouchedOrDirty]="formConfiguration['groupDescription'].controlTouchedOrDirty()"></app-auth-error-box>
+                </div>
+                <div class="form-input">
+                    <app-add-group-input
+                        [name]="'groupIcon'"
+                        [inputType]="'file'"
+                        [inputPlaceholder]="'Select file'"
+                        formControlName="groupIcon"></app-add-group-input>
+                    <app-auth-error-box
+                        [errors]="formConfiguration['groupIcon'].controlErrors()"
+                        [errorMessagesConfig]="formConfiguration['groupIcon'].errorMessagesConfig()"
+                        [inputTouchedOrDirty]="formConfiguration['groupIcon'].controlTouchedOrDirty()"></app-auth-error-box>
+                </div>
+                <p class="error-message">{{ groupForm.errors?.['userSelectedCount'] }}</p>
+                <app-common-button
+                    [backgroundColor]="'#6799EF'"
+                    [borderRadius]="12"
+                    [fontSize]="14"
+                    [fontWeight]="300"
+                    [textColor]="'#FFFFFF'"
+                    [padding]="'10px 35px'"
+                    [text]="'Create chat'"
+                    [type]="'submit'"
+                    [disabled]="submitButtonDisabled()"></app-common-button>
+            </form>
+        </div>
+    }
+</div>

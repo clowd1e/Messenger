@@ -5,6 +5,7 @@ using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated;
+using Messenger.Application.Features.Chats.Queries.GetChatWithUserExists;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChats;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated;
 using Messenger.WebAPI.CommandWrappers.CreateGroupChat;
@@ -29,6 +30,19 @@ namespace Messenger.WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var query = new GetCurrentUserChatsQuery();
+
+            var queryResult = await queryHandler.Handle(query, cancellationToken);
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : problemDetailsFactory.GetProblemDetails(queryResult);
+        }
+
+        [HttpGet("/api/private-chats/exists")]
+        public async Task<IActionResult> GetPrivateChatExistsBetweenUsers(
+            [FromServices] IQueryHandler<GetChatWithUserExistsQuery, ChatExistsResponse> queryHandler,
+            [FromQuery] Guid userId,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetChatWithUserExistsQuery(userId);
 
             var queryResult = await queryHandler.Handle(query, cancellationToken);
 
@@ -94,7 +108,7 @@ namespace Messenger.WebAPI.Controllers
             return commandResult.IsSuccess ? Ok(commandResult.Value) : problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
-        [HttpPost("/api/private-chat")]
+        [HttpPost("/api/private-chats")]
         public async Task<IActionResult> CreatePrivateChat(
             [FromServices] ICommandHandler<CreatePrivateChatCommand, Guid> commandHandler,
             [FromBody] CreatePrivateChatCommand command,
@@ -113,7 +127,7 @@ namespace Messenger.WebAPI.Controllers
             return problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
-        [HttpPost("/api/group-chat")]
+        [HttpPost("/api/group-chats")]
         [Consumes(Multipart.FormData)]
         public async Task<IActionResult> CreateGroupChat(
             [FromServices] ICommandHandler<CreateGroupChatCommand, Guid> commandHandler,
