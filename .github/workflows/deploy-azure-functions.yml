@@ -36,7 +36,8 @@ jobs:
       shell: bash
       run: |
         dotnet publish ./Api/src/Messenger.AzureFunctions/Messenger.AzureFunctions.csproj -c Release -o '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        zip -r "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/function.zip" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/*"
+        cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        zip -r function.zip .
 
     - name: Deploy via Azure CLI
       run: |
