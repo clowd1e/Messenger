@@ -11,7 +11,7 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'messengerm-functions'
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'Api/functions/publish'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'Api/functions/build'
   DOTNET_VERSION: '9.0.x'
 
 jobs:
@@ -30,9 +30,7 @@ jobs:
     - name: 'Resolve Project Dependencies Using Dotnet'
       shell: bash
       run: |
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        dotnet build --configuration Release --output '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        popd
+        dotnet build .Api/src/Messenger.AzureFunctions/Messenger.AzureFunctions.csproj --configuration Release --output '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
 
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
