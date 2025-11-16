@@ -10,37 +10,43 @@ on:
       - ".github/workflows/**-azure-functions.yml"
 
 env:
-  AZURE_FUNCTIONAPP_NAME: 'messengerm-functions'
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
-  DOTNET_VERSION: '9.0.x'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: "Api/src/Messenger.AzureFunctions"
+  DOTNET_VERSION: "9.0"
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: dev
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
-    - name: 'Checkout GitHub Action'
-      uses: actions/checkout@v4
-      
-    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@v4
 
-    - name: 'Resolve Project Dependencies Using Dotnet'
-      shell: bash
-      run: |
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        dotnet build ./Api/src/Messenger.AzureFunctions/Messenger.AzureFunctions.csproj -c Release -o ./output
-        popd
+      - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: 'Run Azure Functions Action'
-      uses: Azure/functions-action@v1
-      id: fa
-      with:
-        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        slot-name: 'Production'
-        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-        sku: 'flexconsumption'
-        remote-build: true
+      - name: "Resolve Project Dependencies Using Dotnet"
+        shell: bash
+        run: |
+          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          dotnet build --configuration Release --output ./output
+          popd
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_9D4B10101A2A412FBC1BD0103F4F894E }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4755686526EE4AE7AE477314D9C0F7A2 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C2C7610AFECC40B08F7F7273278339BA }}
+
+      - name: "Run Azure Functions Action"
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: "messengerm-functions"
+          slot-name: "Production"
+          package: "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output"
