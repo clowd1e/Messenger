@@ -1,0 +1,11 @@
+<div class="users-list-container">
+    @for (user of users(); track user.id) {
+        <app-user-item 
+            class="user-item"
+            [isGroupState]="true"
+            [user]="user"
+            (userItemSelected)="onUserItemSelected($event)"></app-user-item>
+    } @empty {
+        <p class="users-not-found">No users selected</p>
+    }
+</div>

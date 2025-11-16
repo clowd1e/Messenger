@@ -1,0 +1,28 @@
+<div class="add-group-input-container">
+    @if (inputType() !== 'text-area' && inputType() !== 'file') {
+        <input
+            [name]="name()"
+            [type]="inputType()"
+            [placeholder]="inputPlaceholder()"
+            [value]="value"
+            (input)="onInputChange($event)"
+            (blur)="onTouched()" />
+    }
+    @if (inputType() === 'text-area') {
+        <textarea
+            class="text-area-input"
+            [name]="name()"
+            [placeholder]="inputPlaceholder()"
+            [value]="value"
+            (input)="onInputChange($event)"
+            (blur)="onTouched()"
+            wrap="soft"></textarea>
+    }
+    @if (inputType() === 'file') {
+        <input
+            [name]="name()"
+            type="file"
+            (change)="onFileChange($event)"
+            accept="image/png, image/jpeg, image/jpg"  />
+    }
+</div>

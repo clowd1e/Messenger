@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
-import { ChatsPageComponent } from './features/chats-page/chats-page.component';
+import { MainComponent } from './features/main/main.component';
 import { RegisterComponent } from './features/register/register.component';
 import { EmailConfirmComponent } from './features/email-confirm/email-confirm.component';
 import { DefaultLayoutComponent } from './layouts/default-layout/default-layout.component';
@@ -50,15 +50,15 @@ export const routes: Routes = [
             },
             {
                 path: 'chats/:chatId',
-                component: ChatsPageComponent
+                component: MainComponent
             },
             {
-                path: 'chats/add',
-                component: ChatsPageComponent
+                path: 'chats/add/private/:userId',
+                component: MainComponent
             },
             {
-                path: 'chats/add/:userId',
-                component: ChatsPageComponent
+                path: 'chats/add/group',
+                component: MainComponent
             }
         ]
     },

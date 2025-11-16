@@ -1,0 +1,19 @@
+@import '../../../../../../../assets/styles/colors';
+
+.chats-loading, .chats-not-found {
+    font-size: 24px;
+    text-align: center;
+    color: $default-loading-color;
+}
+
+.chat-list-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
