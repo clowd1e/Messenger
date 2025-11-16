@@ -30,7 +30,7 @@ jobs:
     - name: 'Resolve Project Dependencies Using Dotnet'
       shell: bash
       run: |
-        dotnet build .Api/src/Messenger.AzureFunctions/Messenger.AzureFunctions.csproj --configuration Release --output '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        dotnet build ./Api/src/Messenger.AzureFunctions/Messenger.AzureFunctions.csproj --configuration Release --output '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
 
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
