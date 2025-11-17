@@ -12,6 +12,7 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services.AddFunctionsOptions();
 builder.Services.AddPersistence();
 builder.Services.AddRepositories();
+builder.Services.AddInfrastructureServices();
 
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()

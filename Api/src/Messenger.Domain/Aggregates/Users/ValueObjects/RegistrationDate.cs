@@ -33,5 +33,7 @@ namespace Messenger.Domain.Aggregates.Users.ValueObjects
         {
             yield return Value;
         }
+
+        public static explicit operator DateTime(RegistrationDate registrationDate) => registrationDate.Value;
     }
 }
