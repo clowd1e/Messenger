@@ -1,4 +1,5 @@
-﻿using Messenger.Infrastructure.Extensions.DI.Shared;
+﻿using Messenger.AzureFunctions.Settings;
+using Messenger.Infrastructure.Extensions.DI.Shared;
 using Messenger.Infrastructure.Persistence.Options;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,8 @@ namespace Messenger.AzureFunctions.Extensions
         {
             services.ConfigureValidatableOnStartOptions<DbSettings>(
                 DbSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<RemoveUsersWithUnconfirmedEmailsSettings>(
+                RemoveUsersWithUnconfirmedEmailsSettings.SectionName);
 
             return services;
         }

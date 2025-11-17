@@ -2,6 +2,7 @@
 using Messenger.Application.Identity;
 using Messenger.Application.Identity.Options;
 using Messenger.Domain.Aggregates.User.Errors;
+using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Shared;
 using Microsoft.AspNetCore.Identity;
@@ -112,6 +113,29 @@ namespace Messenger.Infrastructure.Services
             HandleIdentityResult(addPasswordResult, "Failed to add password.");
 
             return Result.Success();
+        }
+
+        public async Task<IEnumerable<ApplicationUser>> GetUsersByIds(IEnumerable<UserId> usersIds)
+        {
+            List<ApplicationUser> result = [];
+            foreach (var userId in usersIds)
+            {
+                var user = await _userManager.FindByIdAsync(userId.Value.ToString());
+                if (user != null)
+                {
+                    result.Add(user);
+                }
+            }
+
+            return result;
+        }
+
+        public async Task DeleteAsync(IEnumerable<ApplicationUser> identityUsers)
+        {
+            foreach (var identityUser in identityUsers)
+            {
+                await _userManager.DeleteAsync(identityUser);
+            }
         }
 
         private static void HandleIdentityResult(IdentityResult result, string errorMessage)

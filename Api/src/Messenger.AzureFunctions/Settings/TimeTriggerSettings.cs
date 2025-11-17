@@ -9,5 +9,9 @@ namespace Messenger.AzureFunctions.Settings
         [Required]
         [CronExpression]
         public required string RefreshTokenCleanupSchedule { get; set; }
+
+        [Required]
+        [CronExpression]
+        public required string UsersWithUnconfirmedEmailsCleanupSchedule { get; set; }
     }
 }

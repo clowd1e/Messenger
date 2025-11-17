@@ -108,11 +108,28 @@ namespace Messenger.Infrastructure.Persistence.Repositories
                 cancellationToken);
         }
 
+        public async Task<IEnumerable<User>> GetUsersWithUnconfirmedEmailsAsync(
+            DateTime registrationCutoffDate,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Users
+                .Where(u => !u.EmailConfirmed && ((DateTime)u.RegistrationDate) <= registrationCutoffDate)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task InsertAsync(
             User user,
             CancellationToken cancellationToken = default)
         {
             await _context.Users.AddAsync(user, cancellationToken);
+        }
+
+        public Task RemoveAsync(
+            IEnumerable<User> usersWithUnconfirmedEmails)
+        {
+            _context.Users.RemoveRange(usersWithUnconfirmedEmails);
+
+            return Task.CompletedTask;
         }
 
         // TODO: refactor search to use full-text search for better performance

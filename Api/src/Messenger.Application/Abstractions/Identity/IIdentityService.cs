@@ -1,4 +1,5 @@
-﻿using Messenger.Domain.Aggregates.Users.ValueObjects;
+﻿using Messenger.Application.Identity;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 
 namespace Messenger.Application.Abstractions.Identity
 {
@@ -8,6 +9,8 @@ namespace Messenger.Application.Abstractions.Identity
         Task CreateAsync(TIdentityUser identityUser, string password);
 
         Task DeleteAsync(TIdentityUser identityUser);
+
+        Task DeleteAsync(IEnumerable<TIdentityUser> identityUsers);
 
         Task<TIdentityUser?> GetByEmailAsync(Email email);
 
@@ -20,5 +23,7 @@ namespace Messenger.Application.Abstractions.Identity
         Task<Result> ResetPasswordAsync(
             TIdentityUser identityUser,
             string newPassword);
+
+        Task<IEnumerable<TIdentityUser>> GetUsersByIds(IEnumerable<UserId> usersIds);
     }
 }

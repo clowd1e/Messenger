@@ -56,5 +56,12 @@ namespace Messenger.Domain.Aggregates.Users
             string searchTerm,
             UserId currentUserId,
             CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<User>> GetUsersWithUnconfirmedEmailsAsync(
+            DateTime registrationCutoffDate,
+            CancellationToken cancellationToken = default);
+
+        Task RemoveAsync(
+            IEnumerable<User> usersWithUnconfirmedEmails);
     }
 }
