@@ -32,7 +32,7 @@ import { CreateGroupChatCommand } from './models/create-group-chat-command';
   styleUrl: './main.component.scss'
 })
 export class MainComponent implements OnInit {
-  chats: ChatItem[] = [];
+  chats = signal<ChatItem[]>([]);
   selectedChat = signal<ChatItem | undefined>(undefined);
 
   isAddPrivateChatRoute = signal<boolean>(false);
@@ -86,7 +86,7 @@ export class MainComponent implements OnInit {
     this.apiService.getUserChatsPaginated(1, 10, this.chatRetrievalCutoff).subscribe({
       next: (response: PaginatedChatsResponse) => {
         let chatItems: ChatItem[] = response.chats.map(MapChatToChatItem);
-        this.chats = chatItems;
+        this.chats.set(chatItems);
       },
       error: (httpError: HttpErrorResponse) => {
         this.errorHandler.handleHttpError(httpError);
@@ -102,13 +102,13 @@ export class MainComponent implements OnInit {
     if (chatId) {
       this.signalrService.joinChat(chatId);
 
-      if (this.chats.length > 0) {
-        let chat = this.chats.find(chat => chat.id === chatId);;
+      if (this.chats().length > 0) {
+        let chat = this.chats().find(chat => chat.id === chatId);
         this.selectedChat.set(chat);
       } else {
         const checkChatInterval = setInterval(() => {
-          if (this.chats.length > 0) {
-            let chat = this.chats.find(chat => chat.id === chatId);;
+          if (this.chats().length > 0) {
+            let chat = this.chats().find(chat => chat.id === chatId);
             this.selectedChat.set(chat);
 
             clearInterval(checkChatInterval);
@@ -188,7 +188,7 @@ export class MainComponent implements OnInit {
           this.apiService.getChatById(chatId).subscribe({
             next: (chat: Chat) => {
               let chatItem: ChatItem = MapChatToChatItem(chat);
-              this.chats = [chatItem, ...this.chats];
+              this.chats.set([chatItem, ...this.chats()]);
               this.selectedChat.set(chatItem);
               
               let shortChatId = this.uuidHelper.toShortUuid(chat.id);
@@ -219,7 +219,7 @@ export class MainComponent implements OnInit {
           this.apiService.getChatById(chatId).subscribe({
             next: (chat: Chat) => {
               let chatItem: ChatItem = MapChatToChatItem(chat);
-              this.chats = [chatItem, ...this.chats];
+              this.chats.set([chatItem, ...this.chats()]);
               this.selectedChat.set(chatItem);
               
               let shortChatId = this.uuidHelper.toShortUuid(chat.id);

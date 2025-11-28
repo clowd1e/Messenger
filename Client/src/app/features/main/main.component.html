@@ -2,16 +2,17 @@
     <app-chats-aside
         class="chats-aside"
         [ngClass]="selectedChat() ? 'chat-selected' : 'chat-not-selected'"
-        [chats]="chats"
+        [(chats)]="chats"
         [selectedChat]="selectedChat()"
         [currentUserId]="currentUserId"
         [chatRetrievalCutoff]="chatRetrievalCutoff"
         [chatsLoading]="chatsLoading"></app-chats-aside>
-    <div class="chat-box" [ngClass]="selectedChat() ? 'chat-selected' : 'chat-not-selected'">
-        <app-chat 
-            (messageSubmitted)="sendMessageToChat($event)"
-            [chat]="selectedChat()"
-            [isAddPrivateChatRoute]="isAddPrivateChatRoute()"
-            [isAddGroupChatRoute]="isAddGroupChatRoute()"></app-chat>
-    </div>
+    <app-chat
+        class="chat-box"
+        [ngClass]="selectedChat() ? 'chat-selected' : 'chat-not-selected'"
+        (messageSubmitted)="sendMessageToChat($event)"
+        [chat]="selectedChat()"
+        [currentUserId]="currentUserId"
+        [isAddPrivateChatRoute]="isAddPrivateChatRoute()"
+        [isAddGroupChatRoute]="isAddGroupChatRoute()"></app-chat>
 </div>

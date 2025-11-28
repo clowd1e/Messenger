@@ -1,12 +1,22 @@
-<div class="chat-container">
+<div 
+    [class.not-selected]="chat() === undefined"
+    class="chat-container">
     @if (chat() === undefined) {
         <p class="chat-not-selected">Select chat to start messaging</p>
     } @else {
-        <app-chat-message-list 
-            class="chat-message-list"
-            [chat]="chat()"
-            [isAddPrivateChatRoute]="isAddPrivateChatRoute()"
-            [isAddGroupChatRoute]="isAddGroupChatRoute()"></app-chat-message-list>
-        <app-chat-input (messageSubmitted)="onMessageSubmit($event)" class="chat-input"></app-chat-input>
+        <app-chat-info-header 
+            class="chat-info-header"
+            [currentUserId]="currentUserId()"
+            [chat]="chat()"></app-chat-info-header>
+        <div class="chat-message-list-wrapper">
+            <app-chat-message-list 
+                class="chat-message-list"
+                [chat]="chat()"
+                [isAddPrivateChatRoute]="isAddPrivateChatRoute()"
+                [isAddGroupChatRoute]="isAddGroupChatRoute()"></app-chat-message-list>
+        </div>
+        <app-chat-input 
+            class="chat-input"
+            (messageSubmitted)="onMessageSubmit($event)"></app-chat-input>
     }
 </div>

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input, model } from '@angular/core';
 import { ChatItem } from '../../../models/chat-item';
 import { CommonModule } from '@angular/common';
 import { HamburgerComponent } from "./hamburger/hamburger.component";
@@ -15,7 +15,7 @@ import { ChatListComponent } from './chat-list/chat-list.component';
   styleUrl: './chats-aside.component.scss'
 })
 export class ChatsAsideComponent {
-  chats = input.required<ChatItem[]>();
+  chats = model<ChatItem[]>([]);
   selectedChat = input<ChatItem | undefined>(undefined);
   chatsLoading = input.required<boolean>();
   chatRetrievalCutoff = input.required<Date>();
