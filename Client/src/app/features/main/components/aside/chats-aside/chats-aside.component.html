@@ -9,7 +9,7 @@
         class="chat-list"
         [chatListLoading]="chatsLoading()"
         [currentUserId]="currentUserId()"
-        [chatList]="chats()"
+        [(chatList)]="chats"
         [selectedChatId]="selectedChat()?.id"></app-chat-list>
 </div>
 
