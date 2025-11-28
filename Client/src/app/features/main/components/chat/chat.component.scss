@@ -4,21 +4,40 @@
 .chat-container {
     display: flex;
     position: relative;
-    height: 100vh;
-    min-width: 700px;
+    height: 100dvh;
     flex-direction: column;
+    width: 100%;
     gap: 5px;
-    justify-content: center;
+    min-height: 0;
 
-    .chat-message-list {
-        position: inherit;
-        height: 500px;
+    &.not-selected {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .chat-info-header {
+        flex: 0 0 auto;
+    }
+
+    .chat-message-list-wrapper {
+        display: flex;
+        justify-content: center;
+        flex: 1 1 auto;
+        overflow-y: hidden;
+
+        .chat-message-list {
+            max-width: 800px;
+            width: 100%;
+            padding: 0px 50px;
+        }
     }
 
     .chat-input {
-        width: inherit;
+        flex: 0 1 auto;
+        max-width: 800px;
+        padding: 15px 50px;
         width: 100%;
-        bottom: 10%;
+        align-self: center;
     }
 
     .chat-not-selected {
@@ -29,21 +48,28 @@
 
 @media (min-width: $tablet-width) and (max-width: $laptop-width) {
     .chat-container {
-        min-width: 500px;
+        .chat-message-list-wrapper {
+            .chat-message-list {
+                padding: 0px 30px;
+            }
+        }
+
+        .chat-input {
+            padding: 15px 30px;
+        }
     }
 }
 
 @media (max-width: $tablet-width) {
     .chat-container {
-        justify-content: flex-end;
-        padding: 20px;
-        min-width: auto;
-        width: 100vw;
+        .chat-message-list-wrapper {
+            .chat-message-list {
+                padding: 0px 20px;
+            }
+        }
 
-        .chat-message-list {
-            height: 100%;
-            padding: 45px 0px 0px 0px;
+        .chat-input {
+            padding: 15px 20px;
         }
     }
-    
 }

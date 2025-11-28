@@ -19,5 +19,6 @@
         border-radius: 25px;
         background-color: $default-message-input-button-color;
         cursor: pointer;
+        flex-shrink: 0;
     }
 }
