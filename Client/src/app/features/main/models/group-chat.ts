@@ -1,7 +1,7 @@
-import { ChatItem } from "./chat-item";
+import { Chat } from "./chat";
 import { GroupMember } from "./group-member";
 
-export type GroupChatItem = ChatItem & {
+export type GroupChat = Chat & {
     type: 'group';
     name: string;
     description: string | null;

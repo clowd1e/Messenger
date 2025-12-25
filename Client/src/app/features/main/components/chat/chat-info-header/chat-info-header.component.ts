@@ -1,7 +1,7 @@
-import { Component, computed, input } from '@angular/core';
-import { ChatItem } from '../../../models/chat-item';
-import { PrivateChatItem } from '../../../models/private-chat-item';
-import { GroupChatItem } from '../../../models/group-chat-item';
+import { Component, computed, inject } from '@angular/core';
+import { MainStorageService } from '../../../services/main-storage.service';
+import { PrivateChat } from '../../../models/private-chat';
+import { GroupChat } from '../../../models/group-chat';
 
 @Component({
   selector: 'app-chat-info-header',
@@ -11,15 +11,14 @@ import { GroupChatItem } from '../../../models/group-chat-item';
   styleUrl: './chat-info-header.component.scss'
 })
 export class ChatInfoHeaderComponent {
-  chat = input.required<ChatItem | undefined>();
-  currentUserId = input.required<string>();
+  mainStorage = inject(MainStorageService);
 
   chatIcon = computed(() => {
-    if (this.chat()!.type === 'private') {
-      let privateChat = this.chat() as PrivateChatItem;
-      return privateChat.participants.find(user => user.id !== this.currentUserId())?.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-    } else if (this.chat()!.type === 'group') {
-      let groupChat = this.chat() as GroupChatItem;
+    if (this.mainStorage.SelectedChat()!.type === 'private') {
+      let privateChat = this.mainStorage.SelectedChat() as PrivateChat;
+      return privateChat.participants.find(user => user.id !== this.mainStorage.CurrentUserId)?.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+    } else if (this.mainStorage.SelectedChat()!.type === 'group') {
+      let groupChat = this.mainStorage.SelectedChat() as GroupChat;
       return groupChat.iconUri || "https://cdn-icons-png.flaticon.com/512/2352/2352167.png";
     } else {
       return '';
@@ -27,11 +26,11 @@ export class ChatInfoHeaderComponent {
   });
 
   chatName = computed(() => {
-    if (this.chat()!.type === 'private') {
-      let privateChat = this.chat() as PrivateChatItem;
-      return privateChat.participants.find(user => user.id !== this.currentUserId())?.name || 'Unknown';
-    } else if (this.chat()!.type === 'group') {
-      let groupChat = this.chat() as GroupChatItem;
+    if (this.mainStorage.SelectedChat()!.type === 'private') {
+      let privateChat = this.mainStorage.SelectedChat() as PrivateChat;
+      return privateChat.participants.find(user => user.id !== this.mainStorage.CurrentUserId)?.name || 'Unknown';
+    } else if (this.mainStorage.SelectedChat()!.type === 'group') {
+      let groupChat = this.mainStorage.SelectedChat() as GroupChat;
       return groupChat.name;
     } else {
       return 'Unknown';

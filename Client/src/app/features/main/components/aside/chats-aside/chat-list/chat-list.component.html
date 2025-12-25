@@ -8,11 +8,9 @@
         [infiniteScrollThrottle]="500"
         (scrolled)="onScroll()"
         [scrollWindow]="false">
-        @for (chatItem of mappedChatList(); track chatItem.id) {
+        @for (chat of mappedChatList(); track chat.id) {
             <app-chat-item 
-                [chatItem]="chatItem" 
-                [currentUserId]="currentUserId()"
-                [selected]="chatItem.selected"></app-chat-item>
+                [chat]="chat"></app-chat-item>
         } @empty {
             <p class="chats-not-found">No chats found</p>
         }

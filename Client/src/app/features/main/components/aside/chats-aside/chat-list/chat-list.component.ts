@@ -1,15 +1,15 @@
-import { Component, computed, effect, inject, input, model, signal } from '@angular/core';
-import { ChatItem } from '../../../../models/chat-item';
+import { Component, computed, inject, input } from '@angular/core';
 import { UuidHelperService } from '../../../../../../shared/services/uuid-helper.service';
 import { ChatItemComponent } from './chat-item/chat-item.component';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { ErrorHandlerService } from '../../../../../../shared/services/error-handler.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MapChatToChatItem } from '../../../../mappers/chat-to-chat-item.mapper';
 import { PaginatedChatsResponse } from '../../../../models/paginated-chats-response';
 import { ApiService } from '../../../../../../shared/services/api.service';
-import { PrivateChatItem } from '../../../../models/private-chat-item';
-import { GroupChatItem } from '../../../../models/group-chat-item';
+import { MainStorageService } from '../../../../services/main-storage.service';
+import { PrivateChat } from '../../../../models/private-chat';
+import { GroupChat } from '../../../../models/group-chat';
+import { environment } from '../../../../../../../environments/environment';
 
 @Component({
   selector: 'app-chat-list',
@@ -19,32 +19,29 @@ import { GroupChatItem } from '../../../../models/group-chat-item';
   styleUrl: './chat-list.component.scss'
 })
 export class ChatListComponent {
-  currentUserId = input.required<string>();
-  chatList = model<ChatItem[]>([]);
   chatListLoading = input<boolean>();
-  selectedChatId = input<string>();
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = environment.CHATS_PAGE_SIZE;
   retrieveCutoff = new Date();
   isLastPage = false;
 
   uuidHelper = inject(UuidHelperService);
   apiService = inject(ApiService);
   errorHandler = inject(ErrorHandlerService);
+  mainStorage = inject(MainStorageService);
 
-  mappedChatList = computed(() => this.chatList()?.map(chatItem => {
-    if (chatItem.type == 'private') {
-      let privateChat = chatItem as PrivateChatItem;
+  mappedChatList = computed(() => this.mainStorage.Chats()?.map(chat => {
+    if (chat.type == 'private') {
+      let privateChat = chat as PrivateChat;
       return {
         id: this.uuidHelper.toShortUuid(privateChat.id),
         creationDate: privateChat.creationDate,
         participants: privateChat.participants,
-        messages: privateChat.messages,
-        type: 'private',
-        selected: privateChat.id === this.selectedChatId()
-      } as PrivateChatItem;
-    } else if (chatItem.type == 'group') {
-      let groupChat = chatItem as GroupChatItem;
+        lastMessage: privateChat.lastMessage,
+        type: 'private'
+      } as PrivateChat;
+    } else if (chat.type == 'group') {
+      let groupChat = chat as GroupChat;
       return {
         id: this.uuidHelper.toShortUuid(groupChat.id),
         creationDate: groupChat.creationDate,
@@ -52,10 +49,9 @@ export class ChatListComponent {
         description: groupChat.description,
         iconUri: groupChat.iconUri,
         participants: groupChat.participants,
-        messages: groupChat.messages,
-        type: 'group',
-        selected: groupChat.id === this.selectedChatId()
-      } as GroupChatItem;
+        lastMessage: groupChat.lastMessage,
+        type: 'group'
+      } as GroupChat;
     } else {
       throw new Error('Unknown chat type');
     }
@@ -69,7 +65,7 @@ export class ChatListComponent {
   loadNextChats() {
     this.apiService.getUserChatsPaginated(this.currentPage, this.itemsPerPage, this.retrieveCutoff).subscribe({
       next: (response: PaginatedChatsResponse) => {
-        this.chatList.update(chatList => [...chatList, ...response.chats.map(MapChatToChatItem)]);
+        this.mainStorage.appendChats(response.chats);
         this.isLastPage = response.isLastPage;
       },
       error: (error: HttpErrorResponse) => {

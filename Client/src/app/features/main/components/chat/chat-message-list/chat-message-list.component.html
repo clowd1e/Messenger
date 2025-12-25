@@ -1,12 +1,16 @@
 <div
     infiniteScroll
     [infiniteScrollDisabled]="messageListEndReached()"
-    [infiniteScrollUpDistance]="1"
+    [infiniteScrollUpDistance]="2"
     [infiniteScrollThrottle]="500"
     (scrolledUp)="onScroll()"
     [scrollWindow]="false"
-    class="message-list-container" #messageListContainer>
+    class="message-list-container"
+    [scrollTop]="messageListContainer.scrollHeight"
+    #messageListContainer>
     @for (messageDto of messageDtos(); track messageDto.message.id) {
-        <app-chat-message [isGroupChat]="isGroupChat()" [messageDto]="messageDto" [currentUserId]="currentUserId"></app-chat-message>
+        <app-chat-message
+            [isGroupChat]="isGroupChat()"
+            [messageDto]="messageDto"></app-chat-message>
     }
 </div>

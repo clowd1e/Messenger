@@ -1,6 +1,7 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MessageDto } from '../../models/message-dto';
 import { DatePipe } from '@angular/common';
+import { MainStorageService } from '../../../../services/main-storage.service';
 
 @Component({
   selector: 'app-chat-message',
@@ -12,10 +13,11 @@ import { DatePipe } from '@angular/common';
 export class ChatMessageComponent {
   messageDto = input.required<MessageDto>();
   isGroupChat = input.required<boolean>();
-  currentUserId = input.required<string>();
+
+  mainStorage = inject(MainStorageService);
 
   isCurrentUser() {
-    return this.messageDto().message.sender.id === this.currentUserId();
+    return this.messageDto().message.sender.id === this.mainStorage.CurrentUserId;
   }
 
   userIconVisible() {
