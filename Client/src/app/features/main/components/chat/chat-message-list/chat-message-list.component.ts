@@ -1,100 +1,145 @@
-import { Component, computed, effect, ElementRef, inject, input, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, Renderer2, untracked, ViewChild } from '@angular/core';
 import { ChatMessageComponent } from './chat-message/chat-message.component';
-import { MessageDto } from '../models/message-dto';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { PaginatedMessagesResponse } from '../../../models/paginated-messages-response';
 import { ErrorHandlerService } from '../../../../../shared/services/error-handler.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChatItem } from '../../../models/chat-item';
 import { UserContextService } from '../../../../../shared/services/user-context.service';
 import { ApiService } from '../../../../../shared/services/api.service';
+import { MainStorageService } from '../../../services/main-storage.service';
+import { firstValueFrom, timeInterval } from 'rxjs';
 
 @Component({
   selector: 'app-chat-message-list',
   standalone: true,
   imports: [ChatMessageComponent, InfiniteScrollDirective],
   templateUrl: './chat-message-list.component.html',
-  styleUrl: './chat-message-list.component.scss'
+  styleUrl: './chat-message-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatMessageListComponent {
   @ViewChild('messageListContainer', {static: false}) 
   private messageList? : ElementRef;
+  private loadingMessages = false;
+  private previousChatId: string | null = null;
 
-  chat = input.required<ChatItem | undefined>();
   isAddPrivateChatRoute = input.required<boolean>();
   isAddGroupChatRoute = input.required<boolean>();
-
-  currentPage = 1;
-  itemsPerPage = 20;
-  retrieveCutoff = new Date();
-  isLastPage = false;
   
   userContextService = inject(UserContextService);
   renderer = inject(Renderer2);
   apiService = inject(ApiService);
   errorHandler = inject(ErrorHandlerService);
-
-  currentUserId = this.userContextService.getCurrentUserId();
+  mainStorage = inject(MainStorageService);
 
   onChatChangeEffect = effect(() => {
-    const chat = this.chat();
-    if (!chat) return;
-    if (this.isAddPrivateChatRoute()) return;
-    if (this.isAddGroupChatRoute()) return;
+    const chatId = this.mainStorage.SelectedChatId();
+    if (!chatId) return;
+    if (this.isAddPrivateChatRoute() || this.isAddGroupChatRoute()) return;
     
-    this.chat()!.messages = [];
-    this.currentPage = 1;
-    this.isLastPage = false;
-    this.retrieveCutoff = new Date();
-    this.loadNextMessages();
-    this.scrollToBottom();
-  });
-  isGroupChat = computed(() => this.chat()!.type === 'group');
+    untracked(() => {
+      if (this.previousChatId && this.previousChatId !== chatId) {
+        const container = this.messageList?.nativeElement;
+          if (container) {
+            this.mainStorage.saveChatScroll(this.previousChatId, container.scrollTop);
+          }
+        }
+    });
 
-  messageDtos(): MessageDto[] {
-    const msgs = this.chat()!.messages;
-    if (!msgs) return [];
-    
-    return msgs.map((message, i) => ({
-      message,
-      userNameVisible: i === 0 || msgs[i - 1]?.sender.id !== message.sender.id,
-      userIconVisible: i === msgs.length - 1 || msgs[i + 1]?.sender.id !== message.sender.id,
-      iconUri: message.sender.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-    }));
-  }
+    this.previousChatId = chatId;
 
-  onScroll() {
-    // Prevent loading more messages if we're in the add private chat route
-    if (this.isAddPrivateChatRoute()) return;
-    this.currentPage++;
-    this.loadNextMessages();
-  }
-  
-  loadNextMessages() {
-    this.apiService.getChatMessagesPaginated(this.chat()!.id, this.currentPage, this.itemsPerPage, this.retrieveCutoff).subscribe({
-      next: (response: PaginatedMessagesResponse) => {
-        this.chat()!.messages.unshift(...response.messages);
-        this.isLastPage = response.isLastPage;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.errorHandler.handleHttpError(error);
+    untracked(async () => {
+      const messages = this.mainStorage.getCurrentMessages();
+      if (messages && messages().length == 0) {
+        await this.loadNextMessages();
+        this.scrollToBottom();
+      } else {
+        this.restoreScrollPosition();
       }
     });
+  });
+
+  isGroupChat = computed(() => this.mainStorage.SelectedChat()!.type === 'group');
+
+  messageDtos = computed(() => {
+    const messages = this.mainStorage.getCurrentMessages();
+    if (!messages) return [];
+    
+    return messages().map((message, i) => ({
+      message,
+      userNameVisible: i === 0 || messages()[i - 1]?.sender.id !== message.sender.id,
+      userIconVisible: i === messages().length - 1 || messages()[i + 1]?.sender.id !== message.sender.id,
+      iconUri: message.sender.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+    }));
+  });
+
+  async onScroll() {
+    if (this.loadingMessages) return;
+    this.loadingMessages = true;
+    // Prevent loading more messages if we're in the add private chat route
+    if (this.isAddPrivateChatRoute()) return;
+    if (this.isAddGroupChatRoute()) return;
+    if (this.messageListEndReached()) return;
+    const container = this.messageList?.nativeElement;
+    if (!container) return;
+    
+    const anchorOffset = container.scrollHeight;
+    await this.loadNextMessages();
+    // Restore scroll position
+    requestAnimationFrame(() => {
+      const newScrollTop = container.scrollHeight - anchorOffset;
+      container.scroll({
+        top: newScrollTop,
+        behavior: 'auto'
+      });
+    });
+    this.loadingMessages = false;
+  }
+  
+  async loadNextMessages() : Promise<void> {
+    const currentChatId = this.mainStorage.SelectedChatId();
+    const metadata = this.mainStorage.getCurrentMessagesMetadata();
+    if (metadata?.isLastPage) {
+      return;
+    }
+
+    await firstValueFrom(
+      this.apiService.getChatMessagesPaginated(
+        currentChatId!,
+        metadata!.currentPage,
+        this.mainStorage.MessagesPageSize,metadata!.retrieveCutoff)
+    ).then(
+      (res: PaginatedMessagesResponse) => {
+        this.mainStorage.loadPreviousMessages(res.messages, res.isLastPage);
+      }
+    ).catch(
+      (error: HttpErrorResponse) => {
+        this.errorHandler.handleHttpError(error);
+      }
+    );
   }
   
   messageListEndReached() {
-    return this.isLastPage;
+    const metadata = this.mainStorage.getCurrentMessagesMetadata();
+    return metadata ? metadata.isLastPage : true;
   }
 
-  ngAfterViewInit() {
-    this.scrollToBottom();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    // if (changes['messages']) {
-    //   console.log("messages changed");
-    //   this.scrollToBottom();
-    // }
+  private restoreScrollPosition(): void {
+    if (!this.messageList) {
+      return;
+    }
+    const scrollContainer = this.messageList.nativeElement;
+    const metadata = this.mainStorage.getCurrentMessagesMetadata();
+    if (!metadata) {
+      return;
+    }
+    const savedScrollPosition = metadata.chatScrollPosition || 0;
+    requestAnimationFrame(() => {
+      scrollContainer.scroll({
+        top: savedScrollPosition,
+        behavior: 'auto'
+      });
+    });
   }
 
   private scrollToBottom(): void {
@@ -104,13 +149,16 @@ export class ChatMessageListComponent {
 
     const scrollContainer = this.messageList.nativeElement;
 
-    this.renderer.setStyle(scrollContainer, 'opacity', '0');
+    // this.renderer.setStyle(scrollContainer, 'opacity', '0');
 
-    setTimeout(() => {
+    // scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    requestAnimationFrame(() => {
+      scrollContainer.scroll({
+        top: scrollContainer.scrollHeight,
+        behavior: 'auto'
+      });
+    });
 
-      scrollContainer.scrollTop = scrollContainer.scrollHeight;
-
-      this.renderer.setStyle(scrollContainer, 'opacity', '100');
-    }, 0);
+    // this.renderer.setStyle(scrollContainer, 'opacity', '100');
   }
 }

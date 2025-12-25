@@ -1,11 +1,11 @@
-import { Component, input, model } from '@angular/core';
-import { ChatItem } from '../../../models/chat-item';
+import { Component, inject, input, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HamburgerComponent } from "./hamburger/hamburger.component";
 import { AddChatButtonComponent } from "./add-chat-button/add-chat-button.component";
 import { ModalComponent } from "../../../../../shared/components/modal/modal.component";
 import { AddChatPageComponent } from "./add-chat-page/add-chat-page.component";
 import { ChatListComponent } from './chat-list/chat-list.component';
+import { MainStorageService } from '../../../services/main-storage.service';
 
 @Component({
   selector: 'app-chats-aside',
@@ -15,11 +15,10 @@ import { ChatListComponent } from './chat-list/chat-list.component';
   styleUrl: './chats-aside.component.scss'
 })
 export class ChatsAsideComponent {
-  chats = model<ChatItem[]>([]);
-  selectedChat = input<ChatItem | undefined>(undefined);
   chatsLoading = input.required<boolean>();
   chatRetrievalCutoff = input.required<Date>();
-  currentUserId = input.required<string>();
+
+  mainStorage = inject(MainStorageService);
 
   showModal = false;
 

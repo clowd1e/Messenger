@@ -1,4 +1,4 @@
-<div class="chat-list-box" [ngClass]="selectedChat() ? 'chat-selected' : 'chat-not-selected'">
+<div class="chat-list-box" [ngClass]="mainStorage.SelectedChat() ? 'chat-selected' : 'chat-not-selected'">
     <div class="aside-header">
         <app-hamburger
             class="hamburger"></app-hamburger>
@@ -7,10 +7,7 @@
     </div>
     <app-chat-list
         class="chat-list"
-        [chatListLoading]="chatsLoading()"
-        [currentUserId]="currentUserId()"
-        [(chatList)]="chats"
-        [selectedChatId]="selectedChat()?.id"></app-chat-list>
+        [chatListLoading]="chatsLoading()"></app-chat-list>
 </div>
 
 <app-modal [isOpen]="showModal" (closed)="closeModal()">

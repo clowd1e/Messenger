@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, EventEmitter, input, Output } from '@angular/core';
-import { ChatItem } from '../../models/chat-item';
+import { Component, computed, effect, EventEmitter, inject, input, Output } from '@angular/core';
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import { ChatMessageListComponent } from './chat-message-list/chat-message-list.component';
 import { ChatInfoHeaderComponent } from "./chat-info-header/chat-info-header.component";
+import { MainStorageService } from '../../services/main-storage.service';
+import { Chat } from '../../models/chat';
 
 @Component({
   selector: 'app-chat',
@@ -13,20 +14,20 @@ import { ChatInfoHeaderComponent } from "./chat-info-header/chat-info-header.com
   styleUrl: './chat.component.scss'
 })
 export class ChatComponent {
-  chat = input.required<ChatItem | undefined>();
   isAddPrivateChatRoute = input.required<boolean>();
   isAddGroupChatRoute = input.required<boolean>();
-  currentUserId = input.required<string>();
 
+  selectedChat: Chat | null = null;
+
+  selectedChatEffect = effect(() => {
+    this.selectedChat = this.mainStorage.SelectedChat();
+  });
+  
   @Output() messageSubmitted = new EventEmitter<string>();
+
+  mainStorage = inject(MainStorageService);
 
   onMessageSubmit(message: string) {
     this.messageSubmitted.emit(message);
-  }
-
-  chatType = computed(() => this.chat()?.type);
-
-  getMessages() {
-    return this.chat()?.messages || [];
   }
 }
