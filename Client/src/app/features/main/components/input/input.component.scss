@@ -3,9 +3,11 @@
 
 .input-container {
     input {
+        color: var(--main-chat-input-color);
         outline: none;
         border: none;
-        border: 0.5px solid #000000;
+        background-color: var(--main-chat-input-bg-color);
+        border: 0.5px solid var(--main-chat-input-border-color);
         border-radius: 20px;
         padding: 15px 10px 15px 18px;
         font-size: 16px;
@@ -13,6 +15,10 @@
     }
     
     input::placeholder {
-        color: $default-message-input-placeholder-color;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        color: var(--main-chat-input-placeholder-color);
     }
 }

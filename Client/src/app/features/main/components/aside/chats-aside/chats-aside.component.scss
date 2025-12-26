@@ -4,7 +4,9 @@
     position: relative;
     align-items: center;
     height: 100vh;
-    border-right: 1px solid #9D9D9D;
+    border-right: 1px solid var(--main-layout-parts-border-color);
+    background-color: var(--main-aside-bg-color);
+    transition: background-color 0.3s ease;
 
     .aside-header {
         display: flex;
@@ -34,9 +36,19 @@
     }
 }
 
+.settings-menu {
+    transition: opacity 0.3s ease;
+}
+
 @media (max-width: 768px) {
-    :host.chat-selected .chat-list-box {
-        display: none;
+    :host.chat-selected {
+        .chat-list-box {
+            display: none;
+        }
+
+        .settings-menu {
+            display: none !important;
+        }
     }
 
     :host.chat-not-selected .chat-list-box {

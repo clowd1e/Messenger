@@ -11,7 +11,7 @@
     
     .hamburger-line {
         height: 3px;
-        background-color: #D9D9D9;
+        background-color: var(--main-hamburger-menu-lines-color);
         border-radius: 2px;
         width: 100%;
     }

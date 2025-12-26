@@ -1,5 +1,6 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { StorageService } from '../../../shared/services/storage.service';
+import { moonIconPath, sunIconPath } from '../../../shared/components/settings-menu/icons/icons';
 
 @Component({
   selector: 'app-theme-switch',
@@ -12,6 +13,9 @@ export class ThemeSwitchComponent implements OnInit {
   private isSwitchingTheme: boolean = false;
   isDarkTheme: boolean = false;
   hideSwitch: boolean = false;
+
+  sunIcon = sunIconPath;
+  moonIcon = moonIconPath;
 
   storageService = inject(StorageService);
 

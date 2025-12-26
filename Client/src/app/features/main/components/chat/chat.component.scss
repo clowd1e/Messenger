@@ -7,7 +7,6 @@
     height: 100dvh;
     flex-direction: column;
     width: 100%;
-    gap: 5px;
     min-height: 0;
 
     &.not-selected {
@@ -34,14 +33,14 @@
     .chat-input {
         flex: 0 1 auto;
         max-width: 800px;
-        padding: 15px 50px;
+        padding: 5px 50px 20px;
         width: 100%;
         align-self: center;
     }
 
     .chat-not-selected {
         font-size: 36px;
-        color: $default-loading-color;
+        color: var(--main-chat-start-messaging-color);
     }
 }
 
@@ -54,7 +53,7 @@
         }
 
         .chat-input {
-            padding: 15px 30px;
+            padding: 5px 30px 20px;
         }
     }
 }
@@ -68,7 +67,7 @@
         }
 
         .chat-input {
-            padding: 15px 20px;
+            padding: 5px 20px 20px;
         }
     }
 }
