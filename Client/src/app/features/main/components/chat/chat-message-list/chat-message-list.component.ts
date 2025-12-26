@@ -7,12 +7,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UserContextService } from '../../../../../shared/services/user-context.service';
 import { ApiService } from '../../../../../shared/services/api.service';
 import { MainStorageService } from '../../../services/main-storage.service';
-import { firstValueFrom, timeInterval } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+import { MessagesDateBadgeComponent } from "./messages-date-badge/messages-date-badge.component";
+import { Message } from '../../../models/message';
+import { MessageRenderItem } from './models/message-render-item';
+import { MessageDto } from './models/message-dto';
 
 @Component({
   selector: 'app-chat-message-list',
   standalone: true,
-  imports: [ChatMessageComponent, InfiniteScrollDirective],
+  imports: [ChatMessageComponent, InfiniteScrollDirective, MessagesDateBadgeComponent],
   templateUrl: './chat-message-list.component.html',
   styleUrl: './chat-message-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -61,17 +65,76 @@ export class ChatMessageListComponent {
 
   isGroupChat = computed(() => this.mainStorage.SelectedChat()!.type === 'group');
 
-  messageDtos = computed(() => {
+  messageRenderItems = computed<MessageRenderItem[]>(() => {
     const messages = this.mainStorage.getCurrentMessages();
+    const chatCreatedAt = this.getDateKey(this.mainStorage.GetCurrentChatCreatedAt());
     if (!messages) return [];
-    
-    return messages().map((message, i) => ({
-      message,
-      userNameVisible: i === 0 || messages()[i - 1]?.sender.id !== message.sender.id,
-      userIconVisible: i === messages().length - 1 || messages()[i + 1]?.sender.id !== message.sender.id,
-      iconUri: message.sender.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-    }));
+
+    const result: MessageRenderItem[] = [];
+    let lastDate: string | null = null;
+
+    for (const message of messages()) {
+      const dateKey = this.getDateKey(message.timestamp);
+
+      if (dateKey !== lastDate) {
+        // if date key is chat creation date, label it accordingly
+        if (dateKey === chatCreatedAt) {
+          result.push({
+            type: 'date-badge',
+            label: 'Chat created'
+          });
+        }
+
+        result.push({
+          type: 'date-badge',
+          label: this.formatDateBadge(message.timestamp)
+        });
+        lastDate = dateKey;
+      }
+
+      result.push({
+        type: 'message',
+        messageDto: this.createMessageDto(message, messages())
+      });
+    }
+
+    return result;
   });
+
+  private createMessageDto(message: Message, messages: Message[]) : MessageDto {
+    const i = messages.findIndex(m => m.id === message.id);
+
+    return {
+      message,
+      userNameVisible: i === 0 || messages[i - 1]?.sender.id !== message.sender.id,
+      userIconVisible: i === messages.length - 1 || messages[i + 1]?.sender.id !== message.sender.id,
+      iconUri: message.sender.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+    };
+  }
+
+  private getDateKey(timestamp: string): string {
+    return new Date(timestamp).toDateString();
+  }
+
+  private formatDateBadge(timestamp: string): string {
+    const date = new Date(timestamp);
+    const today = new Date();
+    if (date.toDateString() === today.toDateString()) {
+      return 'Today';
+    }
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+    if (date.toDateString() === yesterday.toDateString()) {
+      return 'Yesterday';
+    }
+    
+    if (date.getFullYear() === today.getFullYear()) {
+      return date.toLocaleDateString("en-US", { day: '2-digit', month: 'short' });
+    } else {
+      return date.toLocaleDateString("en-US", { day: '2-digit', month: 'short', year: 'numeric' });
+
+    }
+  }
 
   async onScroll() {
     if (this.loadingMessages) return;

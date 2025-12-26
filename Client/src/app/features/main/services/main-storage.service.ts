@@ -97,6 +97,13 @@ export class MainStorageService {
     this.selectedChatId.set(null);
     this.selectedChat.set(null);
   }
+
+  GetCurrentChatCreatedAt() : string {
+    if (!this.SelectedChat()) {
+      throw new Error('No chat is selected.');
+    }
+    return this.SelectedChat()!.creationDate;
+  }
   //#endregion
 
   //#region Messages

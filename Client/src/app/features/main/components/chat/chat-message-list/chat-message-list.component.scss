@@ -1,3 +1,5 @@
+@import '../../../../../../assets/styles/devices-size';
+
 .message-list-container {
     display: flex;
     flex-direction: column;
@@ -10,8 +12,25 @@
     padding-bottom: 20px;
     height: 100%;
     padding: 20px 50px;
+
+    .date-badge {
+        align-self: center;
+        margin: 10px 0px;
+    }
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
-.message-list-container::-webkit-scrollbar {
-    display: none;
+@media (min-width: $tablet-width) and (max-width: $laptop-width) {
+    .message-list-container {
+        padding: 20px 30px;
+    }
+}
+
+@media (max-width: $tablet-width) {
+    .message-list-container {
+        padding: 20px 20px;
+    }
 }
