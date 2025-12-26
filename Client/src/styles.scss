@@ -28,6 +28,7 @@ html, body {
     @include colors.add-chat-modal-light-theme-colors;
     @include colors.modal-light-theme-colors;
     @include colors.search-bar-light-theme-colors;
+    @include colors.date-badge-light-theme-colors;
 }
 
 .dark-theme {
@@ -40,4 +41,5 @@ html, body {
     @include colors.add-chat-modal-dark-theme-colors;
     @include colors.modal-dark-theme-colors;
     @include colors.search-bar-dark-theme-colors;
+    @include colors.date-badge-dark-theme-colors;
 }

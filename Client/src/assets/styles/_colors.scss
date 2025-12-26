@@ -207,3 +207,13 @@ $default-username-color: #000000;
     --search-bar-placeholder-color: #DCDCDC;
     --search-bar-input-color: #f4f4f4;
 }
+
+@mixin date-badge-light-theme-colors {
+    --date-badge-background-color: #E9E9FF;
+    --date-badge-text-color: #646464;
+}
+
+@mixin date-badge-dark-theme-colors {
+    --date-badge-background-color: #353B74;
+    --date-badge-text-color: #F5F5F5;
+}

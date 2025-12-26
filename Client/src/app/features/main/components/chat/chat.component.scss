@@ -46,12 +46,6 @@
 
 @media (min-width: $tablet-width) and (max-width: $laptop-width) {
     .chat-container {
-        .chat-message-list-wrapper {
-            .chat-message-list {
-                padding: 0px 30px;
-            }
-        }
-
         .chat-input {
             padding: 5px 30px 20px;
         }
@@ -60,12 +54,6 @@
 
 @media (max-width: $tablet-width) {
     .chat-container {
-        .chat-message-list-wrapper {
-            .chat-message-list {
-                padding: 0px 20px;
-            }
-        }
-
         .chat-input {
             padding: 5px 20px 20px;
         }

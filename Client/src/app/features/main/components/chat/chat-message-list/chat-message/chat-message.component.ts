@@ -1,7 +1,7 @@
 import { Component, inject, input } from '@angular/core';
-import { MessageDto } from '../../models/message-dto';
 import { DatePipe } from '@angular/common';
 import { MainStorageService } from '../../../../services/main-storage.service';
+import { MessageDto } from '../models/message-dto';
 
 @Component({
   selector: 'app-chat-message',

@@ -8,9 +8,17 @@
     class="message-list-container"
     [scrollTop]="messageListContainer.scrollHeight"
     #messageListContainer>
-    @for (messageDto of messageDtos(); track messageDto.message.id) {
-        <app-chat-message
-            [isGroupChat]="isGroupChat()"
-            [messageDto]="messageDto"></app-chat-message>
+    @for (item of messageRenderItems(); track $index) {
+        @if (item.type == 'date-badge') {
+            <app-messages-date-badge
+                class="date-badge"
+                [label]="item.label">
+            </app-messages-date-badge>
+        }
+        @if (item.type == 'message') {
+            <app-chat-message
+                [isGroupChat]="isGroupChat()"
+                [messageDto]="item.messageDto"></app-chat-message>
+        }
     }
 </div>

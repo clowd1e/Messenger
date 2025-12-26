@@ -1,0 +1,21 @@
+@import "../../../../../../../assets/styles/devices-size";
+
+span {
+    background-color: var(--date-badge-background-color);
+    color: var(--date-badge-text-color);
+    padding: 5px 15px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+@media (min-width: $mobileM-width) and (max-width: $mobileL-width) {
+    span {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: $mobileM-width) {
+    span {
+        font-size: 10px;
+    }
+}
