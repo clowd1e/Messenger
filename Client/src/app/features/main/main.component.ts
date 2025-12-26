@@ -21,7 +21,8 @@ import { CreateGroupChatCommand } from './models/create-group-chat-command';
 import { MainStorageService } from './services/main-storage.service';
 import { GroupChat } from './models/group-chat';
 import { PrivateChat } from './models/private-chat';
-import { environment } from '../../../environments/environment.prod';
+import { environment } from '../../../environments/environment';
+import { StorageService } from '../../shared/services/storage.service';
 
 @Component({
   selector: 'app-main',
@@ -45,9 +46,11 @@ export class MainComponent implements OnInit {
   uuidHelper = inject(UuidHelperService);
   errorHandler = inject(ErrorHandlerService);
   groupCreationStore = inject(GroupCreationStore);
+  storageService = inject(StorageService);
   mainStorage = inject(MainStorageService);
 
   async ngOnInit() {
+    this.loadUserThemePreference();
     this.mainStorage.unsetSelectedChat();
     this.mainStorage.CurrentUserId = this.userContextService.getCurrentUserId();
     this.connectSignalR();
@@ -69,6 +72,12 @@ export class MainComponent implements OnInit {
         this.handleChatRoute();
       }
     });
+  }
+
+  loadUserThemePreference() {
+    let themePreference = this.storageService.getThemePreference();
+    let isDarkTheme = themePreference === 'dark';
+    document.documentElement.classList.toggle('dark-theme', isDarkTheme);
   }
 
   private connectSignalR() : void {

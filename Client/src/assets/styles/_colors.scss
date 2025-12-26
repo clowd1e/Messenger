@@ -89,3 +89,121 @@ $default-username-color: #000000;
     --not-found-bg-color: #111111;
     --not-found-text-color: #FFFFFF;
 }
+
+// main colors
+@mixin main-light-theme-colors {
+    --main-bg-color: #FFFFFF;
+    --main-layout-parts-border-color: #9D9D9D;
+    --main-hamburger-menu-lines-color: #D9D9D9;
+
+    --main-aside-bg-color: #FFFFFF;
+    --main-aside-chat-name-color: #000000;
+    --main-aside-chat-last-message-color: #A8A8A8;
+    --main-aside-chat-timestamp-color: #000000;
+    --main-aside-chat-hover-bg-color: #F7F7F7;
+    --main-aside-chat-selected-bg-color: #F0F0F0;
+
+    --main-settings-menu-bg-color: hwb(0 100% 0% / 0.5);
+    --main-settings-menu-border-color: #ccc;
+    --main-settings-menu-item-bg-color: #ffffffbd;
+    --main-settings-menu-item-color: #000000;
+
+    --main-chat-start-messaging-color: #929292;
+    --main-chat-info-header-background-color: #FFFFFF;
+    --main-chat-info-header-chat-name-color: #000000;
+    --main-chat-input-bg-color: #FFFFFF;
+    --main-chat-input-color: #000000;
+    --main-chat-input-border-color: #000000;
+    --main-chat-input-placeholder-color: #A8A8A8;
+    --main-chat-my-message-bg-color: #C2D8FF;
+    --main-chat-other-message-bg-color: #F1F1F1;
+    --main-chat-message-text-color: #000000;
+    --main-chat-message-timestamp-color: #8D8D8D;
+    --main-chat-message-username-color: #000000;
+}
+
+@mixin main-dark-theme-colors {
+    --main-bg-color: #111111;
+    --main-layout-parts-border-color: #474747;
+    --main-hamburger-menu-lines-color: #DCDCDC;
+
+    --main-aside-bg-color: #1B1B1B;
+    --main-aside-chat-name-color: #DCDCDC;
+    --main-aside-chat-last-message-color: #A8A8A8;
+    --main-aside-chat-timestamp-color: #DCDCDC;
+    --main-aside-chat-hover-bg-color: #3A3A3A;
+    --main-aside-chat-selected-bg-color: #2C2C2C;
+
+    --main-settings-menu-bg-color: hwb(0 100% 0% / 0.25);
+    --main-settings-menu-border-color: #686868;
+    --main-settings-menu-item-bg-color: #424242ad;
+    --main-settings-menu-item-color: #eaeaea;
+
+    --main-chat-start-messaging-color: #929292;
+    --main-chat-info-header-background-color: #1B1B1B;
+    --main-chat-info-header-chat-name-color: #DCDCDC;
+    --main-chat-input-bg-color: #323232;
+    --main-chat-input-color: #DCDCDC;
+    --main-chat-input-border-color: #686868;
+    --main-chat-input-placeholder-color: #A8A8A8;
+    --main-chat-my-message-bg-color: #5E67BA;
+    --main-chat-other-message-bg-color: #393939;
+    --main-chat-message-text-color: #DCDCDC;
+    --main-chat-message-timestamp-color: #BDBDBD;
+    --main-chat-message-username-color: #E4E4E4;
+}
+
+@mixin modal-light-theme-colors {
+    --modal-overlay-bg-color: rgba(0, 0, 0, 0.6);
+}
+
+@mixin modal-dark-theme-colors {
+    --modal-overlay-bg-color: rgba(0, 0, 0, 0.8);
+}
+
+@mixin add-chat-modal-light-theme-colors {
+    --add-chat-modal-bg-color: #F3F3F3;
+    --add-chat-modal-text-color: #A0A0A0;
+    --add-chat-modal-close-button-color: #000000;
+    --add-chat-modal-users-box-bg-color: #E9E9E9;
+    --add-chat-modal-users-box-placeholder-color: #A0A0A0;
+    --add-chat-modal-users-box-text-color: #000000;
+    --add-chat-modal-users-box-user-name-color: #000000;
+    --add-chat-modal-users-box-user-username-color: #7D7D7D;
+    --add-chat-modal-users-box-user-bg-color: #D9D9D9;
+    --add-chat-modal-group-chat-creation-input-bg-color: #F6F6F6;
+    --add-chat-modal-group-chat-creation-input-border-color: #9D9D9D;
+    --add-chat-modal-group-chat-creation-input-placeholder-color: #B0B0B0;
+    --add-chat-modal-group-chat-creation-text-color: #333333;
+}
+
+@mixin add-chat-modal-dark-theme-colors {
+    --add-chat-modal-bg-color: #3B3B3B;
+    --add-chat-modal-text-color: #D8D8D8;
+    --add-chat-modal-close-button-color: #FFFFFF;
+    --add-chat-modal-users-box-bg-color: #323232;
+    --add-chat-modal-users-box-text-color: #000000;
+    --add-chat-modal-users-box-user-name-color: #FFFFFF;
+    --add-chat-modal-users-box-user-username-color: #BFBFBF;
+    --add-chat-modal-users-box-user-bg-color: #555555;
+    --add-chat-modal-group-chat-creation-input-bg-color: #323232;
+    --add-chat-modal-group-chat-creation-input-border-color: #686868;
+    --add-chat-modal-group-chat-creation-input-placeholder-color: #DCDCDC;
+    --add-chat-modal-group-chat-creation-text-color: #F8F8F8;
+}
+
+@mixin search-bar-light-theme-colors {
+    --search-bar-bg-color: #FFFFFF;
+    --search-bar-border-color: #CCCCCC;
+    --search-bar-icon-color: #CECECE;
+    --search-bar-placeholder-color: #CECECE;
+    --search-bar-input-color: #000000;
+}
+
+@mixin search-bar-dark-theme-colors {
+    --search-bar-bg-color: #323232;
+    --search-bar-border-color: #686868;
+    --search-bar-icon-color: #DCDCDC;
+    --search-bar-placeholder-color: #DCDCDC;
+    --search-bar-input-color: #f4f4f4;
+}

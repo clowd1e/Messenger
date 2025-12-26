@@ -7,6 +7,9 @@
     gap: 15px;
 
     .image-box {
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -30,21 +33,29 @@
         display: flex;
         flex-direction: column;
         max-width: 410px;
-        background-color: $default-message-box-background-color;
+        background-color: var(--main-chat-other-message-bg-color);
         border-radius: 20px;
         padding: 15px 40px 15px 12px;
 
         p.username {
             font-weight: bold;
-            color: $default-username-color;
+            color: var(--main-chat-message-username-color);
+        }
+
+        p.content {
+            color: var(--main-chat-message-text-color)
         }
 
         p.timestamp {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
             position: absolute;
             bottom: 11px;
             right: 6px;
             font-size: 12px;
-            color: $default-message-timestamp-color;
+            color: var(--main-chat-message-timestamp-color);
         }
     }
 }
@@ -53,7 +64,7 @@
     flex-direction: row-reverse;
 
     .message-box {
-        background-color: $default-user-message-box-background-color;
+        background-color: var(--main-chat-my-message-bg-color);
     }
 }
 

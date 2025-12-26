@@ -1,8 +1,14 @@
 .chat-info-header-container {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 10px;
-    border-bottom: 1px solid #9D9D9D;
+    border-bottom: 1px solid var(--main-layout-parts-border-color);
+    background-color: var(--main-chat-info-header-background-color);
+    transition: background-color 0.3s ease;
     padding: 5px 20px;
 
     .chat-icon {
@@ -14,6 +20,7 @@
     .chat-name {
         display: flex;
         align-items: center;
+        color: var(--main-chat-info-header-chat-name-color);
         font-size: 18px;
         font-weight: bold;
         white-space: nowrap;

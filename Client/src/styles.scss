@@ -24,6 +24,10 @@ html, body {
     @include colors.email-confirmation-light-theme-colors;
     @include colors.registration-success-light-theme-colors;
     @include colors.not-found-light-theme-colors;
+    @include colors.main-light-theme-colors;
+    @include colors.add-chat-modal-light-theme-colors;
+    @include colors.modal-light-theme-colors;
+    @include colors.search-bar-light-theme-colors;
 }
 
 .dark-theme {
@@ -32,4 +36,8 @@ html, body {
     @include colors.email-confirmation-dark-theme-colors;
     @include colors.registration-success-dark-theme-colors;
     @include colors.not-found-dark-theme-colors;
+    @include colors.main-dark-theme-colors;
+    @include colors.add-chat-modal-dark-theme-colors;
+    @include colors.modal-dark-theme-colors;
+    @include colors.search-bar-dark-theme-colors;
 }

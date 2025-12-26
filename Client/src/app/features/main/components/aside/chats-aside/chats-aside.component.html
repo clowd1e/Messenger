@@ -1,7 +1,8 @@
 <div class="chat-list-box" [ngClass]="mainStorage.SelectedChat() ? 'chat-selected' : 'chat-not-selected'">
     <div class="aside-header">
         <app-hamburger
-            class="hamburger"></app-hamburger>
+            class="hamburger"
+            (click)="toggleSettingsMenu($event)"></app-hamburger>
         <!-- search bar -->
         <app-add-chat-button (click)="openModal()"></app-add-chat-button>
     </div>
@@ -9,6 +10,12 @@
         class="chat-list"
         [chatListLoading]="chatsLoading()"></app-chat-list>
 </div>
+
+<app-settings-menu 
+    class="settings-menu"
+    #settingsMenu
+    [style.display]="isSettingsMenuOpen ? 'block' : 'none'"
+    [style.opacity]="isSettingsMenuOpen ? '1' : '0'"></app-settings-menu>
 
 <app-modal [isOpen]="showModal" (closed)="closeModal()">
     <app-add-chat-page (closed)="closeModal()"></app-add-chat-page>

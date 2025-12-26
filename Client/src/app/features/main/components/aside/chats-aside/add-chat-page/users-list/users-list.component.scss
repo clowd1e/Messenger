@@ -1,5 +1,5 @@
 .users-list-container {
-    background-color: #E9E9E9;
+    background-color: var(--add-chat-modal-users-box-bg-color);
     padding: 20px 30px;
     border-radius: 15px;
     position: relative;
@@ -22,6 +22,6 @@
     }
 
     .users-not-found {
-        color: #A0A0A0;
+        color: var(--add-chat-modal-text-color);
     }
 }

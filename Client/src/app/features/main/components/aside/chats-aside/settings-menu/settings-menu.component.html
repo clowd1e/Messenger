@@ -1,0 +1,9 @@
+<div class="settings-menu-container" #menuRoot>
+    <app-settings-menu-item
+        (click)="toggleTheme()"
+        [svgConfig]="isDarkTheme ? moonIcon : sunIcon"
+        [itemLabel]="isDarkTheme ? 'Dark mode' : 'Light mode'"></app-settings-menu-item>
+    <app-settings-menu-item
+        [svgConfig]="settingsIcon"
+        [itemLabel]="'Settings'"></app-settings-menu-item>
+</div>
