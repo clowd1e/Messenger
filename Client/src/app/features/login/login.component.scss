@@ -21,6 +21,11 @@
         height: 100px;
         border-radius: 50px;
         box-shadow: 0 0 40px var(--auth-logo-image-shadow-color);
+        -webkit-user-drag: none;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
     }
 
     h1 {
