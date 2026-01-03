@@ -99,13 +99,13 @@ namespace Messenger.WebAPI.Controllers
 
         [HttpPost("send-message")]
         public async Task<IActionResult> SendMessage(
-            [FromServices] ICommandHandler<SendMessageCommand, MessageResponse> commandHandler,
+            [FromServices] ICommandHandler<SendMessageCommand, SendMessageResponse> commandHandler,
             [FromBody] SendMessageCommand command,
             CancellationToken cancellationToken)
         {
             var commandResult = await commandHandler.Handle(command, cancellationToken);
 
-            return commandResult.IsSuccess ? Ok(commandResult.Value) : problemDetailsFactory.GetProblemDetails(commandResult);
+            return commandResult.IsSuccess ? Ok(commandResult.Value.Message) : problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         [HttpPost("/api/private-chats")]

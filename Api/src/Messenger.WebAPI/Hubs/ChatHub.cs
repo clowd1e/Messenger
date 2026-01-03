@@ -3,6 +3,7 @@ using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.WebAPI.Extensions;
 using Messenger.WebAPI.Factories;
+using Messenger.WebAPI.Hubs.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,16 @@ namespace Messenger.WebAPI.Hubs
     public sealed class ChatHub(
         ProblemDetailsFactory problemDetailsFactory) : Hub<IChatHub>
     {
+        private const string UserGroup = "user_";
+
         public override async Task OnConnectedAsync()
         {
+            var userId = Context.UserIdentifier!;
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"{UserGroup}{userId}");
         }
 
         public async Task SendMessage(
-            [FromServices] ICommandHandler<SendMessageCommand, MessageResponse> commandHandler,
+            [FromServices] ICommandHandler<SendMessageCommand, SendMessageResponse> commandHandler,
             SendMessageCommand command)
         {
             var commandResult = await commandHandler.Handle(command, default);
@@ -32,7 +37,11 @@ namespace Messenger.WebAPI.Hubs
 
             var response = commandResult.Value;
 
-            await Clients.Group(command.ChatId.ToString()).ReceiveUserMessage(response);
+            foreach (var participantId in response.ChatParticipantsIds)
+            {
+                var hubResponse = new SendMessageHubResponse(response.ChatId, response.Message);
+                await Clients.Group($"{UserGroup}{participantId}").ReceiveUserMessage(hubResponse);
+            }
         }
 
         public async Task JoinChat(Guid chatId)

@@ -9,9 +9,10 @@ import { GroupChat } from '../../../../../models/group-chat';
 @Component({
   selector: 'app-chat-item',
   standalone: true,
-  imports: [RouterModule, DatePipe],
+  imports: [RouterModule],
   templateUrl: './chat-item.component.html',
-  styleUrl: './chat-item.component.scss'
+  styleUrl: './chat-item.component.scss',
+  providers: [DatePipe]
 })
 export class ChatItemComponent {
   chat = input.required<Chat>();
@@ -19,6 +20,7 @@ export class ChatItemComponent {
 
   router = inject(Router);
   mainStorage = inject(MainStorageService);
+  datePipe = inject(DatePipe);
 
   chatName = computed(() => {
     if (this.chat().type === 'private') {
@@ -48,6 +50,20 @@ export class ChatItemComponent {
 
   chatLastMessage = () => {
     return this.chat().lastMessage;
+  }
+
+  chatLastMessageTime = () => {
+    const date = new Date(this.chatLastMessage().timestamp);
+    const today = new Date();
+    if (date.toDateString() === today.toDateString()) {
+      return this.datePipe.transform(date, 'HH:mm');
+    }
+    
+    if (date.getFullYear() === today.getFullYear()) {
+      return date.toLocaleDateString("en-US", { day: '2-digit', month: 'short' });
+    } else {
+      return date.toLocaleDateString("en-US", { day: '2-digit', month: 'short', year: 'numeric' });
+    }
   }
 
   openChat(chatId: string) {

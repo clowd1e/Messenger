@@ -4,8 +4,8 @@ import * as signalR from '@microsoft/signalr';
 import { environment } from '../../../../environments/environment';
 import { StorageService } from '../../../shared/services/storage.service';
 import { SendMessageCommand } from '../models/send-message-command';
-import { Message } from '../models/message';
 import { SignalrAccessTokenFactoryService } from '../../../shared/services/signalr-access-token-factory.service';
+import { MessageHubResponse } from '../models/message-hub-response';
 
 @Injectable({
   providedIn: 'root'
@@ -59,39 +59,8 @@ export class SignalrService {
       // .then(() => console.log('Message sent successfully'))
       // .catch(err => console.error('Error sending message:', err));
   }
-
-  async joinChat(chatId: string): Promise<void> {
-    await this.ensureConnected();
-
-    return this.hubConnection.invoke('JoinChat', chatId);
-    //   .then(() => console.log('Joined chat successfully'))
-    //   .catch(err => console.error('Error joining chat:', err));
-  }
-
-  private async ensureConnected(): Promise<void> {
-    if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      // console.log('SignalR is already connected.');
-      return;
-    }
   
-    if (this.hubConnection.state === signalR.HubConnectionState.Connecting) {
-      // console.log('SignalR is already connecting. Waiting...');
-      while (this.hubConnection.state === signalR.HubConnectionState.Connecting) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-      return;
-    }
-  
-    if (this.hubConnection.state !== signalR.HubConnectionState.Disconnected) {
-      // console.warn(`Cannot start SignalR connection because the state is: ${this.hubConnection.state}`);
-      return;
-    }
-  
-    // console.log('Starting SignalR connection...');
-    await this.connect();
-  }
-  
-  listenForMessages(onMessageReceived: (message: Message) => void): void {
+  listenForMessages(onMessageReceived: (messageResponse: MessageHubResponse) => void): void {
     this.hubConnection.on('ReceiveUserMessage', onMessageReceived);
   }
   

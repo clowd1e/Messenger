@@ -54,6 +54,10 @@
                 line-height: 12px;
                 cursor: pointer;
                 color: var(--add-chat-modal-close-button-color);
+
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
             }
 
             .user-search-box {
@@ -76,6 +80,9 @@
 
             .or {
                 color: var(--add-chat-modal-text-color);
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
             }
         }
 
@@ -93,6 +100,9 @@
 
             p {
                 color: var(--add-chat-modal-text-color);
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
             }
 
             .users-list {
