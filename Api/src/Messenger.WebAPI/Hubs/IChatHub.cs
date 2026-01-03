@@ -1,4 +1,5 @@
 ﻿using Messenger.Application.Features.Chats.DTO.Responses;
+using Messenger.WebAPI.Hubs.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.WebAPI.Hubs
@@ -9,7 +10,7 @@ namespace Messenger.WebAPI.Hubs
 
         Task ReceiveUserChats(IEnumerable<ChatResponse> chats);
 
-        Task ReceiveUserMessage(MessageResponse message);
+        Task ReceiveUserMessage(SendMessageHubResponse response);
 
         Task ReceiveChat(ChatResponse chat);
     }

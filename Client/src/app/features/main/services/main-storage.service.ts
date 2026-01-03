@@ -4,6 +4,7 @@ import { Chat } from '../models/chat';
 import { ChatMessagesData } from '../models/chat-messages-data';
 import { ChatMessagesMetadata as ChatMessagesMetadata } from '../models/chat-messages-chunks-metadata';
 import { environment } from '../../../../environments/environment';
+import { MessageHubResponse } from '../models/message-hub-response';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +17,14 @@ export class MainStorageService {
   private selectedChat = signal<Chat | null>(null);
   private currentUserId: string | null = null;
   private chatMessages = signal<Record<string, ChatMessagesData>>({});
+  private lastReceivedMessage = signal<MessageHubResponse | null>(null);
 
   get MessagesPageSize(): number {
     return MainStorageService.MessagesPageSize;
+  }
+
+  get LastReceivedMessage(): Signal<MessageHubResponse | null> {
+    return this.lastReceivedMessage;
   }
 
   //#region CurrentUserId
@@ -139,21 +145,30 @@ export class MainStorageService {
     }));
   }
 
-  appendMessageToSelectedChat(message: Message) {
-    if (!this.SelectedChatId()) {
-      throw new Error('No chat is selected.');
+  appendMessageToChat(messageResponse: MessageHubResponse) {
+    const chatMessagesData = this.chatMessages()[messageResponse.chatId];
+    const chat = this.chats().find(c => c.id === messageResponse.chatId);
+    if (!chatMessagesData) {
+      throw new Error(`Chat with id ${messageResponse.chatId} not found in storage.`);
+    }
+    if (!chat) {
+      throw new Error(`Chat with id ${messageResponse.chatId} not found in chats list.`);
     }
 
-    const chatMessagesData = this.chatMessages()[this.SelectedChatId()!];
-    if (!chatMessagesData) {
-      throw new Error(`Chat with id ${this.SelectedChatId()!} not found in storage.`);
-    }
+    const message = messageResponse.message;
+    chat.lastMessage = message;
+    this.chats.update(chats => {
+      const otherChats = chats.filter(c => c.id !== chat.id);
+      return [chat, ...otherChats];
+    });
 
     chatMessagesData.messages.update(messages => [...messages, message]);
     this.chatMessages.update(messagesRecord => ({
       ...messagesRecord,
-      [this.SelectedChatId()!]: chatMessagesData
+      [messageResponse.chatId]: chatMessagesData
     }));
+
+    this.lastReceivedMessage.set(messageResponse);
   }
 
   saveChatScroll(chatId: string, scrollPosition: number) {

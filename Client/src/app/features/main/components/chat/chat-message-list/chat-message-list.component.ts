@@ -63,6 +63,28 @@ export class ChatMessageListComponent {
     });
   });
 
+  onMessageReceivedEffect = effect(() => {
+    const lastMessageResponse = this.mainStorage.LastReceivedMessage();
+    if (!lastMessageResponse) return;
+    untracked(() => {
+      const currentChatId = this.mainStorage.SelectedChatId();
+      if (lastMessageResponse.chatId !== currentChatId) return;
+
+      const container = this.messageList?.nativeElement;
+      if (!container) return;
+      const distanceFromBottom = container.scrollHeight - (container.scrollTop + container.clientHeight);
+      const userIsAtBottom = distanceFromBottom < 100;
+      if (userIsAtBottom) {
+        this.scrollToBottom();
+      } else {
+        const savedScrollTop = container.scrollTop;
+        requestAnimationFrame(() => {
+          container.scrollTop = savedScrollTop;
+        });
+      }
+    });
+  });
+
   isGroupChat = computed(() => this.mainStorage.SelectedChat()!.type === 'group');
 
   messageRenderItems = computed<MessageRenderItem[]>(() => {
@@ -132,7 +154,6 @@ export class ChatMessageListComponent {
       return date.toLocaleDateString("en-US", { day: '2-digit', month: 'short' });
     } else {
       return date.toLocaleDateString("en-US", { day: '2-digit', month: 'short', year: 'numeric' });
-
     }
   }
 
@@ -212,16 +233,11 @@ export class ChatMessageListComponent {
 
     const scrollContainer = this.messageList.nativeElement;
 
-    // this.renderer.setStyle(scrollContainer, 'opacity', '0');
-
-    // scrollContainer.scrollTop = scrollContainer.scrollHeight;
     requestAnimationFrame(() => {
       scrollContainer.scroll({
         top: scrollContainer.scrollHeight,
         behavior: 'auto'
       });
     });
-
-    // this.renderer.setStyle(scrollContainer, 'opacity', '100');
   }
 }

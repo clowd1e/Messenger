@@ -9,7 +9,6 @@ import { CommonModule } from '@angular/common';
 import { ChatComponent } from './components/chat/chat.component';
 import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Message } from './models/message';
 import { PaginatedChatsResponse } from './models/paginated-chats-response';
 import { UserContextService } from '../../shared/services/user-context.service';
 import { ApiService } from '../../shared/services/api.service';
@@ -23,6 +22,7 @@ import { GroupChat } from './models/group-chat';
 import { PrivateChat } from './models/private-chat';
 import { environment } from '../../../environments/environment';
 import { StorageService } from '../../shared/services/storage.service';
+import { MessageHubResponse } from './models/message-hub-response';
 
 @Component({
   selector: 'app-main',
@@ -106,7 +106,6 @@ export class MainComponent implements OnInit {
     const chatId = this.uuidHelper.toUuid(this.route.snapshot.paramMap.get('chatId'));
 
     if (chatId) {
-      this.signalrService.joinChat(chatId);
       this.mainStorage.selectChat(chatId);
     } else {
       this.mainStorage.unsetSelectedChat();
@@ -236,8 +235,8 @@ export class MainComponent implements OnInit {
     this.signalrService.sendMessage(command);
   }
 
-  private handleMessageReceived(message: Message): void {
-    this.mainStorage.appendMessageToSelectedChat(message);
+  private handleMessageReceived(messageResponse: MessageHubResponse): void {
+    this.mainStorage.appendMessageToChat(messageResponse);
   }
 
   private handleErrorReceived(error: any): void {

@@ -14,7 +14,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Chats.Commands.SendMessage
 {
     internal sealed class SendMessageCommandHandler
-        : ICommandHandler<SendMessageCommand, MessageResponse>
+        : ICommandHandler<SendMessageCommand, SendMessageResponse>
     {
         private readonly IChatRepository _chatRepository;
         private readonly IMessageRepository _messageRepository;
@@ -42,7 +42,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<MessageResponse>> Handle(
+        public async Task<Result<SendMessageResponse>> Handle(
             SendMessageCommand command,
             CancellationToken cancellationToken)
         {
@@ -65,7 +65,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
 
             if (chat is null)
             {
-                return Result.Failure<MessageResponse>(ChatErrors.NotFound);
+                return Result.Failure<SendMessageResponse>(ChatErrors.NotFound);
             }
 
             // Check if user is in chat
@@ -73,7 +73,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
 
             if (!isUserInChat)
             {
-                return Result.Failure<MessageResponse>(ChatErrors.UserNotInChat);
+                return Result.Failure<SendMessageResponse>(ChatErrors.UserNotInChat);
             }
 
             // Map command to message
@@ -84,7 +84,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
 
             if (mappingResult.IsFailure)
             {
-                return Result.Failure<MessageResponse>(mappingResult.Error);
+                return Result.Failure<SendMessageResponse>(mappingResult.Error);
             }
 
             var message = mappingResult.Value;
@@ -97,7 +97,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
 
             if (addMessageToUserResult.IsFailure)
             {
-                return Result.Failure<MessageResponse>(addMessageToUserResult.Error);
+                return Result.Failure<SendMessageResponse>(addMessageToUserResult.Error);
             }
 
             // Add message to chat
@@ -105,7 +105,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
 
             if (addMessageToChatResult.IsFailure)
             {
-                return Result.Failure<MessageResponse>(addMessageToChatResult.Error);
+                return Result.Failure<SendMessageResponse>(addMessageToChatResult.Error);
             }
 
             await _messageRepository.InsertAsync(message, cancellationToken);
@@ -115,7 +115,11 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
             // Save changes to database
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return messageResponse;
+            var participantsIds = chat.Participants.Select(p => p.Id.Value).ToList();
+
+            var response = new SendMessageResponse(participantsIds, chat.Id.Value, messageResponse);
+
+            return response;
         }
     }
 }

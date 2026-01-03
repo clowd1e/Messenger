@@ -5,5 +5,5 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
 {
     public sealed record SendMessageCommand(
         Guid ChatId,
-        string Message) : ICommand<MessageResponse>;
+        string Message) : ICommand<SendMessageResponse>;
 }
