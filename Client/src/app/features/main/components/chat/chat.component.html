@@ -5,12 +5,17 @@
         <p class="chat-not-selected">Select chat to start messaging</p>
     } @else {
         <app-chat-info-header 
+            [isAddGroupChatRoute]="isAddGroupChatRoute()"
             class="chat-info-header"></app-chat-info-header>
         <div class="chat-message-list-wrapper">
-            <app-chat-message-list 
-                class="chat-message-list"
-                [isAddPrivateChatRoute]="isAddPrivateChatRoute()"
-                [isAddGroupChatRoute]="isAddGroupChatRoute()"></app-chat-message-list>
+            @if (isAddPrivateChatRoute() || isAddGroupChatRoute()) {
+                <div class="chat-message-list-empty-state">
+                    <p>Start typing below to create the chat</p>
+                </div>
+            } @else {
+                <app-chat-message-list 
+                    class="chat-message-list"></app-chat-message-list>
+            }
         </div>
         <app-chat-input 
             class="chat-input"

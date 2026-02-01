@@ -81,6 +81,7 @@ namespace Messenger.Application.Features.Chats.Mappers
             return new ShortUserResponse(
                 Id: user.Id.Value,
                 Name: user.Name.Value,
+                Username: user.Username.Value,
                 IconUri: user.IconUri?.Value);
         }
 

@@ -9,7 +9,7 @@ namespace Messenger.WebAPI.Extensions.DI
             services.AddSignalR(options =>
             {
                 options.KeepAliveInterval = TimeSpan.FromSeconds(10);
-            });
+            }).ConfigureJsonOptions();
 
             return services;
         }

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Messenger.Application.Features.Chats.DTO.Responses
+﻿namespace Messenger.Application.Features.Chats.DTO.Responses
 {
     public abstract record ChatResponse(
         Guid Id,

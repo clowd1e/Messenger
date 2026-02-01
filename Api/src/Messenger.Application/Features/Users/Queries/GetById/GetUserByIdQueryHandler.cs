@@ -7,20 +7,20 @@ using Messenger.Domain.Aggregates.Users;
 namespace Messenger.Application.Features.Users.Queries.GetById
 {
     internal sealed class GetUserByIdQueryHandler
-        : IQueryHandler<GetUserByIdQuery, UserResponse>
+        : IQueryHandler<GetUserByIdQuery, ShortUserResponse>
     {
         private readonly IUserRepository _userRepository;
-        private readonly Mapper<User, UserResponse> _userMapper;
+        private readonly Mapper<User, ShortUserResponse> _userMapper;
 
         public GetUserByIdQueryHandler(
             IUserRepository userRepository,
-            Mapper<User, UserResponse> userMapper)
+            Mapper<User, ShortUserResponse> userMapper)
         {
             _userRepository = userRepository;
             _userMapper = userMapper;
         }
 
-        public async Task<Result<UserResponse>> Handle(
+        public async Task<Result<ShortUserResponse>> Handle(
             GetUserByIdQuery request,
             CancellationToken cancellationToken)
         {
@@ -29,7 +29,7 @@ namespace Messenger.Application.Features.Users.Queries.GetById
 
             if (user is null)
             {
-                return Result.Failure<UserResponse>(UserErrors.NotFound);
+                return Result.Failure<ShortUserResponse>(UserErrors.NotFound);
             }
 
             return _userMapper.Map(user);

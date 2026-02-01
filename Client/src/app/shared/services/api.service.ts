@@ -130,6 +130,10 @@ export class ApiService {
     return this.httpClient.get<ValidateEmailConfirmationResponse>(`${this.apiUrl}/validate-email-confirmation`, options);
   }
 
+  getUserById(userId: string): Observable<User> {
+    return this.httpClient.get<User>(`${this.apiUrl}/users/${userId}`);
+  }
+
   validatePasswordRecovery(userId: string, tokenId: string): Observable<void> {
     const options = { 
       params: new HttpParams()

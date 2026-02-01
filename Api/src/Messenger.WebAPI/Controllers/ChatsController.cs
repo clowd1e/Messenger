@@ -10,8 +10,10 @@ using Messenger.Application.Features.Chats.Queries.GetCurrentUserChats;
 using Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated;
 using Messenger.WebAPI.CommandWrappers.CreateGroupChat;
 using Messenger.WebAPI.Factories;
+using Messenger.WebAPI.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Messenger.WebAPI.Controllers
@@ -20,7 +22,8 @@ namespace Messenger.WebAPI.Controllers
     [ApiController]
     [Authorize]
     public class ChatsController(
-        ProblemDetailsFactory problemDetailsFactory) : ControllerBase
+        ProblemDetailsFactory problemDetailsFactory,
+        IHubContext<ChatHub, IChatHub> hubContext) : ControllerBase
     {
         #region Queries
 
@@ -110,7 +113,7 @@ namespace Messenger.WebAPI.Controllers
 
         [HttpPost("/api/private-chats")]
         public async Task<IActionResult> CreatePrivateChat(
-            [FromServices] ICommandHandler<CreatePrivateChatCommand, Guid> commandHandler,
+            [FromServices] ICommandHandler<CreatePrivateChatCommand, PrivateChatResponse> commandHandler,
             [FromBody] CreatePrivateChatCommand command,
             CancellationToken cancellationToken)
         {
@@ -118,9 +121,15 @@ namespace Messenger.WebAPI.Controllers
 
             if (commandResult.IsSuccess)
             {
+                foreach (var participant in commandResult.Value.Participants)
+                {
+                    await hubContext.Clients.Group($"{ChatHub.UserGroup}{participant.Id}")
+                        .ReceiveChat(commandResult.Value);
+                }
+
                 return CreatedAtAction(
                     actionName: nameof(GetChatById),
-                    routeValues: new { chatId = commandResult.Value },
+                    routeValues: new { chatId = commandResult.Value.Id },
                     value: commandResult.Value);
             }
 
@@ -130,7 +139,7 @@ namespace Messenger.WebAPI.Controllers
         [HttpPost("/api/group-chats")]
         [Consumes(Multipart.FormData)]
         public async Task<IActionResult> CreateGroupChat(
-            [FromServices] ICommandHandler<CreateGroupChatCommand, Guid> commandHandler,
+            [FromServices] ICommandHandler<CreateGroupChatCommand, GroupChatResponse> commandHandler,
             [FromForm] CreateGroupChatCommandWrapper wrapper,
             CancellationToken cancellationToken)
         {
@@ -138,9 +147,15 @@ namespace Messenger.WebAPI.Controllers
 
             if (commandResult.IsSuccess)
             {
+                foreach (var participant in commandResult.Value.Participants)
+                {
+                    await hubContext.Clients.Group($"{ChatHub.UserGroup}{participant.User.Id}")
+                        .ReceiveChat(commandResult.Value);
+                }
+
                 return CreatedAtAction(
                     actionName: nameof(GetChatById),
-                    routeValues: new { chatId = commandResult.Value },
+                    routeValues: new { chatId = commandResult.Value.Id },
                     value: commandResult.Value);
             }
 
