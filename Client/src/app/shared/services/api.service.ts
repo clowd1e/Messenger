@@ -16,6 +16,8 @@ import { PaginatedMessagesResponse } from '../../features/main/models/paginated-
 import { User } from '../../features/main/models/user';
 import { ChatExistsResponse } from '../../features/main/components/aside/chats-aside/add-chat-page/models/chat-exists-response';
 import { CreateGroupChatCommand } from '../../features/main/models/create-group-chat-command';
+import { RequestPasswordRecoveryRequest } from '../../features/forgot-password/models/request-password-recovery-request';
+import { ResetPasswordRequest } from '../../features/reset-password/models/reset-password-request';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +37,14 @@ export class ApiService {
 
   refresh(refreshTokenRequest: RefreshTokenRequest): Observable<RefreshTokenResponse> {
     return this.httpClient.post<RefreshTokenResponse>(`${this.apiUrl}/refresh`, refreshTokenRequest);
+  }
+
+  requestPasswordRecovery(request: RequestPasswordRecoveryRequest): Observable<void> {
+    return this.httpClient.post<void>(`${this.apiUrl}/request-password-recovery`, request);
+  }
+
+  resetPassword(request: ResetPasswordRequest): Observable<void> {
+    return this.httpClient.post<void>(`${this.apiUrl}/reset-password`, request);
   }
 
   getUserChats(): Observable<Chat[]> {
@@ -118,5 +128,15 @@ export class ApiService {
     };
 
     return this.httpClient.get<ValidateEmailConfirmationResponse>(`${this.apiUrl}/validate-email-confirmation`, options);
+  }
+
+  validatePasswordRecovery(userId: string, tokenId: string): Observable<void> {
+    const options = { 
+      params: new HttpParams()
+        .set('userId', userId)
+        .set('tokenId', tokenId)
+    };
+
+    return this.httpClient.get<void>(`${this.apiUrl}/validate-password-recovery`, options);
   }
 }

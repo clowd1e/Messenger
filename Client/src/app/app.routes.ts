@@ -7,6 +7,9 @@ import { EmailConfirmComponent } from './features/email-confirm/email-confirm.co
 import { DefaultLayoutComponent } from './layouts/default-layout/default-layout.component';
 import { LayoutWithThemeSwitchComponent } from './layouts/layout-with-theme-switch/layout-with-theme-switch.component';
 import { RegistrationSuccessComponent } from './features/registration-success/registration-success.component';
+import { ForgotPasswordComponent } from './features/forgot-password/forgot-password.component';
+import { ForgotPasswordSuccessComponent } from './features/forgot-password-success/forgot-password-success.component';
+import { ResetPasswordComponent } from './features/reset-password/reset-password.component';
 
 export const routes: Routes = [
     {
@@ -36,6 +39,21 @@ export const routes: Routes = [
             {
                 path: 'signup/success',
                 component: RegistrationSuccessComponent,
+                pathMatch: 'full'
+            },
+            {
+                path: 'forgot-password',
+                component: ForgotPasswordComponent,
+                pathMatch: 'full'
+            },
+            {
+                path: 'forgot-password/success',
+                component: ForgotPasswordSuccessComponent,
+                pathMatch: 'full'
+            },
+            {
+                path: 'reset-password',
+                component: ResetPasswordComponent,
                 pathMatch: 'full'
             }
         ]

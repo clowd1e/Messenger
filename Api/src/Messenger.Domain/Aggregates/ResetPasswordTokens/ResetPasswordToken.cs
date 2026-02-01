@@ -47,7 +47,7 @@ namespace Messenger.Domain.Aggregates.ResetPasswordTokens
             }
         }
 
-        public bool IsActive => !IsUsed && ExpiresAt.Value < DateTime.UtcNow;
+        public bool IsActive => !IsUsed && ExpiresAt.Value > DateTime.UtcNow;
 
         public bool IsUsed { get; private set; }
 

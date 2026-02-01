@@ -29,6 +29,7 @@ html, body {
     @include colors.modal-light-theme-colors;
     @include colors.search-bar-light-theme-colors;
     @include colors.date-badge-light-theme-colors;
+    @include colors.forgot-password-success-light-theme-colors;
 }
 
 .dark-theme {
@@ -42,4 +43,5 @@ html, body {
     @include colors.modal-dark-theme-colors;
     @include colors.search-bar-dark-theme-colors;
     @include colors.date-badge-dark-theme-colors;
+    @include colors.forgot-password-success-dark-theme-colors;
 }

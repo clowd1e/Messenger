@@ -217,3 +217,13 @@ $default-username-color: #000000;
     --date-badge-background-color: #353B74;
     --date-badge-text-color: #F5F5F5;
 }
+
+@mixin forgot-password-success-light-theme-colors {
+    --forgot-password-success-bg-color: #FBFBFB;
+    --forgot-password-success-text-color: #000000;
+}
+
+@mixin forgot-password-success-dark-theme-colors {
+    --forgot-password-success-bg-color: #111111;
+    --forgot-password-success-text-color: #FFFFFF;
+}

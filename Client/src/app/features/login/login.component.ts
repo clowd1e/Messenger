@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { StorageService } from '../../shared/services/storage.service';
 import { LoginResponse } from './models/login-response';
 import { AuthInputComponent } from '../../shared/components/auth/auth-input/auth-input.component';
@@ -50,7 +50,6 @@ export class LoginComponent extends FormWithErrors {
   formStatusSubscription?: Subscription;
   submitButtonDisabled: WritableSignal<boolean> = signal(true);
 
-  httpClient = inject(HttpClient);
   apiService = inject(ApiService);
   storageService = inject(StorageService);
   router = inject(Router);
