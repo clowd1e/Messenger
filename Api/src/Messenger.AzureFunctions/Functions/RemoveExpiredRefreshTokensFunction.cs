@@ -24,7 +24,7 @@ namespace Messenger.AzureFunctions.Functions
 
         [Function("remove-expired-refresh-tokens")]
         public async Task Run(
-            [TimerTrigger($"%{nameof(TimeTriggerSettings)}:{nameof(TimeTriggerSettings.RefreshTokenCleanupSchedule)}%")] TimerInfo myTimer)
+            [TimerTrigger($"%{nameof(TimeTriggerSettings)}:{nameof(TimeTriggerSettings.RefreshTokenCleanupSchedule)}%")] TimerInfo _)
         {
             _logger.LogInformation("Starting remove-expired-refresh-tokens function: {executionTime}", DateTime.UtcNow);
 

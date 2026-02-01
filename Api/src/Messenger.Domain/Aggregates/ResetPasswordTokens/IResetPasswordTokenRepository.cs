@@ -19,5 +19,9 @@ namespace Messenger.Domain.Aggregates.ResetPasswordTokens
         Task<int> CountActiveTokensAsync(
             UserId id,
             CancellationToken cancellationToken);
+
+        Task<IEnumerable<ResetPasswordToken>> GetExpiredTokensAsync();
+
+        Task RemoveAsync(IEnumerable<ResetPasswordToken> expiredTokens);
     }
 }

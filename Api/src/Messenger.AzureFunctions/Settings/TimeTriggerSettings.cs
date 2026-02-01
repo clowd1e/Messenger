@@ -13,5 +13,9 @@ namespace Messenger.AzureFunctions.Settings
         [Required]
         [CronExpression]
         public required string UsersWithUnconfirmedEmailsCleanupSchedule { get; set; }
+
+        [Required]
+        [CronExpression]
+        public required string ResetPasswordTokenCleanupSchedule { get; set; }
     }
 }

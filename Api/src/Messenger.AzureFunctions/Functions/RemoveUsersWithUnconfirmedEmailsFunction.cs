@@ -33,7 +33,7 @@ namespace Messenger.AzureFunctions.Functions
 
         [Function("remove-users-with-unconfirmed-emails")]
         public async Task Run(
-            [TimerTrigger($"%{nameof(TimeTriggerSettings)}:{nameof(TimeTriggerSettings.UsersWithUnconfirmedEmailsCleanupSchedule)}%")] TimerInfo myTimer)
+            [TimerTrigger($"%{nameof(TimeTriggerSettings)}:{nameof(TimeTriggerSettings.UsersWithUnconfirmedEmailsCleanupSchedule)}%")] TimerInfo _)
         {
             _logger.LogInformation("Starting remove-users-with-unconfirmed-emails function: {executionTime}", DateTime.UtcNow);
 
