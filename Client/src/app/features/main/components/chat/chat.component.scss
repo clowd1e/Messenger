@@ -24,6 +24,21 @@
         flex: 1 1 auto;
         overflow-y: hidden;
 
+        .chat-message-list-empty-state {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            color: var(--main-chat-start-messaging-color);
+            font-size: 24px;
+            text-align: center;
+            padding: 0px 20px;
+            
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
         .chat-message-list {
             max-width: 800px;
             width: 100%;

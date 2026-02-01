@@ -6,20 +6,20 @@ using Messenger.Domain.Aggregates.Users;
 namespace Messenger.Application.Features.Users.Queries.GetAll
 {
     internal sealed class GetAllUsersQueryHandler
-        : IQueryHandler<GetAllUsersQuery, IEnumerable<UserResponse>>
+        : IQueryHandler<GetAllUsersQuery, IEnumerable<ShortUserResponse>>
     {
         private readonly IUserRepository _userRepository;
-        private readonly Mapper<User, UserResponse> _userMapper;
+        private readonly Mapper<User, ShortUserResponse> _userMapper;
 
         public GetAllUsersQueryHandler(
             IUserRepository userRepository,
-            Mapper<User, UserResponse> userMapper)
+            Mapper<User, ShortUserResponse> userMapper)
         {
             _userRepository = userRepository;
             _userMapper = userMapper;
         }
 
-        public async Task<Result<IEnumerable<UserResponse>>> Handle(
+        public async Task<Result<IEnumerable<ShortUserResponse>>> Handle(
             GetAllUsersQuery request,
             CancellationToken cancellationToken)
         {

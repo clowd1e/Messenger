@@ -1,7 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UuidHelperService } from '../../shared/services/uuid-helper.service';
-import { firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, map, Subscription } from 'rxjs';
 import { Chat } from './models/chat';
 import { CreatePrivateChatCommand } from './models/create-private-chat-command';
 import { SendMessageCommand } from './models/send-message-command';
@@ -12,7 +12,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { PaginatedChatsResponse } from './models/paginated-chats-response';
 import { UserContextService } from '../../shared/services/user-context.service';
 import { ApiService } from '../../shared/services/api.service';
-import { SignalrService } from './services/signalr.service';
 import { ChatsAsideComponent } from "./components/aside/chats-aside/chats-aside.component";
 import { ChatExistsResponse } from './components/aside/chats-aside/add-chat-page/models/chat-exists-response';
 import { GroupCreationStore } from './components/aside/chats-aside/add-chat-page/services/group-creation-store.service';
@@ -23,6 +22,8 @@ import { PrivateChat } from './models/private-chat';
 import { environment } from '../../../environments/environment';
 import { StorageService } from '../../shared/services/storage.service';
 import { MessageHubResponse } from './models/message-hub-response';
+import { User } from './models/user';
+import { SignalrService } from './services/signalr.service';
 
 @Component({
   selector: 'app-main',
@@ -32,14 +33,17 @@ import { MessageHubResponse } from './models/message-hub-response';
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss'
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
+  private messagesSubscription: Subscription | null = null;
+  private errorSubscription: Subscription | null = null;
+  private chatCreatedSubscription: Subscription | null = null;
+
   isAddPrivateChatRoute = signal<boolean>(false);
   isAddGroupChatRoute = signal<boolean>(false);
   chatsLoading: boolean = false;
   chatRetrievalCutoff = new Date();
 
   apiService = inject(ApiService);
-  signalrService = inject(SignalrService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   userContextService = inject(UserContextService);
@@ -48,6 +52,7 @@ export class MainComponent implements OnInit {
   groupCreationStore = inject(GroupCreationStore);
   storageService = inject(StorageService);
   mainStorage = inject(MainStorageService);
+  signalrService = inject(SignalrService);
 
   async ngOnInit() {
     this.loadUserThemePreference();
@@ -74,6 +79,10 @@ export class MainComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.disposeSignalRConnections();
+  }
+
   loadUserThemePreference() {
     let themePreference = this.storageService.getThemePreference();
     let isDarkTheme = themePreference === 'dark';
@@ -81,10 +90,37 @@ export class MainComponent implements OnInit {
   }
 
   private connectSignalR() : void {
-    this.signalrService.connect().then(() => {
-      this.signalrService.listenForMessages(this.handleMessageReceived.bind(this));
-      this.signalrService.listenForErrors(this.handleErrorReceived.bind(this));
-    })
+    this.signalrService.connect();
+    this.messagesSubscription = this.signalrService.messages$.subscribe(
+      (messageResponse: MessageHubResponse) => {
+        this.handleMessageReceived(messageResponse);
+      }
+    );
+    this.errorSubscription = this.signalrService.errors$.subscribe(
+      (error: any) => {
+        this.handleErrorReceived(error);
+      }
+    );
+    this.chatCreatedSubscription = this.signalrService.chatCreated$.subscribe(
+      (chatResponse: Chat) => {
+        this.handleChatCreated(chatResponse);
+      }
+    );
+  }
+
+  private disposeSignalRConnections() : void {
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+      this.messagesSubscription = null;
+    }
+    if (this.errorSubscription) {
+      this.errorSubscription.unsubscribe();
+      this.errorSubscription = null;
+    }
+    if (this.chatCreatedSubscription) {
+      this.chatCreatedSubscription.unsubscribe();
+      this.chatCreatedSubscription = null;
+    }
   }
 
   private async loadUserChats() : Promise<void> {
@@ -148,15 +184,19 @@ export class MainComponent implements OnInit {
     });
 
     if (userId) {
-      let privateChat: PrivateChat = {
-        id: 'temp-private-chat-id',
-        type: 'private',
-        creationDate: '',
-        lastMessage: null!,
-        participants: []
-      };
+      this.apiService.getUserById(userId!).subscribe({
+        next: (user: User) => {
+          let privateChat: PrivateChat = {
+            id: 'temp-private-chat-id',
+            type: 'private',
+            creationDate: '',
+            lastMessage: null!,
+            participants: [user]
+          };
 
-      this.mainStorage.selectChatByItem(privateChat);
+          this.mainStorage.selectChatByItem(privateChat);
+        }
+      });
     } else {
       this.mainStorage.unsetSelectedChat();
     }
@@ -176,17 +216,6 @@ export class MainComponent implements OnInit {
       }
 
       this.apiService.createPrivateChat(command).subscribe({
-        next: (chatId: string) => {
-          this.apiService.getChatById(chatId).subscribe({
-            next: (chat: Chat) => {
-              this.mainStorage.insertAtStart(chat);
-              this.mainStorage.selectChatByItem(chat);
-              
-              let shortChatId = this.uuidHelper.toShortUuid(chat.id);
-              this.router.navigateByUrl(`/chats/${shortChatId}`);
-            }
-          });
-        },
         error: (httpError: any) => {
           this.errorHandler.handleHttpError(httpError);
         }
@@ -206,17 +235,6 @@ export class MainComponent implements OnInit {
       }
 
       this.apiService.createGroupChat(command).subscribe({
-        next: (chatId: string) => {
-          this.apiService.getChatById(chatId).subscribe({
-            next: (chat: Chat) => {
-              this.mainStorage.insertAtStart(chat);
-              this.mainStorage.selectChatByItem(chat);
-              
-              let shortChatId = this.uuidHelper.toShortUuid(chat.id);
-              this.router.navigateByUrl(`/chats/${shortChatId}`);
-            }
-          });
-        },
         error: (httpError: any) => {
           this.errorHandler.handleHttpError(httpError);
         }
@@ -241,6 +259,16 @@ export class MainComponent implements OnInit {
 
   private handleErrorReceived(error: any): void {
     this.errorHandler.handleError(error);
+  }
+
+  private handleChatCreated(chatResponse: Chat): void {
+    this.mainStorage.insertAtStart(chatResponse);
+    if (this.isAddPrivateChatRoute() || this.isAddGroupChatRoute()) {
+      // this.mainStorage.selectChat(chatResponse.id);
+      // this.isAddPrivateChatRoute.set(false);
+      // this.isAddGroupChatRoute.set(false);
+      this.router.navigate(['chats', this.uuidHelper.toShortUuid(chatResponse.id)]);
+    }
   }
 }
 

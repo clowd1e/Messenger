@@ -2,7 +2,6 @@
 using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.WebAPI.Extensions;
-using Messenger.WebAPI.Factories;
 using Messenger.WebAPI.Hubs.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -12,15 +11,15 @@ using Microsoft.AspNetCore.SignalR;
 namespace Messenger.WebAPI.Hubs
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public sealed class ChatHub(
-        ProblemDetailsFactory problemDetailsFactory) : Hub<IChatHub>
+    public sealed class ChatHub() : Hub<IChatHub>
     {
-        private const string UserGroup = "user_";
+        public const string UserGroup = "user_";
 
         public override async Task OnConnectedAsync()
         {
             var userId = Context.UserIdentifier!;
-            await Groups.AddToGroupAsync(Context.ConnectionId, $"{UserGroup}{userId}");
+            var connectionId = Context.ConnectionId;
+            await Groups.AddToGroupAsync(connectionId, $"{UserGroup}{userId}");
         }
 
         public async Task SendMessage(
@@ -44,14 +43,11 @@ namespace Messenger.WebAPI.Hubs
             }
         }
 
-        public async Task JoinChat(Guid chatId)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, chatId.ToString());
-        }
-
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-
+            var userId = Context.UserIdentifier!;
+            var connectionId = Context.ConnectionId;
+            await Groups.RemoveFromGroupAsync(connectionId, $"{UserGroup}{userId}");
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Messenger.WebAPI.Controllers
 
         [HttpGet("{userId:guid}")]
         public async Task<IActionResult> GetUserById(
-            [FromServices] IQueryHandler<GetUserByIdQuery, UserResponse> queryHandler,
+            [FromServices] IQueryHandler<GetUserByIdQuery, ShortUserResponse> queryHandler,
             [FromRoute] Guid userId,
             CancellationToken cancellationToken)
         {
@@ -35,7 +35,7 @@ namespace Messenger.WebAPI.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAllUsers(
-            [FromServices] IQueryHandler<GetAllUsersQuery, IEnumerable<UserResponse>> queryHandler,
+            [FromServices] IQueryHandler<GetAllUsersQuery, IEnumerable<ShortUserResponse>> queryHandler,
             CancellationToken cancellationToken)
         {
             var query = new GetAllUsersQuery();

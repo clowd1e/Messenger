@@ -3,5 +3,6 @@
     public sealed record ShortUserResponse(
         Guid Id,
         string Name,
+        string Username,
         string? IconUri);
 }

@@ -14,4 +14,12 @@ export class GroupCreationStore {
   getGroupChat(): CreateGroupChat | null {
     return this.groupChatData;
   }
+
+  getGroupChatName(): string | null {
+    return this.groupChatData ? this.groupChatData.name : null;
+  }
+
+  getGroupChatIcon(): File | null {
+    return this.groupChatData ? this.groupChatData.icon : null;
+  }
 }

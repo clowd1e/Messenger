@@ -1,5 +1,5 @@
 ﻿using Messenger.Application.Features.Chats.DTO.Responses;
-using System.Reflection;
+using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -18,6 +18,26 @@ namespace Messenger.WebAPI.Extensions.DI
                     new DefaultJsonTypeInfoResolver
                     {
                         Modifiers = { 
+                            JsonPolymorphicModifier,
+                            PrivateChatModifier,
+                            GroupChatModifier
+                        }
+                    };
+            });
+
+            return builder;
+        }
+
+        public static ISignalRBuilder ConfigureJsonOptions(this ISignalRBuilder builder)
+        {
+            builder.AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.PayloadSerializerOptions.TypeInfoResolver =
+                    new DefaultJsonTypeInfoResolver
+                    {
+                        Modifiers = {
                             JsonPolymorphicModifier,
                             PrivateChatModifier,
                             GroupChatModifier

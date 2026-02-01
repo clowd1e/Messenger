@@ -2,6 +2,7 @@
 using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Chats.DTO.RequestModels;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.Errors;
 using Messenger.Domain.Aggregates.Messages;
@@ -12,13 +13,14 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
 {
     internal sealed class CreatePrivateChatCommandHandler
-        : ICommandHandler<CreatePrivateChatCommand, Guid>
+        : ICommandHandler<CreatePrivateChatCommand, PrivateChatResponse>
     {
         private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;
         private readonly IMessageRepository _messageRepository;
         private readonly IUserContextService<Guid> _userContextService;
         private readonly Mapper<CreatePrivateChatRequestModel, Result<PrivateChat>> _privateChatMapper;
+        private readonly Mapper<Chat, ChatResponse> _chatResponseMapper;
         private readonly Mapper<CreateMessageRequestModel, Result<Message>> _messageMapper;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -28,6 +30,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
             IMessageRepository messageRepository,
             IUserContextService<Guid> userContextService,
             Mapper<CreatePrivateChatRequestModel, Result<PrivateChat>> privateChatMapper,
+            Mapper<Chat, ChatResponse> chatResponseMapper,
             Mapper<CreateMessageRequestModel, Result<Message>> messageMapper,
             IUnitOfWork unitOfWork)
         {
@@ -36,11 +39,12 @@ namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
             _messageRepository = messageRepository;
             _userContextService = userContextService;
             _privateChatMapper = privateChatMapper;
+            _chatResponseMapper = chatResponseMapper;
             _messageMapper = messageMapper;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<Guid>> Handle(
+        public async Task<Result<PrivateChatResponse>> Handle(
             CreatePrivateChatCommand command,
             CancellationToken cancellationToken)
         {
@@ -52,7 +56,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
 
             if (inviter is null)
             {
-                return Result.Failure<Guid>(UserErrors.NotFound);
+                return Result.Failure<PrivateChatResponse>(UserErrors.NotFound);
             }
 
             // Retrieve invitee
@@ -62,13 +66,13 @@ namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
 
             if (invitee is null)
             {
-                return Result.Failure<Guid>(UserErrors.NotFound);
+                return Result.Failure<PrivateChatResponse>(UserErrors.NotFound);
             }
 
             // Check if the invitee is inviter
             if (inviter.Id == invitee.Id)
             {
-                return Result.Failure<Guid>(ChatErrors.ChatWithSameUser);
+                return Result.Failure<PrivateChatResponse>(ChatErrors.ChatWithSameUser);
             }
 
             // Check if the chat already exists
@@ -76,7 +80,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
 
             if (chatExists)
             {
-                return Result.Failure<Guid>(ChatErrors.ChatAlreadyExists);
+                return Result.Failure<PrivateChatResponse>(ChatErrors.ChatAlreadyExists);
             }
 
             // Map to PrivateChat
@@ -86,7 +90,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
 
             if (mappingResult.IsFailure)
             {
-                return Result.Failure<Guid>(mappingResult.Error);
+                return Result.Failure<PrivateChatResponse>(mappingResult.Error);
             }
 
             var privateChat = mappingResult.Value;
@@ -98,7 +102,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
 
             if (messageMappingResult.IsFailure)
             {
-                return Result.Failure<Guid>(messageMappingResult.Error);
+                return Result.Failure<PrivateChatResponse>(messageMappingResult.Error);
             }
 
             var message = messageMappingResult.Value;
@@ -111,14 +115,14 @@ namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
 
             if (addMessageToChatResult.IsFailure)
             {
-                return Result.Failure<Guid>(addMessageToChatResult.Error);
+                return Result.Failure<PrivateChatResponse>(addMessageToChatResult.Error);
             }
 
             var addMessageToUserResult = inviter.AddMessage(message);
 
             if (addMessageToUserResult.IsFailure)
             {
-                return Result.Failure<Guid>(addMessageToUserResult.Error);
+                return Result.Failure<PrivateChatResponse>(addMessageToUserResult.Error);
             }
 
             // Insert chat and message
@@ -126,7 +130,9 @@ namespace Messenger.Application.Features.Chats.Commands.CreatePrivateChat
             await _messageRepository.InsertAsync(message, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Success(privateChat.Id.Value);
+            var result = (_chatResponseMapper.Map(privateChat) as PrivateChatResponse)!;
+
+            return Result.Success(result);
         }
     }
 }

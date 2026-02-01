@@ -26,9 +26,6 @@ export class ChatMessageListComponent {
   private messageList? : ElementRef;
   private loadingMessages = false;
   private previousChatId: string | null = null;
-
-  isAddPrivateChatRoute = input.required<boolean>();
-  isAddGroupChatRoute = input.required<boolean>();
   
   userContextService = inject(UserContextService);
   renderer = inject(Renderer2);
@@ -39,7 +36,6 @@ export class ChatMessageListComponent {
   onChatChangeEffect = effect(() => {
     const chatId = this.mainStorage.SelectedChatId();
     if (!chatId) return;
-    if (this.isAddPrivateChatRoute() || this.isAddGroupChatRoute()) return;
     
     untracked(() => {
       if (this.previousChatId && this.previousChatId !== chatId) {
@@ -161,8 +157,6 @@ export class ChatMessageListComponent {
     if (this.loadingMessages) return;
     this.loadingMessages = true;
     // Prevent loading more messages if we're in the add private chat route
-    if (this.isAddPrivateChatRoute()) return;
-    if (this.isAddGroupChatRoute()) return;
     if (this.messageListEndReached()) return;
     const container = this.messageList?.nativeElement;
     if (!container) return;

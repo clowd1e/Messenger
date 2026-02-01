@@ -3,6 +3,7 @@ using Messenger.Application.Abstractions.Identity;
 using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Abstractions.Storage;
 using Messenger.Application.Features.Chats.DTO.RequestModels;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Application.Helpers;
 using Messenger.Application.Images;
 using Messenger.Domain.Aggregates.Chats;
@@ -15,7 +16,7 @@ using Messenger.Domain.Aggregates.Users.ValueObjects;
 namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
 {
     internal sealed class CreateGroupChatCommandHandler
-        : ICommandHandler<CreateGroupChatCommand, Guid>
+        : ICommandHandler<CreateGroupChatCommand, GroupChatResponse>
     {
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
@@ -23,6 +24,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
         private readonly IMessageRepository _messageRepository;
         private readonly IImageService _imageService;
         private readonly Mapper<CreateGroupChatRequestModel, Result<GroupChat>> _groupChatMapper;
+        private readonly Mapper<Chat, ChatResponse> _chatResponseMapper;
         private readonly Mapper<CreateMessageRequestModel, Result<Message>> _messageMapper;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -33,6 +35,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
             IMessageRepository messageRepository,
             IImageService imageService,
             Mapper<CreateGroupChatRequestModel, Result<GroupChat>> groupChatMapper,
+            Mapper<Chat, ChatResponse> chatResponseMapper,
             Mapper<CreateMessageRequestModel, Result<Message>> messageMapper,
             IUnitOfWork unitOfWork)
         {
@@ -42,11 +45,12 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
             _messageRepository = messageRepository;
             _imageService = imageService;
             _groupChatMapper = groupChatMapper;
+            _chatResponseMapper = chatResponseMapper;
             _messageMapper = messageMapper;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<Guid>> Handle(
+        public async Task<Result<GroupChatResponse>> Handle(
             CreateGroupChatCommand command,
             CancellationToken cancellationToken)
         {
@@ -57,7 +61,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
 
             if (inviter is null)
             {
-                return Result.Failure<Guid>(UserErrors.NotFound);
+                return Result.Failure<GroupChatResponse>(UserErrors.NotFound);
             }
 
             // Retrieve the invitees
@@ -71,13 +75,13 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
 
             if (invitees.Length != inviteesIds.Count)
             {
-                return Result.Failure<Guid>(UserErrors.NotFound);
+                return Result.Failure<GroupChatResponse>(UserErrors.NotFound);
             }
 
             // Check if inviter is in the invitees list
             if (invitees.Any(invitee => invitee.Id == inviterId))
             {
-                return Result.Failure<Guid>(UserErrors.InviterCannotBeInvitee);
+                return Result.Failure<GroupChatResponse>(UserErrors.InviterCannotBeInvitee);
             }
 
             // Upload group icon if provided
@@ -90,7 +94,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
 
                 if (!iconDimensionsValid)
                 {
-                    return Result.Failure<Guid>(ImageUriErrors.InvalidIconDimensions);
+                    return Result.Failure<GroupChatResponse>(ImageUriErrors.InvalidIconDimensions);
                 }
 
                 iconUri = await _imageService.UploadImageAsync(
@@ -109,7 +113,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
 
             if (groupChatMappingResult.IsFailure)
             {
-                return Result.Failure<Guid>(groupChatMappingResult.Error);
+                return Result.Failure<GroupChatResponse>(groupChatMappingResult.Error);
             }
 
             var groupChat = groupChatMappingResult.Value;
@@ -121,7 +125,7 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
 
             if (messageMappingResult.IsFailure)
             {
-                return Result.Failure<Guid>(messageMappingResult.Error);
+                return Result.Failure<GroupChatResponse>(messageMappingResult.Error);
             }
 
             var message = messageMappingResult.Value;
@@ -136,14 +140,14 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
 
             if (addMessageToChatResult.IsFailure)
             {
-                return Result.Failure<Guid>(addMessageToChatResult.Error);
+                return Result.Failure<GroupChatResponse>(addMessageToChatResult.Error);
             }
 
             var addMessageToUserResult = inviter.AddMessage(message);
 
             if (addMessageToUserResult.IsFailure)
             {
-                return Result.Failure<Guid>(addMessageToUserResult.Error);
+                return Result.Failure<GroupChatResponse>(addMessageToUserResult.Error);
             }
 
             // Insert chat and message
@@ -151,7 +155,9 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
             await _messageRepository.InsertAsync(message, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Success(groupChat.Id.Value);
+            var result = (_chatResponseMapper.Map(groupChat) as GroupChatResponse)!;
+
+            return Result.Success(result);
         }
     }
 }

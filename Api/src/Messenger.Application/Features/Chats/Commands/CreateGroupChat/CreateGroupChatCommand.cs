@@ -1,4 +1,5 @@
 ﻿using Messenger.Application.Abstractions.Messaging;
+using Messenger.Application.Features.Chats.DTO.Responses;
 using Microsoft.AspNetCore.Http;
 
 namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
@@ -8,5 +9,5 @@ namespace Messenger.Application.Features.Chats.Commands.CreateGroupChat
         string Name,
         string? Description,
         string Message,
-        IFormFile? Icon) : ICommand<Guid>;
+        IFormFile? Icon) : ICommand<GroupChatResponse>;
 }

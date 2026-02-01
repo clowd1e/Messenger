@@ -6,6 +6,8 @@ import { StorageService } from '../../../shared/services/storage.service';
 import { SendMessageCommand } from '../models/send-message-command';
 import { SignalrAccessTokenFactoryService } from '../../../shared/services/signalr-access-token-factory.service';
 import { MessageHubResponse } from '../models/message-hub-response';
+import { Chat } from '../models/chat';
+import { Subject } from 'rxjs/internal/Subject';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +16,14 @@ export class SignalrService {
   private readonly hubUrl = environment.HUB_BASE_URL;
   private readonly production = environment.production;
   private readonly hubConnection: HubConnection;
+
+  private messageSubject = new Subject<MessageHubResponse>();
+  private errorSubject = new Subject<any>();
+  private chatCreatedSubject = new Subject<Chat>();
+  
+  messages$ = this.messageSubject.asObservable();
+  errors$ = this.errorSubject.asObservable();
+  chatCreated$ = this.chatCreatedSubject.asObservable();
 
   storageService = inject(StorageService);
   accessTokenFactory = inject(SignalrAccessTokenFactoryService);
@@ -29,9 +39,14 @@ export class SignalrService {
       .configureLogging(this.production ? signalR.LogLevel.None : signalR.LogLevel.Information)
       .build();
 
-    this.hubConnection.onclose(async (error) => {
-      // console.warn('SignalR disconnected:', error);
-      await this.connect();
+    this.hubConnection.on('ReceiveUserMessage', (messageResponse: MessageHubResponse) => {
+      this.messageSubject.next(messageResponse);
+    });
+    this.hubConnection.on('ReceiveError', (error: any) => {
+      this.errorSubject.next(error);
+    });
+    this.hubConnection.on('ReceiveChat', (chatResponse: Chat) => {
+      this.chatCreatedSubject.next(chatResponse);
     });
   }
 
@@ -58,13 +73,5 @@ export class SignalrService {
     return this.hubConnection.invoke('SendMessage', command);
       // .then(() => console.log('Message sent successfully'))
       // .catch(err => console.error('Error sending message:', err));
-  }
-  
-  listenForMessages(onMessageReceived: (messageResponse: MessageHubResponse) => void): void {
-    this.hubConnection.on('ReceiveUserMessage', onMessageReceived);
-  }
-  
-  listenForErrors(onErrorReceived: (error: any) => void): void {
-    this.hubConnection.on('ReceiveError', onErrorReceived);
   }
 }
