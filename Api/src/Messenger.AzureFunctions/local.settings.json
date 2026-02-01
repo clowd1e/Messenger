@@ -6,7 +6,8 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "DbSettings:ConnectionString": "Server=messenger.database,1433;Database=messenger;User Id=sa;Password=S0m3P@ssw0rd;TrustServerCertificate=true",
     "TimeTriggerSettings:RefreshTokenCleanupSchedule": "0 */10 * * * *",
-    "TimeTriggerSettings:UsersWithUnconfirmedEmailsCleanupSchedule": "0 40 17 * * *",
+    "TimeTriggerSettings:UsersWithUnconfirmedEmailsCleanupSchedule": "0 0 * * * *",
+    "TimeTriggerSettings:ResetPasswordTokenCleanupSchedule": "0 5 * * * *",
     "RemoveUsersWithUnconfirmedEmailsSettings:RegistrationLookbackDays": 2
   }
 }

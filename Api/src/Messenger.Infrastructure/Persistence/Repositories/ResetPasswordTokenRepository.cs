@@ -1,4 +1,5 @@
-﻿using Messenger.Domain.Aggregates.ResetPasswordTokens;
+﻿using Messenger.Domain.Aggregates.Common.Timestamp;
+using Messenger.Domain.Aggregates.ResetPasswordTokens;
 using Messenger.Domain.Aggregates.ResetPasswordTokens.ValueObjects;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -51,12 +52,25 @@ namespace Messenger.Infrastructure.Persistence.Repositories
                     cancellationToken);
         }
 
+        public async Task<IEnumerable<ResetPasswordToken>> GetExpiredTokensAsync()
+        {
+            return await _context.ResetPasswordTokens
+                .Where(token => token.ExpiresAt <= Timestamp.UtcNow())
+                .ToListAsync();
+        }
+
         public async Task InsertAsync(
             ResetPasswordToken resetPasswordToken,
             CancellationToken cancellationToken = default)
         {
             await _context.ResetPasswordTokens
                 .AddAsync(resetPasswordToken, cancellationToken);
+        }
+
+        public Task RemoveAsync(IEnumerable<ResetPasswordToken> expiredTokens)
+        {
+            _context.ResetPasswordTokens.RemoveRange(expiredTokens);
+            return Task.CompletedTask;
         }
     }
 }
