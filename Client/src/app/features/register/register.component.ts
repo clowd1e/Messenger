@@ -6,12 +6,12 @@ import { AuthInputComponent } from '../../shared/components/auth/auth-input/auth
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { RegisterRequest } from './models/register-request';
-import { passwordPatternValidator } from './validators/password-pattern.validator';
-import { repeatPasswordValidator } from './validators/repeat-password.validator';
+import { passwordPatternValidator } from '../../shared/validators/password-pattern.validator';
+import { repeatPasswordValidator } from '../../shared/validators/repeat-password.validator';
 import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
 import { emailIcon, nameIcon, passwordIcon, usernameIcon } from './register-icons';
-import { usernamePatternValidator } from './validators/username-pattern.validator';
+import { usernamePatternValidator } from '../../shared/validators/username-pattern.validator';
 import { FormWithErrors } from '../../shared/components/form-with-errors/form-with-errors';
 import { FormControlConfiguration } from '../../shared/models/configurations/forms/form-control-configuration';
 import { Subscription } from 'rxjs';
