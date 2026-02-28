@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats.ValueObjects;
 using Messenger.Domain.Aggregates.Messages.ValueObjects;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 
 namespace Messenger.Domain.Aggregates.Messages
 {
@@ -17,6 +18,7 @@ namespace Messenger.Domain.Aggregates.Messages
             CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Message>> GetChatMessagesPaginated(
+            UserId requestingUserId,
             ChatId chatId,
             int page,
             int pageSize,
@@ -24,6 +26,7 @@ namespace Messenger.Domain.Aggregates.Messages
             CancellationToken cancellationToken = default);
 
         Task<int> CountChatMessagesAsync(
+            UserId requestingUserId,
             ChatId chatId,
             DateTime retrievalCutoff,
             CancellationToken cancellationToken = default);

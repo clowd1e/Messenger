@@ -21,6 +21,7 @@ namespace Messenger.Domain.Aggregates.Users
         private readonly HashSet<RefreshToken> _refreshTokens = [];
         private readonly HashSet<ConfirmEmailToken> _confirmEmailTokens = [];
         private readonly HashSet<ResetPasswordToken> _resetPasswordTokens = [];
+        private readonly HashSet<Message> _deletedMessagesForUser = [];
         private Username _username;
         private Name _name;
         private Email _email;
@@ -101,6 +102,8 @@ namespace Messenger.Domain.Aggregates.Users
         public IReadOnlyCollection<ConfirmEmailToken> ConfirmEmailTokens => _confirmEmailTokens;
 
         public IReadOnlyCollection<ResetPasswordToken> ResetPasswordTokens => _resetPasswordTokens;
+
+        public IReadOnlyCollection<Message> DeletedMessagesForUser => _deletedMessagesForUser;
 
         public Result AddChat(Chat newChat)
         {

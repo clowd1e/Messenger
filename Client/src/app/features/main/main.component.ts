@@ -18,6 +18,7 @@ import { GroupCreationStore } from './components/aside/chats-aside/add-chat-page
 import { CreateGroupChatCommand } from './models/create-group-chat-command';
 import { MainStorageService } from './services/main-storage.service';
 import { GroupChat } from './models/group-chat';
+import { DeleteMessageHubResponse } from './models/delete-message-hub-response';
 import { PrivateChat } from './models/private-chat';
 import { environment } from '../../../environments/environment';
 import { StorageService } from '../../shared/services/storage.service';
@@ -37,6 +38,7 @@ export class MainComponent implements OnInit, OnDestroy {
   private messagesSubscription: Subscription | null = null;
   private errorSubscription: Subscription | null = null;
   private chatCreatedSubscription: Subscription | null = null;
+  private deletedMessageSubscription: Subscription | null = null;
 
   isAddPrivateChatRoute = signal<boolean>(false);
   isAddGroupChatRoute = signal<boolean>(false);
@@ -106,6 +108,11 @@ export class MainComponent implements OnInit, OnDestroy {
         this.handleChatCreated(chatResponse);
       }
     );
+    this.deletedMessageSubscription = this.signalrService.deletedMessage$.subscribe(
+      (deletedMessageResponse: DeleteMessageHubResponse) => {
+        this.handleMessageDeleted(deletedMessageResponse);
+      }
+    );
   }
 
   private disposeSignalRConnections() : void {
@@ -120,6 +127,10 @@ export class MainComponent implements OnInit, OnDestroy {
     if (this.chatCreatedSubscription) {
       this.chatCreatedSubscription.unsubscribe();
       this.chatCreatedSubscription = null;
+    }
+    if (this.deletedMessageSubscription) {
+      this.deletedMessageSubscription.unsubscribe();
+      this.deletedMessageSubscription = null;
     }
   }
 
@@ -269,6 +280,12 @@ export class MainComponent implements OnInit, OnDestroy {
       // this.isAddGroupChatRoute.set(false);
       this.router.navigate(['chats', this.uuidHelper.toShortUuid(chatResponse.id)]);
     }
+  }
+
+  private handleMessageDeleted(deletedMessageResponse: DeleteMessageHubResponse): void {
+    this.mainStorage.removeMessage(
+      deletedMessageResponse.chatId,
+      deletedMessageResponse.messageId);
   }
 }
 

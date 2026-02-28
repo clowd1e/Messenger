@@ -7,6 +7,7 @@ namespace Messenger.Domain.Aggregates.Chats
     public interface IChatRepository
     {
         Task<Chat?> GetByIdWithUsersAndLastMessageAsync(
+            UserId requestingUserId,
             ChatId chatId,
             CancellationToken cancellationToken = default);
 
@@ -54,6 +55,14 @@ namespace Messenger.Domain.Aggregates.Chats
 
         Task InsertGroupChatAsync(
             GroupChat groupChat,
+            CancellationToken cancellationToken = default);
+
+        Task<Chat?> GetByIdAsync(
+            ChatId chatId,
+            CancellationToken cancellationToken = default);
+
+        Task<Chat?> GetByIdWithUsersAsync(
+            ChatId chatId,
             CancellationToken cancellationToken = default);
     }
 }

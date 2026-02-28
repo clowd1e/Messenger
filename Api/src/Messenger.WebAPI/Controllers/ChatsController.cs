@@ -1,6 +1,8 @@
 ﻿using Messenger.Application.Abstractions.Messaging;
 using Messenger.Application.Features.Chats.Commands.CreateGroupChat;
 using Messenger.Application.Features.Chats.Commands.CreatePrivateChat;
+using Messenger.Application.Features.Chats.Commands.DeleteMessageForEveryone;
+using Messenger.Application.Features.Chats.Commands.DeleteMessageForUser;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
 using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Application.Features.Chats.Queries.GetById;
@@ -11,6 +13,7 @@ using Messenger.Application.Features.Chats.Queries.GetCurrentUserChatsPaginated;
 using Messenger.WebAPI.CommandWrappers.CreateGroupChat;
 using Messenger.WebAPI.Factories;
 using Messenger.WebAPI.Hubs;
+using Messenger.WebAPI.Hubs.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -109,6 +112,51 @@ namespace Messenger.WebAPI.Controllers
             var commandResult = await commandHandler.Handle(command, cancellationToken);
 
             return commandResult.IsSuccess ? Ok(commandResult.Value.Message) : problemDetailsFactory.GetProblemDetails(commandResult);
+        }
+
+        [HttpPost("delete-message-for-everyone")]
+        public async Task<IActionResult> DeleteMessageForEveryone(
+            [FromServices] ICommandHandler<DeleteMessageForEveryoneCommand, MessageDeletedForEveryoneResponse> commandHandler,
+            [FromBody] DeleteMessageForEveryoneCommand command,
+            CancellationToken cancellationToken)
+        {
+            var commandResult = await commandHandler.Handle(command, cancellationToken);
+            if (commandResult.IsSuccess)
+            {
+                var response = new DeleteMessageHubResponse(
+                    commandResult.Value.ChatId,
+                    commandResult.Value.MessageId);
+                foreach (var participantId in commandResult.Value.ParticipatnsIds)
+                {
+                    await hubContext.Clients.Group($"{ChatHub.UserGroup}{participantId}")
+                        .DeleteMessage(response);
+                }
+                
+                return NoContent();
+            }
+            return problemDetailsFactory.GetProblemDetails(commandResult);
+        }
+
+        [HttpPost("delete-message-for-user")]
+        public async Task<IActionResult> DeleteMessageForUser(
+            [FromServices] ICommandHandler<DeleteMessageForUserCommand, MessageDeletedForUserResponse> commandHandler,
+            [FromBody] DeleteMessageForUserCommand command,
+            CancellationToken cancellationToken)
+        {
+            var commandResult = await commandHandler.Handle(command, cancellationToken);
+
+            if (commandResult.IsSuccess)
+            {
+                var response = new DeleteMessageHubResponse(
+                    commandResult.Value.ChatId,
+                    commandResult.Value.MessageId);
+                await hubContext.Clients.Group($"{ChatHub.UserGroup}{commandResult.Value.UserId}")
+                    .DeleteMessage(response);
+
+                return NoContent();
+            }
+
+            return problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         [HttpPost("/api/private-chats")]

@@ -49,6 +49,15 @@ export class ChatsAsideComponent {
     }
   }
 
+  @HostListener('document:contextmenu', ['$event'])
+  onDocumentContextMenu(event: MouseEvent) {
+    // Close settings menu if right clicked outside
+    if (!this.isSettingsMenuOpen) return;
+    if (!this.settingsMenu.menuRoot.nativeElement.contains(event.target as Node)) {
+      this.isSettingsMenuOpen = false;
+    }
+  }
+
   @HostListener('document:keydown.escape', [])
   onEscapePress(): void {
     if (this.isSettingsMenuOpen) {

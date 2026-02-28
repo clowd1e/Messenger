@@ -1,0 +1,21 @@
+@if (isVisible()) {
+    <div
+        class="modal-backdrop"
+        (click)="onBackdropClick($event)">
+        <div
+            class="modal-menu"
+            [style.left.px]="menuLeft()"
+            [style.top.px]="menuTop()">
+            <app-message-operations-modal-item
+                (click)="onDeleteForMe()"
+                [svgConfig]="trashIcon"
+                [itemLabel]="'Delete for me'"></app-message-operations-modal-item>
+            @if (deleteForEveryoneVisible()) {
+                <app-message-operations-modal-item
+                    (click)="onDeleteForEveryone()"
+                    [svgConfig]="trashIcon"
+                    [itemLabel]="'Delete for everyone'"></app-message-operations-modal-item>
+            }
+        </div>
+    </div>
+}

@@ -1,0 +1,38 @@
+@import "../../../../../../../../assets/styles/colors";
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    z-index: 999;
+
+    .modal-menu {
+        position: fixed;
+        background-color: var(--main-chat-message-context-menu-bg-color);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px var(--main-chat-message-context-menu-shadow-color);
+        padding: 8px 0;
+        min-width: 180px;
+        z-index: 1000;
+        animation: fadeIn 0.15s ease-out;
+
+        @media (max-width: 768px) {
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%);
+            max-width: 90vw;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

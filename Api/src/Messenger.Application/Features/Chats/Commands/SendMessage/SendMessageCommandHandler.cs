@@ -60,6 +60,7 @@ namespace Messenger.Application.Features.Chats.Commands.SendMessage
             var chatId = new ChatId(command.ChatId);
 
             var chat = await _chatRepository.GetByIdWithUsersAndLastMessageAsync(
+                userId,
                 chatId,
                 cancellationToken);
 

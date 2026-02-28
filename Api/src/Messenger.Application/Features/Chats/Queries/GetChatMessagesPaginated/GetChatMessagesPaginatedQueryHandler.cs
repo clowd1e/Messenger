@@ -71,6 +71,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated
             }
 
             var messages = await _messageRepository.GetChatMessagesPaginated(
+                userId,
                 chatId,
                 request.Page,
                 request.PageSize,
@@ -80,6 +81,7 @@ namespace Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated
             var messagesMap = _messageMapper.Map(messages);
 
             var totalChatMessages = await _messageRepository.CountChatMessagesAsync(
+                userId,
                 chatId,
                 request.RetrievalCutoff,
                 cancellationToken);

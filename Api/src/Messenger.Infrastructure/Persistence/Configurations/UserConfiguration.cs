@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Common.ImageUri;
+using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Users;
 using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Infrastructure.Persistence.Configurations.Common;
@@ -74,6 +75,14 @@ namespace Messenger.Infrastructure.Persistence.Configurations
                     ManyToManyTables.UserChat,
                     l => l.HasOne(typeof(Chat)).WithMany().HasForeignKey("chat_id"),
                     r => r.HasOne(typeof(User)).WithMany().HasForeignKey("user_id"));
+
+            builder
+               .HasMany(user => user.DeletedMessagesForUser)
+               .WithMany(message => message.DeletedForUsers)
+               .UsingEntity(
+                   ManyToManyTables.DeletedForUsersMessages,
+                   l => l.HasOne(typeof(Message)).WithMany().HasForeignKey("message_id").OnDelete(DeleteBehavior.Cascade),
+                   r => r.HasOne(typeof(User)).WithMany().HasForeignKey("user_id").OnDelete(DeleteBehavior.NoAction));
 
             builder
                 .HasMany(user => user.GroupMembers)

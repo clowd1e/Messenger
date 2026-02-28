@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MainStorageService } from '../../../../services/main-storage.service';
 import { MessageDto } from '../models/message-dto';
@@ -14,7 +14,12 @@ export class ChatMessageComponent {
   messageDto = input.required<MessageDto>();
   isGroupChat = input.required<boolean>();
 
+  openContextMenu = output<{ messageId: string, isSendersMessage: boolean, x: number, y: number }>();
+
   mainStorage = inject(MainStorageService);
+  isLongPressing = signal(false);
+  private longPressTimer: any;
+  private longPressDuration = 500;
 
   isCurrentUser() {
     return this.messageDto().message.sender.id === this.mainStorage.CurrentUserId;
@@ -42,5 +47,44 @@ export class ChatMessageComponent {
 
   messageTimestamp() {
     return this.messageDto().message.timestamp;
+  }
+
+  onMessageRightClick(event: MouseEvent) {
+    event.preventDefault();
+
+    this.openContextMenu.emit({
+      messageId: this.messageDto().message.id,
+      isSendersMessage: this.isCurrentUser(),
+      x: event.clientX,
+      y: event.clientY
+    });
+  }
+
+  onTouchStart(event: TouchEvent) {
+    this.isLongPressing.set(true);
+    this.longPressTimer = setTimeout(() => {
+      const touch = event.touches[0];
+      this.openContextMenu.emit({
+        messageId: this.messageDto().message.id,
+        isSendersMessage: this.isCurrentUser(),
+        x: touch.clientX,
+        y: touch.clientY
+      });
+      this.isLongPressing.set(false);
+    }, this.longPressDuration);
+  }
+
+  onTouchEnd() {
+    this.isLongPressing.set(false);
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+    }
+  }
+
+  onTouchMove() {
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.isLongPressing.set(false);
+    }
   }
 }
