@@ -5,6 +5,11 @@
     display: flex;
     align-items: flex-end;
     gap: 15px;
+    transition: opacity 0.2s ease;
+
+    &.long-pressing {
+        opacity: 0.7;
+    }
 
     .image-box {
         -webkit-user-select: none;

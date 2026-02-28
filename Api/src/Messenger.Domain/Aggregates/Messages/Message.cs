@@ -1,6 +1,8 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Common.Timestamp;
+using Messenger.Domain.Aggregates.Messages.Errors;
 using Messenger.Domain.Aggregates.Messages.ValueObjects;
+using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
@@ -8,6 +10,7 @@ namespace Messenger.Domain.Aggregates.Messages
 {
     public sealed class Message : AggregateRoot<MessageId>
     {
+        private HashSet<Users.User> _deletedForUsers = [];
         private Timestamp _timestamp;
         private MessageContent _content;
 
@@ -46,7 +49,14 @@ namespace Messenger.Domain.Aggregates.Messages
         }
 
         public Chat? Chat { get; private set; } = default;
+
         public Users.User? User { get; private set; } = default;
+
+        public bool IsDeletedForEveryone { get; private set; } = default;
+
+        public Timestamp? DeletedForEveryoneAt { get; private set; } = default;
+
+        public IReadOnlyCollection<Users.User> DeletedForUsers => _deletedForUsers;
 
         public Result SetChat(Chat chat)
         {
@@ -62,6 +72,33 @@ namespace Messenger.Domain.Aggregates.Messages
             ArgumentNullException.ThrowIfNull(user);
 
             User = user;
+
+            return Result.Success();
+        }
+
+        public Result DeleteForUser(Users.User user)
+        {
+            if (IsDeletedForEveryone)
+            {
+                return Result.Failure(MessageErrors.MessageAlreadyDeletedForEveryone);
+            }
+            if (!_deletedForUsers.Add(user))
+            {
+                return Result.Failure(MessageErrors.MessageAlreadyDeletedForUser);
+            }
+
+            return Result.Success();
+        }
+
+        public Result DeleteForEveryone()
+        {
+            if (IsDeletedForEveryone)
+            {
+                return Result.Failure(MessageErrors.MessageAlreadyDeletedForEveryone);
+            }
+
+            IsDeletedForEveryone = true;
+            DeletedForEveryoneAt = Timestamp.UtcNow();
 
             return Result.Success();
         }

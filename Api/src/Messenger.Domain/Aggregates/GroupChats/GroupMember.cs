@@ -1,7 +1,5 @@
 ﻿using Messenger.Domain.Aggregates.Chats;
 using Messenger.Domain.Aggregates.Chats.Errors;
-using Messenger.Domain.Aggregates.Chats.ValueObjects;
-using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Shared;
 
 namespace Messenger.Domain.Aggregates.GroupChats

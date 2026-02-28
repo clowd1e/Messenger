@@ -18,6 +18,8 @@ import { ChatExistsResponse } from '../../features/main/components/aside/chats-a
 import { CreateGroupChatCommand } from '../../features/main/models/create-group-chat-command';
 import { RequestPasswordRecoveryRequest } from '../../features/forgot-password/models/request-password-recovery-request';
 import { ResetPasswordRequest } from '../../features/reset-password/models/reset-password-request';
+import { DeleteMessageForUserCommand } from '../../features/main/models/delete-message-for-user-command';
+import { DeleteMessageForEveryoneCommand } from '../../features/main/models/delete-message-for-everyone-command';
 
 @Injectable({
   providedIn: 'root'
@@ -142,5 +144,13 @@ export class ApiService {
     };
 
     return this.httpClient.get<void>(`${this.apiUrl}/validate-password-recovery`, options);
+  }
+
+  deleteMessageForUser(command: DeleteMessageForUserCommand): Observable<void> {
+    return this.httpClient.post<void>(`${this.apiUrl}/chats/delete-message-for-user`, command);
+  }
+
+  deleteMessageForEveryone(command: DeleteMessageForEveryoneCommand): Observable<void> {
+    return this.httpClient.post<void>(`${this.apiUrl}/chats/delete-message-for-everyone`, command);
   }
 }

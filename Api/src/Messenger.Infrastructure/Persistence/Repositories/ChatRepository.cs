@@ -42,12 +42,13 @@ namespace Messenger.Infrastructure.Persistence.Repositories
         }
 
         public async Task<Chat?> GetByIdWithUsersAndLastMessageAsync(
+            UserId requestingUserId,
             ChatId chatId,
             CancellationToken cancellationToken = default)
         {
             var chat = await _context.Chats
                 .Include(chat => chat.Participants)
-                .Include(IncludeLastMessage())
+                .Include(IncludeLastMessage(requestingUserId))
                 .FirstOrDefaultAsync(chat => chat.Id == chatId, cancellationToken);
 
             if (chat is GroupChat groupChat)
@@ -67,14 +68,14 @@ namespace Messenger.Infrastructure.Persistence.Repositories
             var privateChats = await _context.PrivateChats
                 .Where(chat => chat.Participants.Any(user => user.Id == userId))
                 .Include(chat => chat.Participants)
-                .Include(IncludeLastMessage())
+                .Include(IncludeLastMessage(userId))
                 .ToListAsync(cancellationToken);
 
             var groupChats = await _context.GroupChats
                 .Where(chat => chat.Participants.Any(participant => participant.Id == userId))
                 .Include(chat => chat.Participants)
                 .Include(chat => chat.GroupMembers)
-                .Include(IncludeLastMessage())
+                .Include(IncludeLastMessage(userId))
                 .ToListAsync(cancellationToken);
 
             var chats = privateChats
@@ -98,7 +99,7 @@ namespace Messenger.Infrastructure.Persistence.Repositories
                 // Include participants for each chat
                 .Include(chat => chat.Participants)
                 // Include last message for each chat
-                .Include(IncludeLastMessage())
+                .Include(IncludeLastMessage(userId))
                 // Order by the timestamp of the last message in descending order
                 .OrderByDescending(chat => chat.Messages.First().Timestamp)
                 // Filter chats where the last message was sent before or on the retrieval cutoff date
@@ -178,9 +179,30 @@ namespace Messenger.Infrastructure.Persistence.Repositories
                     cancellationToken);
         }
 
-        private static Expression<Func<Chat, IEnumerable<Message>>> IncludeLastMessage()
+        public async Task<Chat?> GetByIdAsync(
+            ChatId chatId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Chats.FirstOrDefaultAsync(
+                chat => chat.Id == chatId,
+                cancellationToken);
+        }
+
+        public async Task<Chat?> GetByIdWithUsersAsync(
+            ChatId chatId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Chats
+                .Include(chat => chat.Participants)
+                .FirstOrDefaultAsync(
+                    chat => chat.Id == chatId,
+                    cancellationToken);
+        }
+
+        private static Expression<Func<Chat, IEnumerable<Message>>> IncludeLastMessage(UserId userId)
         {
             return chat => chat.Messages
+                .Where(message => !message.IsDeletedForEveryone && !message.DeletedForUsers.Any(user => user.Id == userId))
                 .OrderByDescending(message => message.Timestamp)
                 .Take(1);
         }

@@ -13,5 +13,7 @@ namespace Messenger.WebAPI.Hubs
         Task ReceiveUserMessage(SendMessageHubResponse response);
 
         Task ReceiveChat(ChatResponse chat);
+
+        Task DeleteMessage(DeleteMessageHubResponse response);
     }
 }

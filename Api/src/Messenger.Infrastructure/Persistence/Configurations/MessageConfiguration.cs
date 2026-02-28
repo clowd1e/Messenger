@@ -1,6 +1,8 @@
 ﻿using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Messages;
 using Messenger.Domain.Aggregates.Messages.ValueObjects;
+using Messenger.Domain.Aggregates.Users;
+using Messenger.Infrastructure.Persistence.Configurations.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -34,6 +36,15 @@ namespace Messenger.Infrastructure.Persistence.Configurations
                     value => Timestamp.Create(value.ToUniversalTime()).Value)
                 .HasColumnName("timestamp");
 
+            builder.Property(message => message.DeletedForEveryoneAt)
+                .HasConversion(
+                    timestamp => timestamp!.Value,
+                    value => Timestamp.Create(value.ToUniversalTime()).Value)
+                .HasColumnName("deleted_for_everyone_at");
+
+            builder.Property(message => message.IsDeletedForEveryone)
+                .HasColumnName("is_deleted_for_everyone");
+
             builder
                 .HasOne(message => message.Chat)
                 .WithMany(chat => chat.Messages)
@@ -45,6 +56,14 @@ namespace Messenger.Infrastructure.Persistence.Configurations
                 .WithMany(user => user.Messages)
                 .HasForeignKey("user_id")
                 .IsRequired();
+
+            builder
+                .HasMany(message => message.DeletedForUsers)
+                .WithMany(user => user.DeletedMessagesForUser)
+                .UsingEntity(
+                    ManyToManyTables.DeletedForUsersMessages,
+                    l => l.HasOne(typeof(Message)).WithMany().HasForeignKey("message_id").OnDelete(DeleteBehavior.Cascade),
+                    r => r.HasOne(typeof(User)).WithMany().HasForeignKey("user_id").OnDelete(DeleteBehavior.NoAction));
         }
     }
 }

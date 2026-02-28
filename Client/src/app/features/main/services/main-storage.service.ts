@@ -183,6 +183,18 @@ export class MainStorageService {
       [chatId]: chatMessagesData
     }));
   }
+
+  removeMessage(chatId: string, messageId: string) {
+    const chatMessagesData = this.chatMessages()[chatId];
+    if (!chatMessagesData) {
+      // deletion of a message belonging to not loaded chat
+      return;
+    }
+
+    chatMessagesData.messages.update(messages => 
+      messages.filter(m => m.id !== messageId)
+    );
+  }
   //#endregion
 
   private defaultMessagesMetadata(): ChatMessagesMetadata {

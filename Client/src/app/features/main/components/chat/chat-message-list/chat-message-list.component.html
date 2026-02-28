@@ -18,7 +18,20 @@
         @if (item.type == 'message') {
             <app-chat-message
                 [isGroupChat]="isGroupChat()"
-                [messageDto]="item.messageDto"></app-chat-message>
+                [messageDto]="item.messageDto"
+                (openContextMenu)="onOpenContextMenu($event)"></app-chat-message>
         }
     }
 </div>
+
+@if (activeContextMenuMessageId()) {
+    <app-message-operations-modal
+        [deleteForEveryoneVisible]="isSendersMessage()!"
+        [messageId]="activeContextMenuMessageId()!"
+        [position]="contextMenuPosition()"
+        [isVisible]="true"
+        (deleteForMe)="onDeleteForMe($event)"
+        (deleteForEveryone)="onDeleteForEveryone($event)"
+        (close)="closeContextMenu()">
+    </app-message-operations-modal>
+}

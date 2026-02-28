@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, Renderer2, untracked, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, Renderer2, signal, untracked, ViewChild } from '@angular/core';
 import { ChatMessageComponent } from './chat-message/chat-message.component';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { PaginatedMessagesResponse } from '../../../models/paginated-messages-response';
@@ -12,11 +12,12 @@ import { MessagesDateBadgeComponent } from "./messages-date-badge/messages-date-
 import { Message } from '../../../models/message';
 import { MessageRenderItem } from './models/message-render-item';
 import { MessageDto } from './models/message-dto';
+import { MessageOperationsModalComponent } from './chat-message/message-operations-modal/message-operations-modal.component';
 
 @Component({
   selector: 'app-chat-message-list',
   standalone: true,
-  imports: [ChatMessageComponent, InfiniteScrollDirective, MessagesDateBadgeComponent],
+  imports: [ChatMessageComponent, InfiniteScrollDirective, MessagesDateBadgeComponent, MessageOperationsModalComponent],
   templateUrl: './chat-message-list.component.html',
   styleUrl: './chat-message-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,12 +27,71 @@ export class ChatMessageListComponent {
   private messageList? : ElementRef;
   private loadingMessages = false;
   private previousChatId: string | null = null;
+
+  activeContextMenuMessageId = signal<string | null>(null);
+  isSendersMessage = signal<boolean>(false);
+  contextMenuPosition = signal<{ x: number; y: number } | null>(null);
   
   userContextService = inject(UserContextService);
   renderer = inject(Renderer2);
   apiService = inject(ApiService);
   errorHandler = inject(ErrorHandlerService);
   mainStorage = inject(MainStorageService);
+
+  //#region Message context menu operations
+
+  onOpenContextMenu(event: { messageId: string, isSendersMessage: boolean, x: number, y: number }) {
+    this.activeContextMenuMessageId.set(event.messageId);
+    this.isSendersMessage.set(event.isSendersMessage);
+    this.contextMenuPosition.set({ x: event.x, y: event.y });
+  }
+
+  closeContextMenu() {
+    this.activeContextMenuMessageId.set(null);
+    this.contextMenuPosition.set(null);
+  }
+  
+  onDeleteForMe(messageId: string) {
+    const selectedChat = this.mainStorage.SelectedChat();
+    if (!selectedChat) {
+      return;
+    }
+
+    const command = {
+      messageId: messageId,
+      chatId: selectedChat.id
+    };
+
+    this.apiService.deleteMessageForUser(command).subscribe({
+      error: (error: any) => {
+        this.errorHandler.handleHttpError(error);
+      }
+    });
+
+    this.closeContextMenu();
+  }
+
+  onDeleteForEveryone(messageId: string) {
+    const selectedChat = this.mainStorage.SelectedChat();
+    if (!selectedChat) {
+      return;
+    }
+
+    const command = {
+      messageId: messageId,
+      chatId: selectedChat.id
+    };
+
+    this.apiService.deleteMessageForEveryone(command).subscribe({
+      error: (error: any) => {
+        this.errorHandler.handleHttpError(error);
+      }
+    });
+
+    this.closeContextMenu();
+  }
+
+  //#endregion
 
   onChatChangeEffect = effect(() => {
     const chatId = this.mainStorage.SelectedChatId();
