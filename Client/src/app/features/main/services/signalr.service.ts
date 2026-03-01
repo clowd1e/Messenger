@@ -9,6 +9,7 @@ import { MessageHubResponse } from '../models/message-hub-response';
 import { Chat } from '../models/chat';
 import { Subject } from 'rxjs/internal/Subject';
 import { DeleteMessageHubResponse } from '../models/delete-message-hub-response';
+import { UpdateMessageHubResponse } from '../models/update-message-hub-response';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +23,13 @@ export class SignalrService {
   private errorSubject = new Subject<any>();
   private chatCreatedSubject = new Subject<Chat>();
   private deletedMessageSubject = new Subject<DeleteMessageHubResponse>();
+  private updatedMessageSubject = new Subject<UpdateMessageHubResponse>();
   
   messages$ = this.messageSubject.asObservable();
   errors$ = this.errorSubject.asObservable();
   chatCreated$ = this.chatCreatedSubject.asObservable();
   deletedMessage$ = this.deletedMessageSubject.asObservable();
+  updatedMessage$ = this.updatedMessageSubject.asObservable();
 
   storageService = inject(StorageService);
   accessTokenFactory = inject(SignalrAccessTokenFactoryService);
@@ -50,6 +53,9 @@ export class SignalrService {
     });
     this.hubConnection.on('ReceiveChat', (chatResponse: Chat) => {
       this.chatCreatedSubject.next(chatResponse);
+    });
+    this.hubConnection.on('UpdateMessage', (updatedMessageResponse: UpdateMessageHubResponse) => {
+      this.updatedMessageSubject.next(updatedMessageResponse);
     });
     this.hubConnection.on('DeleteMessage', (deletedMessageResponse: DeleteMessageHubResponse) => {
       this.deletedMessageSubject.next(deletedMessageResponse);

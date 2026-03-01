@@ -1,7 +1,7 @@
 import { Component, HostListener, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MessageOperationsModalItemComponent } from './message-operations-modal-item/message-operations-modal-item.component';
-import { trashIcon } from './icons/icons';
+import { editIcon, trashIcon } from './icons/icons';
 
 @Component({
   selector: 'app-message-operations-modal',
@@ -13,14 +13,21 @@ import { trashIcon } from './icons/icons';
 export class MessageOperationsModalComponent {
   messageId = input.required<string>();
   isVisible = input.required<boolean>();
-  deleteForEveryoneVisible = input.required<boolean>();
+  isSendersMessage = input.required<boolean>();
   position = input<{ x: number, y: number } | null>(null);
 
   deleteForMe = output<string>();
   deleteForEveryone = output<string>();
+  edit = output<string>();
   close = output<void>();
 
   trashIcon = trashIcon;
+  editIcon = editIcon;
+
+  onEdit() {
+    this.edit.emit(this.messageId());
+    this.close.emit();
+  }
 
   onDeleteForMe() {
     this.deleteForMe.emit(this.messageId());

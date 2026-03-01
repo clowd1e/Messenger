@@ -195,6 +195,22 @@ export class MainStorageService {
       messages.filter(m => m.id !== messageId)
     );
   }
+
+  updateMessage(chatId: string, messageId: string, newContent: string, updatedAt: string) {
+    const chatMessagesData = this.chatMessages()[chatId];
+    if (!chatMessagesData) {
+      // update of a message belonging to not loaded chat
+      return;
+    }
+
+    chatMessagesData.messages.update(messages =>
+      messages.map(m => 
+        m.id === messageId 
+          ? { ...m, content: newContent, updatedAt: updatedAt }
+          : m
+      )
+    );
+  }
   //#endregion
 
   private defaultMessagesMetadata(): ChatMessagesMetadata {

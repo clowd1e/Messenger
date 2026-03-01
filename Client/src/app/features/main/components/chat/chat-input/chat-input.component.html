@@ -1,9 +1,18 @@
+<app-edit-message-modal 
+    [messageContent]="editingMessageContent() || ''"
+    [messageId]="editingMessageId() || ''"
+    [isVisible]="isEditingMessageMode()"
+    (cancel)="onCancelEdit()">
+</app-edit-message-modal>
+
 <div class="chat-input-container">
     <app-input 
         (keyup.enter)="onSubmit()"
+        [focus]="isEditingMessageMode()"
         [(inputValue)]="message" 
-        [placeholder]="'Type your message...'"></app-input>
-    <button (click)="onSubmit()">
-        <img src="/images/send.svg" alt="Send" />
+        [placeholder]="isEditingMessageMode() ? 'Edit your message...' : 'Type your message...'"></app-input>
+    <button (click)="onSubmit()" [attr.aria-label]="isEditingMessageMode() ? 'Update message' : 'Send message'">
+        <img [src]="isEditingMessageMode() ? '/images/update.svg' : '/images/send.svg'" 
+             [alt]="isEditingMessageMode() ? 'Update' : 'Send'" />
     </button>
 </div>

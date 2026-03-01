@@ -1,6 +1,18 @@
 @import "../../../../../../../assets/styles/colors";
 @import "../../../../../../../assets/styles/devices-size";
 
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 .message-container {
     display: flex;
     align-items: flex-end;
@@ -38,35 +50,106 @@
             display: none;
         }
     }
+}
 
-    .message-box {
-        position: relative;
+.message-box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-width: 410px;
+    background-color: var(--main-chat-other-message-bg-color);
+    border-radius: 20px;
+    padding: 15px 40px 15px 12px;
+    color: var(--main-chat-message-text-color);
+
+    &.has-edited-label {
+        padding-bottom: 30px;
+        min-width: 80px;
+    }
+
+    p.content {
+        margin: 0;
+        word-break: break-word;
+    }
+
+    p.username {
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--main-chat-message-username-color);
+        margin: 0 0 4px 0;
+    }
+
+    p.timestamp {
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        position: absolute;
+        bottom: 11px;
+        right: 6px;
+        font-size: 12px;
+        color: var(--main-chat-message-timestamp-color);
+        margin: 0;
+    }
+
+    .edited-tooltip-container {
+        position: absolute;
+        bottom: 11px;
+        right: 40px;
         display: flex;
-        flex-direction: column;
-        max-width: 410px;
-        background-color: var(--main-chat-other-message-bg-color);
-        border-radius: 20px;
-        padding: 15px 40px 15px 12px;
+        align-items: center;
+        justify-content: center;
 
-        p.username {
-            font-weight: bold;
-            color: var(--main-chat-message-username-color);
-        }
-
-        p.content {
-            color: var(--main-chat-message-text-color)
-        }
-
-        p.timestamp {
+        p.edited-label {
             -webkit-user-select: none;
             -ms-user-select: none;
             user-select: none;
 
-            position: absolute;
-            bottom: 11px;
-            right: 6px;
-            font-size: 12px;
+            font-size: 10px;
             color: var(--main-chat-message-timestamp-color);
+            margin: 0;
+            font-style: italic;
+            cursor: help;
+            border-bottom: 1px dotted var(--main-chat-message-timestamp-color);
+        }
+
+        &.currently-editing p.edited-label {
+            color: #007bff;
+            font-weight: 600;
+            animation: pulse 1s infinite;
+        }
+
+        &:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 25px;
+            right: 0;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+            font-style: normal;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+                border: 1px solid #444;
+            }
         }
     }
 }
@@ -109,7 +192,7 @@
         }
 
         .message-box {
-            padding: 12px 33px 12px 8px;
+            padding: 12px 33px 14px 8px;
             border-radius: 15px;
 
             p {
@@ -117,6 +200,15 @@
             }
 
             p.timestamp {
+                bottom: 14px;
+            }
+
+            .edited-tooltip-container {
+                bottom: 4px;
+                right: 10px;
+            }
+
+            p.timestamp, .edited-tooltip-container p.edited-label {
                 font-size: 9px;
             }
         }
@@ -145,6 +237,15 @@
             }
 
             p.timestamp {
+                bottom: 12px;
+            }
+
+            .edited-tooltip-container {
+                bottom: 4px;
+                right: 10px;
+            }
+
+            p.timestamp, .edited-tooltip-container p.edited-label {
                 font-size: 7px;
             }
         }

@@ -19,6 +19,7 @@ import { CreateGroupChatCommand } from './models/create-group-chat-command';
 import { MainStorageService } from './services/main-storage.service';
 import { GroupChat } from './models/group-chat';
 import { DeleteMessageHubResponse } from './models/delete-message-hub-response';
+import { UpdateMessageHubResponse } from './models/update-message-hub-response';
 import { PrivateChat } from './models/private-chat';
 import { environment } from '../../../environments/environment';
 import { StorageService } from '../../shared/services/storage.service';
@@ -39,6 +40,7 @@ export class MainComponent implements OnInit, OnDestroy {
   private errorSubscription: Subscription | null = null;
   private chatCreatedSubscription: Subscription | null = null;
   private deletedMessageSubscription: Subscription | null = null;
+  private updatedMessageSubscription: Subscription | null = null;
 
   isAddPrivateChatRoute = signal<boolean>(false);
   isAddGroupChatRoute = signal<boolean>(false);
@@ -113,6 +115,11 @@ export class MainComponent implements OnInit, OnDestroy {
         this.handleMessageDeleted(deletedMessageResponse);
       }
     );
+    this.updatedMessageSubscription = this.signalrService.updatedMessage$.subscribe(
+      (updatedMessageResponse: UpdateMessageHubResponse) => {
+        this.handleMessageUpdated(updatedMessageResponse);
+      }
+    );
   }
 
   private disposeSignalRConnections() : void {
@@ -127,6 +134,10 @@ export class MainComponent implements OnInit, OnDestroy {
     if (this.chatCreatedSubscription) {
       this.chatCreatedSubscription.unsubscribe();
       this.chatCreatedSubscription = null;
+    }
+    if (this.updatedMessageSubscription) {
+      this.updatedMessageSubscription.unsubscribe();
+      this.updatedMessageSubscription = null;
     }
     if (this.deletedMessageSubscription) {
       this.deletedMessageSubscription.unsubscribe();
@@ -286,6 +297,14 @@ export class MainComponent implements OnInit, OnDestroy {
     this.mainStorage.removeMessage(
       deletedMessageResponse.chatId,
       deletedMessageResponse.messageId);
+  }
+
+  private handleMessageUpdated(updatedMessageResponse: UpdateMessageHubResponse): void {
+    this.mainStorage.updateMessage(
+      updatedMessageResponse.chatId,
+      updatedMessageResponse.messageId,
+      updatedMessageResponse.newContent,
+      updatedMessageResponse.updatedAt);
   }
 }
 

@@ -2,7 +2,6 @@
 using Messenger.Domain.Aggregates.Common.Timestamp;
 using Messenger.Domain.Aggregates.Messages.Errors;
 using Messenger.Domain.Aggregates.Messages.ValueObjects;
-using Messenger.Domain.Aggregates.Users.ValueObjects;
 using Messenger.Domain.Primitives;
 using Messenger.Domain.Shared;
 
@@ -56,6 +55,8 @@ namespace Messenger.Domain.Aggregates.Messages
 
         public Timestamp? DeletedForEveryoneAt { get; private set; } = default;
 
+        public Timestamp? UpdatedAt { get; private set; } = default;
+
         public IReadOnlyCollection<Users.User> DeletedForUsers => _deletedForUsers;
 
         public Result SetChat(Chat chat)
@@ -99,6 +100,21 @@ namespace Messenger.Domain.Aggregates.Messages
 
             IsDeletedForEveryone = true;
             DeletedForEveryoneAt = Timestamp.UtcNow();
+
+            return Result.Success();
+        }
+
+        public Result Update(MessageContent newContent, Timestamp updatedAt)
+        {
+            ArgumentNullException.ThrowIfNull(newContent);
+
+            if (IsDeletedForEveryone)
+            {
+                return Result.Failure(MessageErrors.MessageAlreadyDeletedForEveryone);
+            }
+
+            Content = newContent;
+            UpdatedAt = updatedAt;
 
             return Result.Success();
         }

@@ -15,7 +15,8 @@ namespace Messenger.Application.Features.Chats.Mappers
                 Id: source.Id.Value,
                 Sender: MapUser(source.User),
                 Timestamp: source.Timestamp.Value,
-                Content: source.Content.Value);
+                Content: source.Content.Value,
+                UpdatedAt: source.UpdatedAt?.Value);
         }
 
         private static ShortUserResponse MapUser(User user)

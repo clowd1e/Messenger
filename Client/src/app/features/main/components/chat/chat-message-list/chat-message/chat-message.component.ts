@@ -13,6 +13,7 @@ import { MessageDto } from '../models/message-dto';
 export class ChatMessageComponent {
   messageDto = input.required<MessageDto>();
   isGroupChat = input.required<boolean>();
+  isCurrentlyEditing = input<boolean>(false);
 
   openContextMenu = output<{ messageId: string, isSendersMessage: boolean, x: number, y: number }>();
 
@@ -47,6 +48,14 @@ export class ChatMessageComponent {
 
   messageTimestamp() {
     return this.messageDto().message.timestamp;
+  }
+
+  messageUpdatedAt() {
+    return this.messageDto().message.updatedAt;
+  }
+
+  isMessageEdited() {
+    return !!this.messageDto().message.updatedAt;
   }
 
   onMessageRightClick(event: MouseEvent) {

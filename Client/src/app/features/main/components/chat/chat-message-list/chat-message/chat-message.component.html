@@ -10,11 +10,18 @@
         <img [class.none]="!userIconVisible()" [src]="userIcon()" alt="UserImage" />
     </div>
     <div
-        class="message-box">
+        class="message-box"
+        [class.has-edited-label]="isMessageEdited()">
         @if (isGroupChat() && !isCurrentUser() && userNameVisible()) {
             <p class="username">{{ messageSender() }}</p>
         }
         <p class="content">{{ messageContent() }}</p>
         <p class="timestamp">{{ messageTimestamp() | date:'HH:mm' }}</p>
+        @if (isMessageEdited()) {
+            <div class="edited-tooltip-container" [class.currently-editing]="isCurrentlyEditing()">
+                <p class="edited-label">{{ isCurrentlyEditing() ? 'editing...' : 'edited' }}</p>
+                <div class="tooltip">{{ messageUpdatedAt() | date:'MMM d, y HH:mm' }}</div>
+            </div>
+        }
     </div>
 </div>

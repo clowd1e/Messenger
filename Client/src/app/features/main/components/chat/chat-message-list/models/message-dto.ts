@@ -5,4 +5,5 @@ export type MessageDto = {
     userNameVisible: boolean;
     userIconVisible: boolean;
     iconUri: string;
+    updatedAt: string | null;
 }
