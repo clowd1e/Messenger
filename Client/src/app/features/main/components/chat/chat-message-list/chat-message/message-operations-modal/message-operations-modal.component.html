@@ -1,11 +1,10 @@
 @if (isVisible()) {
     <div
         class="modal-backdrop"
-        (click)="onBackdropClick($event)">
-        <div
-            class="modal-menu"
-            [style.left.px]="menuLeft()"
-            [style.top.px]="menuTop()">
+        (click)="onBackdropClick($event)"
+        [style.left.px]="position()?.x"
+        [style.top.px]="position()?.y">
+        <div class="modal-menu">
             <app-message-operations-modal-item
                 (click)="onDeleteForMe()"
                 [svgConfig]="trashIcon"
