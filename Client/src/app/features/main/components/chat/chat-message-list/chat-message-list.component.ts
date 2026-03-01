@@ -32,6 +32,9 @@ export class ChatMessageListComponent {
   isSendersMessage = signal<boolean>(false);
   contextMenuPosition = signal<{ x: number; y: number } | null>(null);
   
+  editingMessageId = signal<string | null>(null);
+  editingMessageContent = signal<string | null>(null);
+  
   userContextService = inject(UserContextService);
   renderer = inject(Renderer2);
   apiService = inject(ApiService);
@@ -49,6 +52,32 @@ export class ChatMessageListComponent {
   closeContextMenu() {
     this.activeContextMenuMessageId.set(null);
     this.contextMenuPosition.set(null);
+  }
+
+  onEditMessage(messageId: string) {
+    const selectedChat = this.mainStorage.SelectedChat();
+    if (!selectedChat) {
+      return;
+    }
+
+    const messages = this.mainStorage.getCurrentMessages();
+    if (!messages) {
+      return;
+    }
+
+    const message = messages().find(m => m.id === messageId);
+    if (!message) {
+      return;
+    }
+
+    this.editingMessageId.set(messageId);
+    this.editingMessageContent.set(message.content);
+    this.closeContextMenu();
+  }
+
+  onCancelEditMessage() {
+    this.editingMessageId.set(null);
+    this.editingMessageContent.set(null);
   }
   
   onDeleteForMe(messageId: string) {
@@ -186,7 +215,8 @@ export class ChatMessageListComponent {
       message,
       userNameVisible: i === 0 || messages[i - 1]?.sender.id !== message.sender.id,
       userIconVisible: i === messages.length - 1 || messages[i + 1]?.sender.id !== message.sender.id,
-      iconUri: message.sender.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+      iconUri: message.sender.iconUri || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      updatedAt: message.updatedAt
     };
   }
 

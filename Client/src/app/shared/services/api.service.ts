@@ -20,6 +20,7 @@ import { RequestPasswordRecoveryRequest } from '../../features/forgot-password/m
 import { ResetPasswordRequest } from '../../features/reset-password/models/reset-password-request';
 import { DeleteMessageForUserCommand } from '../../features/main/models/delete-message-for-user-command';
 import { DeleteMessageForEveryoneCommand } from '../../features/main/models/delete-message-for-everyone-command';
+import { UpdateMessageCommand } from '../../features/main/models/update-message-command';
 
 @Injectable({
   providedIn: 'root'
@@ -152,5 +153,9 @@ export class ApiService {
 
   deleteMessageForEveryone(command: DeleteMessageForEveryoneCommand): Observable<void> {
     return this.httpClient.post<void>(`${this.apiUrl}/chats/delete-message-for-everyone`, command);
+  }
+
+  updateMessage(command: UpdateMessageCommand): Observable<void> {
+    return this.httpClient.post<void>(`${this.apiUrl}/chats/update-message`, command);
   }
 }

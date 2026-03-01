@@ -23,5 +23,10 @@ namespace Messenger.Domain.Aggregates.Messages.Errors
             Error.Validation(
                 code: "Message.UnauthorizedToDeleteForEveryone",
                 description: "Only the message sender can delete this message for everyone.");
+
+        public static readonly Error UnauthorizedToUpdate =
+            Error.Validation(
+                code: "Message.UnauthorizedToUpdate",
+                description: "Only the message sender can update this message.");
     }
 }

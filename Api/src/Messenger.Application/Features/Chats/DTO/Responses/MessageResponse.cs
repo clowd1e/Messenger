@@ -6,5 +6,6 @@ namespace Messenger.Application.Features.Chats.DTO.Responses
         Guid Id,
         ShortUserResponse Sender,
         DateTime Timestamp,
-        string Content);
+        string Content,
+        DateTime? UpdatedAt);
 }

@@ -19,6 +19,7 @@
             <app-chat-message
                 [isGroupChat]="isGroupChat()"
                 [messageDto]="item.messageDto"
+                [isCurrentlyEditing]="editingMessageId() === item.messageDto.message.id"
                 (openContextMenu)="onOpenContextMenu($event)"></app-chat-message>
         }
     }
@@ -26,10 +27,11 @@
 
 @if (activeContextMenuMessageId()) {
     <app-message-operations-modal
-        [deleteForEveryoneVisible]="isSendersMessage()!"
+        [isSendersMessage]="isSendersMessage()!"
         [messageId]="activeContextMenuMessageId()!"
         [position]="contextMenuPosition()"
         [isVisible]="true"
+        (edit)="onEditMessage($event)"
         (deleteForMe)="onDeleteForMe($event)"
         (deleteForEveryone)="onDeleteForEveryone($event)"
         (close)="closeContextMenu()">

@@ -4,6 +4,7 @@ using Messenger.Application.Features.Chats.Commands.CreatePrivateChat;
 using Messenger.Application.Features.Chats.Commands.DeleteMessageForEveryone;
 using Messenger.Application.Features.Chats.Commands.DeleteMessageForUser;
 using Messenger.Application.Features.Chats.Commands.SendMessage;
+using Messenger.Application.Features.Chats.Commands.UpdateMessage;
 using Messenger.Application.Features.Chats.DTO.Responses;
 using Messenger.Application.Features.Chats.Queries.GetById;
 using Messenger.Application.Features.Chats.Queries.GetChatMessagesPaginated;
@@ -152,6 +153,34 @@ namespace Messenger.WebAPI.Controllers
                     commandResult.Value.MessageId);
                 await hubContext.Clients.Group($"{ChatHub.UserGroup}{commandResult.Value.UserId}")
                     .DeleteMessage(response);
+
+                return NoContent();
+            }
+
+            return problemDetailsFactory.GetProblemDetails(commandResult);
+        }
+
+        [HttpPost("update-message")]
+        public async Task<IActionResult> UpdateMessage(
+            [FromServices] ICommandHandler<UpdateMessageCommand, UpdateMessageResponse> commandHandler,
+            [FromBody] UpdateMessageCommand command,
+            CancellationToken cancellationToken)
+        {
+            var commandResult = await commandHandler.Handle(command, cancellationToken);
+
+            if (commandResult.IsSuccess)
+            {
+                var response = new UpdateMessageHubResponse(
+                    commandResult.Value.ChatId,
+                    commandResult.Value.MessageId,
+                    commandResult.Value.NewContent,
+                    commandResult.Value.UpdatedAt);
+
+                foreach (var participantId in commandResult.Value.ParticipatnsIds)
+                {
+                    await hubContext.Clients.Group($"{ChatHub.UserGroup}{participantId}")
+                        .UpdateMessage(response);
+                }
 
                 return NoContent();
             }

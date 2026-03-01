@@ -1,4 +1,4 @@
-import { Component, input, model } from '@angular/core';
+import { Component, effect, ElementRef, input, model, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -9,7 +9,16 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './input.component.scss'
 })
 export class InputComponent {
+  @ViewChild('inputElement') inputElement?: ElementRef;
+
   placeholder = input.required<string>();
+  focus = input<boolean>(false);
 
   inputValue = model<string>('');
+
+  focusEffect = effect(() => {
+    if (this.focus()) {
+      this.inputElement?.nativeElement.focus();
+    }
+  });
 }

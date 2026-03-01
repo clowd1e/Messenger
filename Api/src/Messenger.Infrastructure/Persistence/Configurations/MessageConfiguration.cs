@@ -45,6 +45,12 @@ namespace Messenger.Infrastructure.Persistence.Configurations
             builder.Property(message => message.IsDeletedForEveryone)
                 .HasColumnName("is_deleted_for_everyone");
 
+            builder.Property(message => message.UpdatedAt)
+                .HasConversion(
+                    timestamp => timestamp!.Value,
+                    value => Timestamp.Create(value.ToUniversalTime()).Value)
+                .HasColumnName("updated_at");
+
             builder
                 .HasOne(message => message.Chat)
                 .WithMany(chat => chat.Messages)

@@ -58,7 +58,8 @@ namespace Messenger.Application.Features.Chats.Mappers
                 Id: message.Id.Value,
                 Sender: MapUser(message.User),
                 Timestamp: message.Timestamp.Value,
-                Content: message.Content.Value);
+                Content: message.Content.Value,
+                UpdatedAt: message.UpdatedAt?.Value);
         }
 
         private static List<ShortUserResponse> MapUsers(

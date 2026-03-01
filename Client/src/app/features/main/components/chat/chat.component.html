@@ -14,11 +14,15 @@
                 </div>
             } @else {
                 <app-chat-message-list 
+                    #messageListComponent
                     class="chat-message-list"></app-chat-message-list>
             }
         </div>
         <app-chat-input 
             class="chat-input"
-            (messageSubmitted)="onMessageSubmit($event)"></app-chat-input>
+            [editingMessageId]="chatMessageListComponent?.editingMessageId() ?? null"
+            [editingMessageContent]="chatMessageListComponent?.editingMessageContent() ?? null"
+            (messageSubmitted)="onMessageSubmit($event)"
+            (editCancelled)="chatMessageListComponent?.onCancelEditMessage()"></app-chat-input>
     }
 </div>

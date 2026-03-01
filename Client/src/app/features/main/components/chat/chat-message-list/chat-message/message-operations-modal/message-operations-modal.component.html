@@ -5,11 +5,17 @@
         [style.left.px]="position()?.x"
         [style.top.px]="position()?.y">
         <div class="modal-menu">
+            @if (isSendersMessage()) {
+                <app-message-operations-modal-item
+                    (click)="onEdit()"
+                    [svgConfig]="editIcon"
+                    [itemLabel]="'Edit message'"></app-message-operations-modal-item>
+            }
             <app-message-operations-modal-item
                 (click)="onDeleteForMe()"
                 [svgConfig]="trashIcon"
                 [itemLabel]="'Delete for me'"></app-message-operations-modal-item>
-            @if (deleteForEveryoneVisible()) {
+            @if (isSendersMessage()) {
                 <app-message-operations-modal-item
                     (click)="onDeleteForEveryone()"
                     [svgConfig]="trashIcon"
